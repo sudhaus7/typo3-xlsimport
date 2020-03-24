@@ -29,10 +29,6 @@
     "friendsoftypo3/tt-address": "^5"
   },
   "extra": {
-    "branch-alias": {
-      "dev-master": "1.0.x-dev",
-      "dev-v9master": "2.0.x-dev"
-    },
     "typo3/cms": {
       "extension-key": "xlsimport",
       "cms-package-dir": "{$vendor-dir}/typo3/cms",
