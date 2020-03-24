@@ -1,0 +1,55 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
+      xmlns:be="http://typo3.org/ns/TYPO3/CMS/Backend/ViewHelpers"
+      xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
+      xmlns="http://www.w3.org/1999/xhtml"
+      lang="en"
+      f:schemaLocation="https://fluidtypo3.org/schemas/fluid-master.xsd"
+      data-namespace-typo3-fluid="true">
+<f:layout name="Default" />
+
+<f:section name="headline">
+    <h1><f:translate key="module_name" /></h1>
+</f:section>
+
+<f:section name="content">
+    <f:be.pagePath />
+    <f:flashMessages />
+    <f:if condition="{page}">
+        <f:then>
+            <f:be.infobox title="{f:translate(key:'importinfo')}" state="-1">
+                <f:translate key="importinfo_format" />
+                <ul>
+                    <li>Excel 2007 (.xlsx)</li>
+                    <li>Excel5 (.xls)</li>
+                    <li>Excel2003XML (.xml)</li>
+                    <li>OpenDocument Calc (.ods)</li>
+                    <li>Gnumeric (.gnumeric)</li>
+                    <li>CSV (.csv/.txt)</li>
+                </ul>
+            </f:be.infobox>
+            <f:form pageUid="{page}" action="upload" enctype="multipart/form-data">
+                <p>
+                    <label for="table"><f:translate key="tableselect" /></label><br>
+                    <f:form.select name="table" id="table" options="{allowedTables}" />
+                </p>
+                <p>
+                    <label for="fileUpload"><f:translate key="fileselect" /></label>
+                    <f:form.upload name="file" id="fileUpload" />
+                </p>
+                <p>
+                    <f:form.checkbox name="deleteRecords" id="deleteRecords" value="1" />
+                    <label for="deleteRecords"><f:translate key="deleteRecord" /></label>
+                </p>
+                <p>
+                    <f:form.submit value="{f:translate(key:'upload')}" />
+                </p>
+            </f:form>
+        </f:then>
+        <f:else>
+            <f:be.infobox title="{f:translate(key:'choosepage')}" state="1">
+                <f:translate key="choosepage_info" />
+            </f:be.infobox>
+        </f:else>
+    </f:if>
+</f:section>
+</html>

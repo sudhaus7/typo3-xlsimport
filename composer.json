@@ -1,0 +1,54 @@
+{
+  "name": "SUDHAUS7/xlsimport",
+  "description": "(Sudhaus7) XLS Importer",
+  "version": "1.0.0",
+  "type": "typo3-cms-extension",
+  "license": "",
+  "authors": [
+    {
+      "name": "Frank Berger",
+      "role": "Developer"
+    },
+    {
+      "name": "Markus Hofmann",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "typo3/cms-core": "^10.3",
+    "phpoffice/phpspreadsheet": "^1.10"
+  },
+  "require-dev": {
+    "typo3/cms-fluid-styled-content": "^10.3",
+    "typo3/cms-tstemplate": "^10.3",
+    "typo3/cms-backend": "^10.3",
+    "ext-gnupg": "*",
+    "phpstan/phpstan": "^0.11",
+    "codeception/codeception": "^3.1",
+    "codeception/phpbuiltinserver": "^1.5",
+    "helhum/typo3-console": "v6.0.0-alpha2",
+    "friendsoftypo3/tt-address": "^5"
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "1.0.x-dev",
+      "dev-v9master": "2.0.x-dev"
+    },
+    "typo3/cms": {
+      "extension-key": "xlsimport",
+      "cms-package-dir": "{$vendor-dir}/typo3/cms",
+      "web-dir": ".Build/public"
+    }
+  },
+  "autoload": {
+    "psr-4": {
+      "SUDHAUS7\\Xlsimport\\": "Classes/"
+    }
+  },
+  "scripts": {
+    "post-autoload-dump": [
+      "mkdir -p .Build/public/typo3conf/ext/",
+      "[ -L .Build/public/typo3conf/ext/gpgadmin ] || ln -snvf ../../../../. .Build/public/typo3conf/ext/xlsimport"
+    ]
+  }
+}

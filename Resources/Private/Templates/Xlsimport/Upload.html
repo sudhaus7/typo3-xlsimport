@@ -1,0 +1,132 @@
+<html xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
+      xmlns:be="http://typo3.org/ns/TYPO3/CMS/Backend/ViewHelpers"
+      xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
+      xmlns="http://www.w3.org/1999/xhtml"
+      lang="en"
+      f:schemaLocation="https://fluidtypo3.org/schemas/fluid-master.xsd"
+      data-namespace-typo3-fluid="true">
+<f:layout name="Default" />
+
+<f:section name="headline">
+    <h1><f:translate key="module_name" /> - <f:translate key="prepare" /></h1>
+</f:section>
+
+<f:section name="content">
+    <f:be.pagePath />
+    <f:if condition="{page}">
+        <f:format.raw>
+            <script>
+                var counter = document.getElementsByClassName('counter')[0];
+                var OnChangeCheckbox = function(event) {
+                    var checkbox = event.target;
+                    var current = parseInt((counter.innerText || counter.textContent));
+                    if (checkbox.checked) {
+                        counter.innerHTML = (current + 1).toString();
+                    } else {
+                        counter.innerHTML = (current - 1).toString();
+                    }
+                };
+                document.getElementsByClassName('count').forEach(function(element) {
+                    if (element.addEventListener) {
+                        element.addEventListener ("CheckboxStateChange", OnChangeCheckbox, false);
+                    }
+                });
+            </script>
+        </f:format.raw>
+        <f:then>
+            <f:be.infobox title="{f:translate(key:'prepareinfo')}" state="-1">
+                <f:translate key="prepareinfo_text" />
+            </f:be.infobox>
+            <f:be.infobox title="{f:translate(key:'importinfo')}" state="-1">
+                <f:translate key="importinfo_text" />
+            </f:be.infobox>
+            <f:form pageUid="{page}" id="importData" action="import">
+                <p>
+                    <f:translate key="info_complete" />: <span class="counter">{data -> f:count()}</span>/{data -> f:count()}
+                </p>
+                <f:form.hidden name="table" value="{table}" />
+                <table class="table table-striped table-hover">
+                    <thead>
+                    <tr>
+                        <td>
+                            <f:translate key="record" />
+                        </td>
+                        <f:for each="{data}" as="row" iteration="i">
+                            <f:if condition="{i.isFirst}">
+                                <f:for each="{row}" as="value" iteration="it">
+                                    <td>
+                                        <select name="tx_xlsimport_web_xlsimporttxxlsimport[fields][field-{it.index}]">
+                                            <option value=""><f:translate key="ignore" /></option>
+                                            <f:for each="{fields}" key="type" as="field">
+                                                <option value="{type}">
+                                                    {field.label}
+                                                </option>
+                                            </f:for>
+                                        </select>
+                                    </td>
+                                </f:for>
+                            </f:if>
+                        </f:for>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <f:for each="{data}" as="row" key="number">
+                        <tr>
+                            <td>
+                                <f:form.checkbox class="count" name="dataset[{number}][import]" value="1" checked="true" />
+                            </td>
+                            <f:for each="{row}" as="value" iteration="i">
+                                <td>
+                                    {value}
+                                    <f:form.hidden name="dataset[{number}][field-{i.index}]" value="{value}" />
+                                </td>
+                            </f:for>
+                        </tr>
+                    </f:for>
+                    </tbody>
+                </table>
+                <p>
+                    <f:form.submit value="{f:translate(key:'import')}" />
+                </p>
+            </f:form>
+            <f:format.raw>
+                <script type="text/javascript">
+                    document.getElementById('importData').onsubmit = function(ev) {
+
+                        if (!document.getElementById('asdojasdlkasdopjsdokvnsdlkfmasdlk')) {
+
+                            ev.preventDefault();
+                            //  console.log(ev,ev.srcElement[2]);
+                            var data = ev.target.querySelectorAll('input[name^="tx_xlsimport_web_xlsimporttxxlsimport[dataset]"]');
+
+                            var json = [];
+                            data.forEach(function(inp) {
+                                if (inp.getAttribute('type')=='checkbox' && !inp.checked) return;
+                                json.push({
+                                    'name':inp.getAttribute('name'),
+                                    'value':inp.getAttribute('value')
+                                });
+                                inp.parentNode.removeChild(inp);
+                                //console.log(inp);
+                            });
+                            var newdata = document.createElement('input');
+                            newdata.setAttribute("id","asdojasdlkasdopjsdokvnsdlkfmasdlk");
+                            newdata.setAttribute("name","tx_xlsimport_web_xlsimporttxxlsimport[dataset]");
+                            newdata.setAttribute("type","hidden");
+                            newdata.setAttribute('value',JSON.stringify(json));
+
+                            ev.srcElement.appendChild(newdata);
+                            ev.srcElement.submit();
+                        }
+                    }
+                </script>
+            </f:format.raw>
+        </f:then>
+        <f:else>
+            <f:be.infobox title="{f:translate(key:'choosepage')}" state="1">
+                <f:translate key="choosepage_info" />
+            </f:be.infobox>
+        </f:else>
+    </f:if>
+</f:section>
+</html>

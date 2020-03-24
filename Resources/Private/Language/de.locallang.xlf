@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+    <file source-language="en" target-language="de" datatype="plaintext" original="messages" date="2018-02-09T09:28:12Z">
+        <header>
+            <generator>LFEditor</generator>
+        </header>
+        <body>
+            <trans-unit id="module_name">
+                <source>XLS Importer</source>
+                <target>XLS Importer</target>
+            </trans-unit>
+            <trans-unit id="choosepage">
+                <source>Choose page</source>
+                <target>Seite auswählen</target>
+            </trans-unit>
+            <trans-unit id="choosepage_info">
+                <source>Before continuing, you have to choose a page on the left.</source>
+                <target>Sie müssen links eine Seite auswählen, um fortfahren zu können.</target>
+            </trans-unit>
+            <trans-unit id="importinfo">
+                <source>Import Excel</source>
+                <target>Excel importieren</target>
+            </trans-unit>
+            <trans-unit id="importinfo_format">
+                <source>You can import from following formats:</source>
+                <target>Sie können folgende Formate importieren:</target>
+            </trans-unit>
+            <trans-unit id="tableselect">
+                <source>Select a table importing to</source>
+                <target>Tabelle zum Importieren auswählen</target>
+            </trans-unit>
+            <trans-unit id="fileselect">
+                <source>Select a file</source>
+                <target>Datei auswählen</target>
+            </trans-unit>
+            <trans-unit id="upload">
+                <source>Upload</source>
+                <target>Hochladen</target>
+            </trans-unit>
+            <trans-unit id="prepare">
+                <source>Prepare data</source>
+                <target>Daten vorbereiten</target>
+            </trans-unit>
+            <trans-unit id="prepareinfo">
+                <source>Prepare Excel</source>
+                <target>Excel vorbereiten</target>
+            </trans-unit>
+            <trans-unit id="prepareinfo_text">
+                <source>Select the structure for the table</source>
+                <target>Wählen Sie die Struktur für die Tabelle aus</target>
+            </trans-unit>
+            <trans-unit id="importinfo_text">
+                <source>Select the records to import</source>
+                <target>Wählen Sie die zu importierenden Datensätze aus</target>
+            </trans-unit>
+            <trans-unit id="record">
+                <source>Import record</source>
+                <target>Datensatz importieren</target>
+            </trans-unit>
+            <trans-unit id="ignore">
+                <source>ignore</source>
+                <target>ignorieren</target>
+            </trans-unit>
+            <trans-unit id="import">
+                <source>Import</source>
+                <target>Importieren</target>
+            </trans-unit>
+            <trans-unit id="success">
+                <source>Data imported successfully</source>
+                <target>Daten erfolgreich importiert</target>
+            </trans-unit>
+            <trans-unit id="complete">
+                <source>Completed</source>
+                <target>Abgeschlosssen</target>
+            </trans-unit>
+            <trans-unit id="info_complete">
+                <source>Total datasets to import</source>
+                <target>Anzahl gesamte Datensätze zm importieren</target>
+            </trans-unit>
+            <trans-unit id="deleteRecord">
+                <source>Delete all records according to this table on current page?</source>
+                <target>Alle Datensätze dieser Tabelle auf der aktuellen Seite löschen?</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>
