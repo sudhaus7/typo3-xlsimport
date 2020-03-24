@@ -3,7 +3,7 @@
   "description": "(Sudhaus7) XLS Importer",
   "version": "1.0.0",
   "type": "typo3-cms-extension",
-  "license": "",
+  "license": "MIT",
   "authors": [
     {
       "name": "Frank Berger",
