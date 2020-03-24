@@ -1,21 +1,11 @@
 <?php
 
-########################################################################
-# Extension Manager/Repository config file for ext: "sudhaus7_userwizard"
-#
-# Auto generated 03-05-2010 17:49
-#
-# Manual updates:
-# Only the data in the array - anything else is removed by next write.
-# "version" and "dependencies" must not be touched!
-########################################################################
-
 $EM_CONF[$_EXTKEY] = [
 	'title' => '(Sudhaus7) XLS Importer',
 	'description' => 'A simple importer for table shown content in the database',
 	'category' => 'module',
 	'shy' => 0,
-	'version' => '1.0.0',
+	'version' => '1.0.1',
 	'dependencies' => '',
 	'conflicts' => '',
 	'priority' => '',
