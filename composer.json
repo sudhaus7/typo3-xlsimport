@@ -22,7 +22,6 @@
     "typo3/cms-fluid-styled-content": "^10.3",
     "typo3/cms-tstemplate": "^10.3",
     "typo3/cms-backend": "^10.3",
-    "ext-gnupg": "*",
     "phpstan/phpstan": "^0.11",
     "codeception/codeception": "^3.1",
     "codeception/phpbuiltinserver": "^1.5",
