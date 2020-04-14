@@ -43,7 +43,7 @@
   "scripts": {
     "post-autoload-dump": [
       "mkdir -p .Build/public/typo3conf/ext/",
-      "[ -L .Build/public/typo3conf/ext/gpgadmin ] || ln -snvf ../../../../. .Build/public/typo3conf/ext/xlsimport"
+      "[ -L .Build/public/typo3conf/ext/xlsimport ] || ln -snvf ../../../../. .Build/public/typo3conf/ext/xlsimport"
     ]
   }
 }
