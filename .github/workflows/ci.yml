@@ -1,0 +1,20 @@
+name: Publish
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  publish:
+    name: Publish to TER
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@master
+      - name: Publish to TER
+        uses: the-coding-owl/action-typo3-extension-repository-upload@0.0.1
+        env:
+          SECRET_USERNAME: ${{ secrets.USERNAME }}
+          SECRET_PASSWORD: ${{ secrets.PASSWORD }}
+          EXTENSION_KEY: 'responsive_picture'
+          UPLOAD_MESSAGE: ${{ github.event.head_commit.message }}
