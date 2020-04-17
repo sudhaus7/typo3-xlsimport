@@ -37,6 +37,14 @@ class XlsimportController  extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
      * @var LanguageService
      */
     protected $languageService;
+    /**
+     * @var string[]
+     */
+    protected $disallowedFields = [
+        'pid','t3ver_oid','tstamp','crdate','cruser_id','hidden','deleted',
+        't3ver_id','t3ver_wsid','t3ver_label','t3ver_state','t3ver_stage','t3ver_count',
+        't3ver_tstamp','t3ver_move_id','t3_origuid'
+    ];
 
     /**
      * XlsimportController constructor.
@@ -118,15 +126,24 @@ class XlsimportController  extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
         );
         GeneralUtility::upload_copy_move($file['tmp_name'],$newFile);
         $list = $this->getList($newFile);
-        $tca = $GLOBALS['TCA'][$table]['columns'];
+        $uidConfig = [
+            'uid' => [
+                'label' => 'uid'
+            ]
+        ];
+        $tca = array_merge($uidConfig, $GLOBALS['TCA'][$table]['columns']);
 
-        foreach ($tca as &$column) {
-            try {
-                $label = $this->languageService->sL($column['label']);
-            } catch (\InvalidArgumentException $e) {
-                $label = $column['label'];
+        foreach ($tca as $field => &$column) {
+            if (in_array($field, $this->disallowedFields)) {
+                unset($tca[$field]);
+            } else {
+                try {
+                    $label = $this->languageService->sL($column['label']);
+                } catch (\InvalidArgumentException $e) {
+                    $label = $column['label'];
+                }
+                $column['label'] = $label;
             }
-            $column['label'] = $label;
         }
 
         $assignedValues = [
@@ -166,16 +183,12 @@ class XlsimportController  extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionContr
             }
         }
         $imports = $a;
-        $disallowedFields = [
-            'pid','t3ver_oid','tstamp','crdate','cruser_id','hidden','deleted',
-            't3ver_id','t3ver_wsid','t3ver_label','t3ver_state','t3ver_stage','t3ver_count',
-            't3ver_tstamp','t3ver_move_id','t3_origuid'
-        ];
+
         foreach ($fields as $key => $field) {
             if (empty($field)) {
                 unset($fields[$key]);
             }
-            if (in_array($field,$disallowedFields)) {
+            if (in_array($field,$this->disallowedFields)) {
                 unset($fields[$key]);
             }
         }
