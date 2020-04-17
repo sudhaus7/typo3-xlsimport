@@ -16,5 +16,5 @@ jobs:
         env:
           SECRET_USERNAME: ${{ secrets.USERNAME }}
           SECRET_PASSWORD: ${{ secrets.PASSWORD }}
-          EXTENSION_KEY: 'responsive_picture'
+          EXTENSION_KEY: 'xlsimport'
           UPLOAD_MESSAGE: ${{ github.event.head_commit.message }}
