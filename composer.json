@@ -1,7 +1,7 @@
 {
   "name": "sudhaus7/xlsimport",
   "description": "(Sudhaus7) XLS Importer",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "type": "typo3-cms-extension",
   "license": "MIT",
   "authors": [
@@ -15,7 +15,7 @@
     }
   ],
   "require": {
-    "typo3/cms-core": "~6.2 | ~7.6 | ~8.7 | ~9.5 | ~10.4.2",
+    "typo3/cms-core": "~7.6 | ~8.7 | ~9.5 | ~10.4.2",
     "phpoffice/phpspreadsheet": "^1.10"
   },
   "require-dev": {
@@ -25,7 +25,7 @@
     "phpstan/phpstan": "^0.11",
     "codeception/codeception": "^3.1",
     "codeception/phpbuiltinserver": "^1.5",
-    "helhum/typo3-console": "^6.0",
+    "helhum/typo3-console": "^6.3",
     "friendsoftypo3/tt-address": "^5"
   },
   "extra": {
@@ -33,12 +33,20 @@
       "extension-key": "xlsimport",
       "cms-package-dir": "{$vendor-dir}/typo3/cms",
       "web-dir": ".Build/public"
+
     }
   },
   "autoload": {
     "psr-4": {
       "SUDHAUS7\\Xlsimport\\": "Classes/"
     }
+  },
+  "config": {
+    "preferred-install": {
+      "*": "dist"
+    },
+    "vendor-dir": ".Build/vendor",
+    "bin-dir": ".Build/bin"
   },
   "scripts": {
     "post-autoload-dump": [

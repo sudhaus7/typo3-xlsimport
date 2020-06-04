@@ -11,6 +11,16 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@master
+      - name: Set up PHP Version 7.4
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 7.4
+      - name: Install Dependencies - move old composer.json
+        run: |
+          mv composer.json composer.json-orig
+          composer require phpoffice/phpspreadsheet ^1.10 --ignore-platform-reqs --no-progress
+          mv composer.json-orig composer.json
+          rm composer.lock
       - name: Publish to TER
         uses: the-coding-owl/action-typo3-extension-repository-upload@0.0.1
         env:
