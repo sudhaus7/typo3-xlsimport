@@ -6,7 +6,7 @@
 
 This extension helps to import data from Spreadsheets into TYPO3.
 
-###How does it work?
+### How does it work?
 
 This extension provides a new backend module. You can configure every TCA configured 
 table for import.
@@ -21,17 +21,18 @@ Every line could be removed, so you import only the data, you want to.
 
 ### Configuration
 
-The module could be configured by TypoScript.
+The module could be configured by TypoScript. The following snippet has to be added to the PageTS config. 
 
+For Example
 ```
 module.tx_xlsimport {
 	settings {
-		allowdeTables = tt_address
+		allowedTables = tt_address
 	}
 }
 ```
 
-Just add
+Or if you need to extend it:
 
 ```
 module.tx_xlsimport {
