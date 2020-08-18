@@ -8,22 +8,24 @@ This extension helps to import data from Spreadsheets into TYPO3.
 
 ### How does it work?
 
-This extension provides a new backend module. You can configure every TCA configured 
-table for import.
+This extension provides a new backend module in which you can use every TCA configured 
+table for importing data from an excel.
 
-By default, the table tt_address can be imported. During uploading the spreadsheet, you can select
-the table, you want to import to.
+In the default setup the table tt_address can be imported out of the box. 
 
-After upload, you will get a table with the data of the first worksheet. At the header
-you can select your field to import to, so you don't have to respect a specific order in your spreadsheet.
+When uploading the spreadsheet, you can select
+the table you want to import data to.
 
-Every line could be removed, so you import only the data, you want to.
+After the upload, you will get a table with the data of the first worksheet. In the header
+you can select your field to import to, so you don't have to respect a specific order of columns in your spreadsheet. 
+
+Every line can be removed, so you import only the data you want to.
 
 ### Configuration
 
-The module could be configured by TypoScript. The following snippet has to be added to the PageTS config. 
+The module can be configured by TypoScript. The following snippet has to be added to your Typoscript Template (frontend).
 
-For Example
+This is the Default Setting:
 ```
 module.tx_xlsimport {
 	settings {
@@ -31,8 +33,7 @@ module.tx_xlsimport {
 	}
 }
 ```
-
-Or if you need to extend it:
+which you can either override, or extend in this fashion:
 
 ```
 module.tx_xlsimport {
@@ -41,4 +42,16 @@ module.tx_xlsimport {
 	}
 }
 ```
+
+*Important*: you have to specify the TABLENAME of an extension you want to import to, not the extensionname. So for example if you want to import data for the news extension (tx_news) you have to add the tablename `tx_news_domain_model_news`. Respectfully, if you want to import tx_news's Tags, you have to add the tablename `tx_news_domain_model_tag` to the list.
+
+The extension in itself does not maintain relations out of the box. 
+
+TODO:
+- deprecate TYPO3 8.7 and older
+- add Events/Signalslots for datamanipulation
+- add support for multiple sheets
+
+FUTURE: (hit me up if you are willing to help funding)
+- support for related data as far as it is modelled in the TCA
 
