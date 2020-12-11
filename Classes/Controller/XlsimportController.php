@@ -20,6 +20,9 @@ use PhpOffice\PhpSpreadsheet\Worksheet\RowIterator;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
+use TYPO3\CMS\Core\Resource\DuplicationBehavior;
+use TYPO3\CMS\Core\Resource\File;
+use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\File\BasicFileUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -29,6 +32,7 @@ use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
 use TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /**
  * Class XlsimportController
@@ -54,6 +58,19 @@ class XlsimportController extends ActionController
         't3ver_id','t3ver_wsid','t3ver_label','t3ver_state','t3ver_stage','t3ver_count',
         't3ver_tstamp','t3ver_move_id','t3_origuid','l10n_diffsource','l10n_source'
     ];
+
+    /**
+     * @var \TYPO3\CMS\Core\Resource\ResourceFactory
+     */
+    protected $resourceFactory;
+
+    /**
+     * @param \TYPO3\CMS\Core\Resource\ResourceFactory $resourceFactory
+     */
+    public function injectResourceFactory(ResourceFactory $resourceFactory)
+    {
+        $this->resourceFactory = $resourceFactory;
+    }
 
     /**
      * XlsimportController constructor.
@@ -132,11 +149,15 @@ class XlsimportController extends ActionController
         }
         $basicFileFunctions =  GeneralUtility::makeInstance(BasicFileUtility::class);
         //$basicFileFunctions = $this->objectManager->get(BasicFileUtility::class);
-        $newFile = $basicFileFunctions->getUniqueName(
-            $file['name'],
-            GeneralUtility::getFileAbsFileName('uploads/tx_xlsimport/')
-        );
-        GeneralUtility::upload_copy_move($file['tmp_name'], $newFile);
+//        $newFile = $basicFileFunctions->getUniqueName(
+//            $file['name'],
+//            GeneralUtility::getFileAbsFileName('fileadmin/user_upload/tx_xlsimport/')
+//        );
+//        GeneralUtility::upload_copy_move($file['tmp_name'], $newFile);
+
+        $folder = $this->resourceFactory->getFolderObjectFromCombinedIdentifier($this->settings['uploadFolder']);
+        $newFile = $folder->addFile($file['tmp_name'], $file['name'], $this->settings['duplicationBehavior']);
+
         $list = $this->getList($newFile);
         $uidConfig = [
             'uid' => [
@@ -259,21 +280,24 @@ class XlsimportController extends ActionController
     }
 
     /**
-     * @param $filename
+     * @param \TYPO3\CMS\Core\Resource\File $file
+     *
      * @return array
      * @throws Exception
      */
-    protected function getList($filename)
+    protected function getList(File $file)
     {
         $aList = [];
         $aList['rows'] = 0;
         $aList['cols'] = 0;
         $aList['data'] = [];
-        if (is_file($filename)) {
-            $oReader = IOFactory::createReaderForFile($filename);
-            if (is_object($oReader) && $oReader->canRead($filename)) {
+        $fileName = $file->getForLocalProcessing();
+        if (is_file($fileName)) {
+
+            $oReader = IOFactory::createReaderForFile($fileName);
+            if (is_object($oReader) && $oReader->canRead($fileName)) {
                 //$oReader->getReadDataOnly();
-                $xls = $oReader->load($filename);
+                $xls = $oReader->load($fileName);
                 $xls->setActiveSheetIndex(0);
                 $sheet = $xls->getActiveSheet();
                 $rowI = new RowIterator($sheet, 1);
