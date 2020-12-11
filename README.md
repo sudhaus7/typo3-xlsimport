@@ -30,6 +30,10 @@ This is the Default Setting:
 module.tx_xlsimport {
 	settings {
 		allowedTables = tt_address
+		# {storageUid}:{folderIdentifier} eg: 1:user_upload/data/import
+		uploadFolder = 1:user_upload/tx_xlsimport
+		# replace | rename | cancel
+		duplicationBehavior = rename
 	}
 }
 ```
