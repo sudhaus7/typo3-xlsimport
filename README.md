@@ -52,7 +52,7 @@ module.tx_xlsimport {
 The extension in itself does not maintain relations out of the box. 
 
 TODO:
-- deprecate TYPO3 8.7 and older
+- deprecate TYPO3 8.7
 - add Events/Signalslots for datamanipulation
 - add support for multiple sheets
 

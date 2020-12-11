@@ -23,7 +23,6 @@ use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Resource\DuplicationBehavior;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
-use TYPO3\CMS\Core\Utility\File\BasicFileUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
@@ -32,7 +31,6 @@ use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
 use TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Core\Localization\LanguageService;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 /**
  * Class XlsimportController
@@ -109,8 +107,6 @@ class XlsimportController extends ActionController
      * @throws Exception
      * @throws NoSuchArgumentException
      * @throws StopActionException
-     * @throws UnsupportedRequestTypeException
-     * @throws \TYPO3\CMS\Extbase\Object\Exception
      */
     public function uploadAction()
     {
@@ -125,18 +121,12 @@ class XlsimportController extends ActionController
         if ($deleteOldRecords) {
             /** @var DataHandler $tce */
             $tce = GeneralUtility::makeInstance(DataHandler::class);
-            $ids = [];
-            if ((float)TYPO3_branch < 8.7) {
-                /** @var DatabaseConnection $db */
-                $db = $GLOBALS['TYPO3_DB'];
-                $ids = $db->exec_SELECTgetRows('*', $table, 'pid='.$page);
-            } else {
-                $db = GeneralUtility::makeInstance(ConnectionPool::class);
-                $builder = $db->getQueryBuilderForTable($table);
-                $ids = $builder->select('*')->from($table)->where(
-                    $builder->expr()->eq('pid', $page)
-                )->execute()->fetchAll();
-            }
+
+            $db = GeneralUtility::makeInstance(ConnectionPool::class);
+            $builder = $db->getQueryBuilderForTable($table);
+            $ids = $builder->select('*')->from($table)->where(
+                $builder->expr()->eq('pid', $page)
+            )->execute()->fetchAll();
             $cmd = [];
             if (is_array($ids)) {
                 foreach ($ids as $id) {
@@ -147,7 +137,7 @@ class XlsimportController extends ActionController
                 $tce->process_cmdmap();
             }
         }
-        $basicFileFunctions =  GeneralUtility::makeInstance(BasicFileUtility::class);
+//        $basicFileFunctions =  GeneralUtility::makeInstance(BasicFileUtility::class);
         //$basicFileFunctions = $this->objectManager->get(BasicFileUtility::class);
 //        $newFile = $basicFileFunctions->getUniqueName(
 //            $file['name'],
@@ -156,7 +146,7 @@ class XlsimportController extends ActionController
 //        GeneralUtility::upload_copy_move($file['tmp_name'], $newFile);
 
         $folder = $this->resourceFactory->getFolderObjectFromCombinedIdentifier($this->settings['uploadFolder']);
-        $newFile = $folder->addFile($file['tmp_name'], $file['name'], $this->settings['duplicationBehavior']);
+        $newFile = $folder->addFile($file['tmp_name'], $file['name'], $this->settings['duplicationBehavior'] ?? DuplicationBehavior::RENAME);
 
         $list = $this->getList($newFile);
         $uidConfig = [
