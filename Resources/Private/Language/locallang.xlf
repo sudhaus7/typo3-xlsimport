@@ -47,6 +47,9 @@
             <trans-unit id="ignore">
                 <source>ignore</source>
             </trans-unit>
+            <trans-unit id="multiple">
+            	<source>Select default values for multiple fields</source>
+            </trans-unit>
             <trans-unit id="import">
                 <source>Import</source>
             </trans-unit>

@@ -61,6 +61,10 @@
                 <source>ignore</source>
                 <target>ignorieren</target>
             </trans-unit>
+            <trans-unit id="multiple">
+                <source>Select default values for multiple fields</source>
+                <target>Standardwerte für Multifelder auswählen</target>
+            </trans-unit>
             <trans-unit id="import">
                 <source>Import</source>
                 <target>Importieren</target>

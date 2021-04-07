@@ -137,13 +137,6 @@ class XlsimportController extends ActionController
                 $tce->process_cmdmap();
             }
         }
-//        $basicFileFunctions =  GeneralUtility::makeInstance(BasicFileUtility::class);
-        //$basicFileFunctions = $this->objectManager->get(BasicFileUtility::class);
-//        $newFile = $basicFileFunctions->getUniqueName(
-//            $file['name'],
-//            GeneralUtility::getFileAbsFileName('fileadmin/user_upload/tx_xlsimport/')
-//        );
-//        GeneralUtility::upload_copy_move($file['tmp_name'], $newFile);
 
         $folder = $this->resourceFactory->getFolderObjectFromCombinedIdentifier($this->settings['uploadFolder']);
         $newFile = $folder->addFile($file['tmp_name'], $file['name'], $this->settings['duplicationBehavior'] ?? DuplicationBehavior::RENAME);
@@ -176,7 +169,12 @@ class XlsimportController extends ActionController
             'fields' => $tca,
             'data' => $list['data'],
             'page' =>  $page,
-            'table' => $table
+            'table' => $table,
+            'addInlineSettings' => [
+                'FormEngine' => [
+                    'formName' => 'importData'
+                ]
+            ]
         ];
         $this->view->assignMultiple($assignedValues);
     }
