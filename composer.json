@@ -1,7 +1,7 @@
 {
   "name": "sudhaus7/xlsimport",
   "description": "(Sudhaus7) XLS Importer",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "type": "typo3-cms-extension",
   "license": "MIT",
   "authors": [
@@ -15,10 +15,10 @@
     }
   ],
   "require": {
-    "typo3/cms-core": "~8.7 | ~9.5 | ~10.4.2",
+    "typo3/cms-core": "~10.4.2",
     "phpoffice/phpspreadsheet": "^1.10",
     "ext-json": "*",
-    "php": ">=7.0"
+    "php": ">=7.4"
   },
   "require-dev": {
     "typo3/cms-fluid-styled-content": "~10.4.2",

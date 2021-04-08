@@ -85,6 +85,10 @@
                 <source>Delete all records according to this table on current page?</source>
                 <target>Alle Datensätze dieser Tabelle auf der aktuellen Seite löschen?</target>
             </trans-unit>
+            <trans-unit id="overridePassword">
+                <source>Override password with random values?</source>
+                <target>Passwort mit Zufallswerten befüllen?</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

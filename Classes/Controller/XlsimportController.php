@@ -12,25 +12,24 @@ namespace SUDHAUS7\Xlsimport\Controller;
 
 use InvalidArgumentException;
 use PhpOffice\PhpSpreadsheet\Exception;
-use TYPO3\CMS\Backend\View\BackendTemplateView;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Page\PageRenderer;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Worksheet\RowCellIterator;
 use PhpOffice\PhpSpreadsheet\Worksheet\RowIterator;
+use TYPO3\CMS\Backend\View\BackendTemplateView;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
+use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Resource\DuplicationBehavior;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use PhpOffice\PhpSpreadsheet\IOFactory;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException;
 use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
-use TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Core\Localization\LanguageService;
 
 /**
  * Class XlsimportController
@@ -52,9 +51,9 @@ class XlsimportController extends ActionController
      * @var string[]
      */
     protected $disallowedFields = [
-        'pid','t3ver_oid','tstamp','crdate','cruser_id','hidden','deleted',
-        't3ver_id','t3ver_wsid','t3ver_label','t3ver_state','t3ver_stage','t3ver_count',
-        't3ver_tstamp','t3ver_move_id','t3_origuid','l10n_diffsource','l10n_source'
+        'pid', 't3ver_oid', 'tstamp', 'crdate', 'cruser_id', 'hidden', 'deleted',
+        't3ver_id', 't3ver_wsid', 't3ver_label', 't3ver_state', 't3ver_stage', 't3ver_count',
+        't3ver_tstamp', 't3ver_move_id', 't3_origuid', 'l10n_diffsource', 'l10n_source'
     ];
 
     /**
@@ -110,7 +109,7 @@ class XlsimportController extends ActionController
      */
     public function uploadAction()
     {
-        $page =  GeneralUtility::_GET('id');
+        $page = GeneralUtility::_GET('id');
         if (!$page) {
             $this->redirect('index');
             exit;
@@ -149,27 +148,37 @@ class XlsimportController extends ActionController
         ];
         $tca = array_merge($uidConfig, $GLOBALS['TCA'][$table]['columns']);
 
+        $hasPasswordField = false;
+        $passwordFields = [];
+
         foreach ($tca as $field => &$column) {
             if (in_array($field, $this->disallowedFields)) {
                 unset($tca[$field]);
             } else {
                 try {
                     $label = $this->languageService->sL($column['label']);
-                } catch ( InvalidArgumentException $e) {
+                } catch (InvalidArgumentException $e) {
                     $label = $column['label'];
                 }
                 if (empty($label)) {
-                    $label = '['.$field.']';
+                    $label = '[' . $field . ']';
                 }
                 $column['label'] = $label;
+
+                if (isset($column['config']['eval']) && in_array('password', GeneralUtility::trimExplode(',', $column['config']['eval']))) {
+                    $hasPasswordField = true;
+                    $passwordFields[] = $field;
+                }
             }
         }
 
         $assignedValues = [
             'fields' => $tca,
             'data' => $list['data'],
-            'page' =>  $page,
+            'page' => $page,
             'table' => $table,
+            'hasPasswordField' => $hasPasswordField,
+            'passwordFields' => implode(',', $passwordFields),
             'addInlineSettings' => [
                 'FormEngine' => [
                     'formName' => 'importData'
@@ -186,7 +195,7 @@ class XlsimportController extends ActionController
      */
     public function importAction()
     {
-        $page =  GeneralUtility::_GET('id');
+        $page = GeneralUtility::_GET('id');
         $table = $this->request->getArgument('table');
         if (!$page || !$table || !array_key_exists($table, $GLOBALS['TCA'])) {
             $this->redirect('index');
@@ -194,6 +203,12 @@ class XlsimportController extends ActionController
         }
         /** @var array $fields */
         $fields = $this->request->getArgument('fields');
+        /** @var array $overrides */
+        $overrides = $this->request->getArgument('overrides');
+
+        $passwordOverride = (bool)$this->request->getArgument('passwordOverride');
+        $passwordFields = GeneralUtility::trimExplode(',', $this->request->getArgument('passwordFields'));
+
         /** @var array $imports */
         $imports = json_decode($this->request->getArgument('dataset'), true);
         $a = [];
@@ -209,6 +224,7 @@ class XlsimportController extends ActionController
         }
         $imports = $a;
 
+        // unset all fields not assigned to a TCA field
         foreach ($fields as $key => $field) {
             if (empty($field)) {
                 unset($fields[$key]);
@@ -217,6 +233,23 @@ class XlsimportController extends ActionController
                 unset($fields[$key]);
             }
         }
+        // get override field and take a look inside fieldlist, if defined
+        foreach ($overrides as $key => $override) {
+            if (in_array($override, $fields) || empty($override)) {
+                unset($overrides[$key]);
+            }
+        }
+
+        if ($passwordOverride) {
+            foreach ($passwordFields as $key => $passwordField) {
+                if (in_array($passwordField, $fields)) {
+                    unset($passwordFields[$key]);
+                }
+            }
+        } else {
+            $passwordFields = [];
+        }
+
         $inserts = [
             $table => []
         ];
@@ -236,6 +269,14 @@ class XlsimportController extends ActionController
                         $insertArray['pid'] = $page;
                     }
                 }
+                foreach ($overrides as $key => $override) {
+                    $insertArray[$key] = $override;
+                }
+
+                foreach ($passwordFields as $passwordField) {
+                    $insertArray[$passwordField] = md5(sha1(microtime()));
+                }
+
                 $inserts[$table][$update ? $import['uid'] : uniqid('NEW_')] = $insertArray;
             }
         }
@@ -292,14 +333,14 @@ class XlsimportController extends ActionController
 
                 $rowcount = 1;
                 $colcount = 1;
-                foreach ($rowI as $k=>$row) {
+                foreach ($rowI as $k => $row) {
                     $rowcount++;
                     $cell = new RowCellIterator($sheet, 1, 'A');
 
                     $cell->setIterateOnlyExistingCells(true);
 
                     $tmpcolcount = 0;
-                    foreach ($cell as $ck=>$ce) {
+                    foreach ($cell as $ck => $ce) {
                         $tmpcolcount++;
                     }
                     if ($tmpcolcount > $colcount) {
@@ -310,8 +351,8 @@ class XlsimportController extends ActionController
                 $aList['rows'] = $rowcount;
                 $aList['cols'] = $colcount;
 
-                for ($y=1;$y<$rowcount;$y++) {
-                    for ($x=1;$x<=$colcount;$x++) {
+                for ($y = 1; $y < $rowcount; $y++) {
+                    for ($x = 1; $x <= $colcount; $x++) {
                         $aList['data'][$y][$x] = $sheet->getCellByColumnAndRow($x, $y)->getValue();
                     }
                 }

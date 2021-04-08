@@ -15,25 +15,6 @@
     <f:be.pagePath />
     <f:if condition="{page}">
         <f:then>
-            <f:format.raw>
-                <script>
-                    var counter = document.getElementsByClassName('counter')[0];
-                    var OnChangeCheckbox = function(event) {
-                        var checkbox = event.target;
-                        var current = parseInt((counter.innerText || counter.textContent));
-                        if (checkbox.checked) {
-                            counter.innerHTML = (current + 1).toString();
-                        } else {
-                            counter.innerHTML = (current - 1).toString();
-                        }
-                    };
-                    document.getElementsByClassName('count').forEach(function(element) {
-                        if (element.addEventListener) {
-                            element.addEventListener ("CheckboxStateChange", OnChangeCheckbox, false);
-                        }
-                    });
-                </script>
-            </f:format.raw>
             <f:be.infobox title="{f:translate(key:'prepareinfo')}" state="-1">
                 <f:translate key="prepareinfo_text" />
             </f:be.infobox>
@@ -45,9 +26,21 @@
                     <legend>{f:translate(key: 'multiple')}</legend>
                     <f:for each="{fields}" as="field" key="fieldName">
                         <f:if condition="{field.config.type} == 'select' || {field.config.type} == 'group'">
-                            <f:render partial="MmField" arguments="{_all}"/>
+                            <f:render partial="TcaField" arguments="{_all}"/>
                         </f:if>
                     </f:for>
+                    <f:form.hidden name="passwordFields" value="{passwordFields}"/>
+                    <f:form.hidden name="passwordOverride" value="0" />
+                    <f:if condition="{hasPasswordField}">
+                        <label for="overridePassword">
+                            {f:translate(key: 'overridePassword')}
+                        </label>
+                        <f:form.checkbox
+                                id="overridePassword"
+                                name="passwordOverride"
+                                value="1"
+                        />
+                    </f:if>
                 </fieldset>
                 <fieldset>
                     <legend>

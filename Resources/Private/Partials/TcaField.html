@@ -1,0 +1,23 @@
+<html
+        xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
+        xmlns:xls="http://typo3.org/ns/SUDHAUS7/Xlsimport/ViewHelpers"
+        xmlns:v="http://typo3.org/ns/FluidTYPO3/Vhs/ViewHelpers"
+        xmlns="http://www.w3.org/1999/xhtml"
+        lang="en"
+        f:schemaLocation="https://fluidtypo3.org/schemas/fluid-master.xsd"
+        data-namespace-typo3-fluid="true"
+>
+<f:if condition="{field.config.type} == 'select' || {field.config.type} == 'group'">
+    <label for="{fieldName}">{field.label}</label>
+    <xls:backend.tcaNode name="{fieldName}" table="{table}" page="{page}" config="{field.config}">
+        {tcaField.html -> f:format.raw()}
+        <f:for each="{tcaField.requireJsModules}" as="requireJsModule">
+            <f:for each="{requireJsModule}" as="content" key="module">
+                <f:asset.script identifier="xlsimport-{field.label}" priority="true">
+                    require(['{module}'], {content});
+                </f:asset.script>
+            </f:for>
+        </f:for>
+    </xls:backend.tcaNode>
+</f:if>
+</html>

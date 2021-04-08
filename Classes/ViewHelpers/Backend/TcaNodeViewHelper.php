@@ -23,12 +23,15 @@ class TcaNodeViewHelper extends AbstractViewHelper
         $this->registerArgument('name', 'string', 'The form name field', true);
         $this->registerArgument('table', 'string', 'The table', true);
         $this->registerArgument('page', 'integer', 'The page UID', true);
+        $this->registerArgument('as', 'string', 'The value', false, 'tcaField');
     }
 
     public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
     {
         $nodeFactory = GeneralUtility::makeInstance(NodeFactory::class);
         $tcaConfig = $arguments['config'];
+
+        $templateVariableContainer = $renderingContext->getVariableProvider();
 
         if ($tcaConfig['foreign_table'] || ($tcaConfig['allowed'] && $tcaConfig['internal_type'] == 'db')) {
             $table = $tcaConfig['allowed'] ?? $tcaConfig['foreign_table'];
@@ -45,18 +48,18 @@ class TcaNodeViewHelper extends AbstractViewHelper
             $tcaConfig['items'] = array_merge_recursive($tcaConfig['items'] ?? [], $statement->execute()->fetchAllNumeric());
         }
         $data = [
-            'renderType' => $arguments['config']['renderType'] ?? '',
+            'renderType' => $arguments['config']['renderType'] ?? $arguments['config']['type'],
             'inlineStructure' => [],
             'parameterArray' => [
-                'itemFormElID' => sprintf('data_%s_%s_%s', $arguments['table'], $arguments['page'], $arguments['name']),
-                'itemFormElValue' => '',
+                'itemFormElID' => sprintf('tx_xlsimport_web_xlsimporttxxlsimport_%s', $arguments['name']),
+                'itemFormElValue' => [],
                 'fieldConf' => [
                     'config' => $tcaConfig
                 ],
-                'itemFormElName' => sprintf('data[%s][%s][%s]', $arguments['table'], $arguments['page'], $arguments['name']),
+                'itemFormElName' => sprintf('tx_xlsimport_web_xlsimporttxxlsimport[overrides][%s]', $arguments['name']),
                 'fieldChangeFunc' => [
                     'TBE_EDITOR_fieldChanged' => sprintf(
-                        'TBE_EDITOR.fieldChanged(\'%2$s\',%3$d,\'%1$s\', \'data[%2$s][%3$d][%1$s]\')',
+                        'TBE_EDITOR.fieldChanged(\'%2$s\',%3$d,\'%1$s\', \'tx_xlsimport_web_xlsimporttxxlsimport[overrides][%1$s]\')',
                         $arguments['name'],
                         $arguments['table'],
                         $arguments['page']
@@ -66,6 +69,12 @@ class TcaNodeViewHelper extends AbstractViewHelper
         ];
         $result = $nodeFactory->create($data)->render();
 
-        return $result['html'];
+        $templateVariableContainer->add($arguments['as'], $result);
+
+        $output = $renderChildrenClosure();
+
+        $templateVariableContainer->remove($arguments['as']);
+
+        return $output;
     }
 }
