@@ -213,7 +213,7 @@ class XlsimportController extends ActionController
         $imports = json_decode($this->request->getArgument('dataset'), true);
         $a = [];
         foreach ($imports as $import) {
-            $s = sprintf('%s=%s', $import['name'], $import['value']);
+            $s = sprintf('%s=%s', $import['name'], urlencode($import['value']));
             $temp = [];
             parse_str($s, $temp);
             foreach ($temp['tx_xlsimport_web_xlsimporttxxlsimport']['dataset'] as $k => $v) {
