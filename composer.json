@@ -16,7 +16,7 @@
   ],
   "require": {
     "typo3/cms-core": "~10.4.2",
-    "phpoffice/phpspreadsheet": "^1.10",
+    "phpoffice/phpspreadsheet": "1.17.*",
     "ext-json": "*",
     "php": ">=7.4"
   },
