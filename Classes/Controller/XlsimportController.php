@@ -15,6 +15,7 @@ use PhpOffice\PhpSpreadsheet\Exception;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Worksheet\RowCellIterator;
 use PhpOffice\PhpSpreadsheet\Worksheet\RowIterator;
+use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\View\BackendTemplateView;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
@@ -88,13 +89,35 @@ class XlsimportController extends ActionController
     {
         $page = GeneralUtility::_GET('id');
         $tempTables = GeneralUtility::trimExplode(',', $this->settings['allowedTables']);
+
+
+
         $allowedTables = [];
         foreach ($tempTables as $tempTable) {
             if (array_key_exists($tempTable, $GLOBALS['TCA'])) {
                 $label = $GLOBALS['TCA'][$tempTable]['ctrl']['title'];
-                $allowedTables[$tempTable] = $this->getLang()->sL($label) ? $this->getLang()->sL($label) : $label;
+                if (!isset($allowedTables[$tempTable])) {
+	                $allowedTables[ $tempTable ] = $this->getLang()->sL( $label ) ? $this->getLang()
+	                                                                                     ->sL( $label ) : $label;
+                }
             }
         }
+
+        $pageTS = BackendUtility::getPagesTSconfig( $page);
+        if (isset($pageTS['module.']['tx_xlsimport.']['settings.']['allowedTables'])) {
+	        $tempTables = GeneralUtility::trimExplode(',', $this->settings['allowedTables']);
+	        foreach ($tempTables as $tempTable) {
+		        if (array_key_exists($tempTable, $GLOBALS['TCA'])) {
+			        $label = $GLOBALS['TCA'][$tempTable]['ctrl']['title'];
+			        if (!isset($allowedTables[$tempTable])) {
+				        $allowedTables[ $tempTable ] = $this->getLang()->sL( $label ) ? $this->getLang()
+				                                                                             ->sL( $label ) : $label;
+			        }
+		        }
+	        }
+        }
+
+
         $assignedValues = [
             'page' => $page,
             'allowedTables' => $allowedTables

@@ -1,7 +1,7 @@
 {
   "name": "sudhaus7/xlsimport",
   "description": "(Sudhaus7) XLS Importer",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "type": "typo3-cms-extension",
   "license": "MIT",
   "authors": [
@@ -22,12 +22,12 @@
     "friendsoftypo3/tt-address": "^5.3"
   },
   "require-dev": {
-    "typo3/cms-fluid-styled-content": "~10.4.2",
-    "typo3/cms-tstemplate": "~10.4.2",
-    "typo3/cms-backend": "~10.4.2",
-    "phpstan/phpstan": "^0.11",
-    "codeception/codeception": "^3.1",
-    "codeception/phpbuiltinserver": "^1.5",
+    "typo3/cms-fluid-styled-content": "10.4.*",
+    "typo3/cms-tstemplate": "10.4.*",
+    "typo3/cms-backend": "10.4.*",
+    "phpstan/phpstan": "*",
+    "codeception/codeception": "*",
+    "codeception/phpbuiltinserver": "*",
     "helhum/typo3-console": "^6.3"
   },
   "extra": {
