@@ -57,12 +57,12 @@ class XlsimportController extends ActionController
     ];
 
     /**
-     * @var \TYPO3\CMS\Core\Resource\ResourceFactory
+     * @var ResourceFactory
      */
     protected $resourceFactory;
 
     /**
-     * @param \TYPO3\CMS\Core\Resource\ResourceFactory $resourceFactory
+     * @param ResourceFactory $resourceFactory
      */
     public function injectResourceFactory(ResourceFactory $resourceFactory)
     {
@@ -204,7 +204,10 @@ class XlsimportController extends ActionController
         /** @var array $fields */
         $fields = $this->request->getArgument('fields');
         /** @var array $overrides */
-        $overrides = $this->request->getArgument('overrides');
+	    $overrides = [];
+	    if($this->request->hasArgument( 'overrides')) {
+		    $overrides = $this->request->getArgument( 'overrides' );
+	    }
 
         $passwordOverride = (bool)$this->request->getArgument('passwordOverride');
         $passwordFields = GeneralUtility::trimExplode(',', $this->request->getArgument('passwordFields'));
@@ -309,7 +312,7 @@ class XlsimportController extends ActionController
     }
 
     /**
-     * @param \TYPO3\CMS\Core\Resource\File $file
+     * @param File $file
      *
      * @return array
      * @throws Exception

@@ -24,11 +24,13 @@
             <f:form pageUid="{page}" id="importData" action="import" name="importData">
                 <fieldset>
                     <legend>{f:translate(key: 'multiple')}</legend>
+                    <f:comment>
                     <f:for each="{fields}" as="field" key="fieldName">
                         <f:if condition="{field.config.type} == 'select' || {field.config.type} == 'group'">
                             <f:render partial="TcaField" arguments="{_all}"/>
                         </f:if>
                     </f:for>
+                    </f:comment>
                     <f:form.hidden name="passwordFields" value="{passwordFields}"/>
                     <f:form.hidden name="passwordOverride" value="0" />
                     <f:if condition="{hasPasswordField}">
@@ -59,7 +61,9 @@
                                         <td>
                                             <select name="tx_xlsimport_web_xlsimporttxxlsimport[fields][field-{it.index}]">
                                                 <option value=""><f:translate key="ignore" /></option>
+                                                <f:comment>
                                                 <option value="mm"><f:translate key="relation"/></option>
+                                                </f:comment>
                                                 <f:for each="{fields}" key="type" as="field">
                                                     <option value="{type}">
                                                         {field.label}

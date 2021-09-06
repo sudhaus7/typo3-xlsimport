@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SUDHAUS7\Xlsimport\ViewHelpers\Backend;
 
+use Closure;
 use TYPO3\CMS\Backend\Form\NodeFactory;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -26,7 +27,7 @@ class TcaNodeViewHelper extends AbstractViewHelper
         $this->registerArgument('as', 'string', 'The value', false, 'tcaField');
     }
 
-    public static function renderStatic(array $arguments, \Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
+    public static function renderStatic(array $arguments, Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
     {
         $nodeFactory = GeneralUtility::makeInstance(NodeFactory::class);
         $tcaConfig = $arguments['config'];
@@ -42,8 +43,14 @@ class TcaNodeViewHelper extends AbstractViewHelper
                     'uid',
                 ])
                 ->from($table);
-            if ($tcaConfig['foreign_table_where']) {
-                $statement->andWhere(str_replace('AND', '', $tcaConfig['foreign_table_where']));
+            if ($tcaConfig['foreign_table_where'] && stripos($tcaConfig['foreign_table_where'],'order by')===false) {
+	            $tcaConfig['foreign_table_where'] = str_replace('###CURRENT_PID###', 0,$tcaConfig['foreign_table_where']);
+
+	            if (substr(trim($tcaConfig['foreign_table_where']),0,3)==='AND') {
+		            $tcaConfig['foreign_table_where'] = ' 1=1 '.$tcaConfig['foreign_table_where'];
+	            }
+
+                $statement->andWhere($tcaConfig['foreign_table_where']);
             }
             $tcaConfig['items'] = array_merge_recursive($tcaConfig['items'] ?? [], $statement->execute()->fetchAllNumeric());
         }

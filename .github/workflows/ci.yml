@@ -18,7 +18,7 @@ jobs:
       - name: Install Dependencies - move old composer.json
         run: |
           mv composer.json composer.json-orig
-          composer require phpoffice/phpspreadsheet ^1.10 --ignore-platform-reqs --no-progress
+          composer require phpoffice/phpspreadsheet 1.17.1 --ignore-platform-reqs --no-progress
           mv composer.json-orig composer.json
           rm composer.lock
       - name: Publish to TER

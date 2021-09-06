@@ -18,7 +18,8 @@
     "typo3/cms-core": "~10.4.2",
     "phpoffice/phpspreadsheet": "1.17.*",
     "ext-json": "*",
-    "php": ">=7.4"
+    "php": ">=7.4",
+    "friendsoftypo3/tt-address": "^5.3"
   },
   "require-dev": {
     "typo3/cms-fluid-styled-content": "~10.4.2",
@@ -27,8 +28,7 @@
     "phpstan/phpstan": "^0.11",
     "codeception/codeception": "^3.1",
     "codeception/phpbuiltinserver": "^1.5",
-    "helhum/typo3-console": "^6.3",
-    "friendsoftypo3/tt-address": "^5"
+    "helhum/typo3-console": "^6.3"
   },
   "extra": {
     "typo3/cms": {
