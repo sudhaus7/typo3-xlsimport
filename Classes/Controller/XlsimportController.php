@@ -105,7 +105,7 @@ class XlsimportController extends ActionController
 
         $pageTS = BackendUtility::getPagesTSconfig( $page);
         if (isset($pageTS['module.']['tx_xlsimport.']['settings.']['allowedTables'])) {
-	        $tempTables = GeneralUtility::trimExplode(',', $this->settings['allowedTables']);
+	        $tempTables = GeneralUtility::trimExplode(',', $pageTS['module.']['tx_xlsimport.']['settings.']['allowedTables']);
 	        foreach ($tempTables as $tempTable) {
 		        if (array_key_exists($tempTable, $GLOBALS['TCA'])) {
 			        $label = $GLOBALS['TCA'][$tempTable]['ctrl']['title'];
