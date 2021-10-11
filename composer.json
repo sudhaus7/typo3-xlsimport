@@ -27,7 +27,8 @@
     "phpstan/phpstan": "*",
     "codeception/codeception": "*",
     "codeception/phpbuiltinserver": "*",
-    "helhum/typo3-console": "^6.3"
+    "helhum/typo3-console": "^6.3",
+    "friendsoftypo3/tt-address": "^5.3"
   },
   "suggest": {
     "friendsoftypo3/tt-address": "*"
