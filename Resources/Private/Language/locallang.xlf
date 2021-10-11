@@ -68,6 +68,14 @@
             <trans-unit id="overridePassword">
             	<source>Override password with random values?</source>
             </trans-unit>
+
+            <trans-unit id="uid">
+            	<source>Unique ID [uid]</source>
+            </trans-unit>
+
+            <trans-unit id="pid">
+            	<source>Page ID [pid]</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>

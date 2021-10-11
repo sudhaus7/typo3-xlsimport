@@ -52,7 +52,7 @@ class XlsimportController extends ActionController
      * @var string[]
      */
     protected $disallowedFields = [
-        'pid', 't3ver_oid', 'tstamp', 'crdate', 'cruser_id', 'hidden', 'deleted',
+         't3ver_oid', 'tstamp', 'crdate', 'cruser_id', 'hidden', 'deleted',
         't3ver_id', 't3ver_wsid', 't3ver_label', 't3ver_state', 't3ver_stage', 't3ver_count',
         't3ver_tstamp', 't3ver_move_id', 't3_origuid', 'l10n_diffsource', 'l10n_source'
     ];
@@ -186,6 +186,12 @@ class XlsimportController extends ActionController
                 if (empty($label)) {
                     $label = '[' . $field . ']';
                 }
+	            if ($field === 'uid') {
+		            $label = $this->languageService->sL('LLL:EXT:xlsimport/Resources/Private/Language/locallang.xlf:uid');
+	            }
+	            if ($field === 'pid') {
+		            $label = $this->languageService->sL('LLL:EXT:xlsimport/Resources/Private/Language/locallang.xlf:pid');
+	            }
                 $column['label'] = $label;
 
                 if (isset($column['config']['eval']) && in_array('password', GeneralUtility::trimExplode(',', $column['config']['eval']))) {
@@ -291,7 +297,7 @@ class XlsimportController extends ActionController
                     } else {
                         $insertArray[$field] = $import[$key];
                     }
-                    if (!$update) {
+                    if (!isset($insertArray['pid'])) {
                         $insertArray['pid'] = $page;
                     }
                 }
