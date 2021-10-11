@@ -79,7 +79,7 @@
             </trans-unit>
             <trans-unit id="info_complete">
                 <source>Total datasets to import</source>
-                <target>Anzahl gesamte Datensätze zm importieren</target>
+                <target>Anzahl gesamte Datensätze zum importieren</target>
             </trans-unit>
             <trans-unit id="deleteRecord">
                 <source>Delete all records according to this table on current page?</source>
