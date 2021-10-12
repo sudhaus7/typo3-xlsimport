@@ -170,6 +170,15 @@ class XlsimportController extends ActionController
             ]
         ];
         $tca = array_merge($uidConfig, $GLOBALS['TCA'][$table]['columns']);
+	    
+        if(!array_key_exists('pid',$GLOBALS['TCA'][$table]['columns'])) {
+            $pidConfig = [
+                'pid' => [
+                    'label' => 'pid'
+                ]
+            ];
+            $tca = array_merge($uidConfig, $pidConfig, $GLOBALS['TCA'][$table]['columns']);
+        }
 
         $hasPasswordField = false;
         $passwordFields = [];
