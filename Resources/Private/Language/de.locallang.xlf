@@ -89,6 +89,16 @@
                 <source>Override password with random values?</source>
                 <target>Passwort mit Zufallswerten befüllen?</target>
             </trans-unit>
+
+            <trans-unit id="uid">
+            	<source>Unique ID [uid]</source>
+            	<target>Unique ID [uid]</target>
+            </trans-unit>
+
+            <trans-unit id="pid">
+            	<source>Page ID [pid]</source>
+            	<target>Seiten ID [pid]</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
