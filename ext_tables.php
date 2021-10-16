@@ -4,12 +4,12 @@ if (!defined('TYPO3_MODE')) {
 }
 (function () {
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
-        'SUDHAUS7.Xlsimport',
+        'Xlsimport',
         'web',
         'tx_Xlsimport',
         'bottom',
         [
-            'Xlsimport' => 'index,upload,import',
+            \SUDHAUS7\Xlsimport\Controller\XlsimportController::class => 'index,upload,import',
         ],
         [
             'access' => 'user,group',
