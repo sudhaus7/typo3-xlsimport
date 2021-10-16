@@ -1,81 +1,81 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <xliff version="1.0">
-    <file source-language="en" datatype="plaintext" original="messages" date="2018-02-09T09:28:12Z">
-        <header>
-            <generator>LFEditor</generator>
-        </header>
-        <body>
-            <trans-unit id="module_name">
-                <source>XLS Importer</source>
-            </trans-unit>
-            <trans-unit id="choosepage">
-                <source>Choose page</source>
-            </trans-unit>
-            <trans-unit id="choosepage_info">
-                <source>Before continuing, you have to choose a page on the left.</source>
-            </trans-unit>
-            <trans-unit id="importinfo">
-                <source>Import Excel</source>
-            </trans-unit>
-            <trans-unit id="importinfo_format">
-                <source>You can import from following formats:</source>
-            </trans-unit>
-            <trans-unit id="tableselect">
-                <source>Select a table importing to</source>
-            </trans-unit>
-            <trans-unit id="fileselect">
-                <source>Select a file</source>
-            </trans-unit>
-            <trans-unit id="upload">
-                <source>Upload</source>
-            </trans-unit>
-            <trans-unit id="prepare">
-                <source>Prepare data</source>
-            </trans-unit>
-            <trans-unit id="prepareinfo">
-                <source>Prepare Excel</source>
-            </trans-unit>
-            <trans-unit id="prepareinfo_text">
-                <source>Select the structure for the table</source>
-            </trans-unit>
-            <trans-unit id="importinfo_text">
-                <source>Select the records to import</source>
-            </trans-unit>
-            <trans-unit id="record">
-                <source>Import record</source>
-            </trans-unit>
-            <trans-unit id="ignore">
-                <source>ignore</source>
-            </trans-unit>
-            <trans-unit id="multiple">
-            	<source>Select default values for multiple fields</source>
-            </trans-unit>
-            <trans-unit id="import">
-                <source>Import</source>
-            </trans-unit>
-            <trans-unit id="success">
-                <source>Data imported successfully</source>
-            </trans-unit>
-            <trans-unit id="complete">
-                <source>Completed</source>
-            </trans-unit>
-            <trans-unit id="info_complete">
-                <source>Total datasets to import</source>
-            </trans-unit>
-            <trans-unit id="deleteRecord">
-                <source>Delete all records according to this table on current page?</source>
-            </trans-unit>
-            <trans-unit id="overridePassword">
-            	<source>Override password with random values?</source>
-            </trans-unit>
+	<file source-language="en" datatype="plaintext" original="messages" date="2018-02-09T09:28:12Z">
+		<header>
+			<generator>LFEditor</generator>
+		</header>
+		<body>
+			<trans-unit id="module_name">
+				<source>XLS Importer</source>
+			</trans-unit>
+			<trans-unit id="choosepage">
+				<source>Choose page</source>
+			</trans-unit>
+			<trans-unit id="choosepage_info">
+				<source>Before continuing, you have to choose a page on the left.</source>
+			</trans-unit>
+			<trans-unit id="importinfo">
+				<source>Import Excel</source>
+			</trans-unit>
+			<trans-unit id="importinfo_format">
+				<source>You can import from following formats:</source>
+			</trans-unit>
+			<trans-unit id="tableselect">
+				<source>Select a table importing to</source>
+			</trans-unit>
+			<trans-unit id="fileselect">
+				<source>Select a file</source>
+			</trans-unit>
+			<trans-unit id="upload">
+				<source>Upload</source>
+			</trans-unit>
+			<trans-unit id="prepare">
+				<source>Prepare data</source>
+			</trans-unit>
+			<trans-unit id="prepareinfo">
+				<source>Prepare Excel</source>
+			</trans-unit>
+			<trans-unit id="prepareinfo_text">
+				<source>Select the structure for the table</source>
+			</trans-unit>
+			<trans-unit id="importinfo_text">
+				<source>Select the records to import</source>
+			</trans-unit>
+			<trans-unit id="record">
+				<source>Import record</source>
+			</trans-unit>
+			<trans-unit id="ignore">
+				<source>ignore</source>
+			</trans-unit>
+			<trans-unit id="multiple">
+				<source>Select default values for multiple fields</source>
+			</trans-unit>
+			<trans-unit id="import">
+				<source>Import</source>
+			</trans-unit>
+			<trans-unit id="success">
+				<source>Data imported successfully</source>
+			</trans-unit>
+			<trans-unit id="complete">
+				<source>Completed</source>
+			</trans-unit>
+			<trans-unit id="info_complete">
+				<source>Total datasets to import</source>
+			</trans-unit>
+			<trans-unit id="deleteRecord">
+				<source>Delete all records according to this table on current page?</source>
+			</trans-unit>
+			<trans-unit id="overridePassword">
+				<source>Override password with random values?</source>
+			</trans-unit>
 
-            <trans-unit id="uid">
-            	<source>Unique ID [uid]</source>
-            </trans-unit>
+			<trans-unit id="uid">
+				<source>Unique ID [uid]</source>
+			</trans-unit>
 
-            <trans-unit id="pid">
-            	<source>Page ID [pid]</source>
-            </trans-unit>
-        </body>
-    </file>
+			<trans-unit id="pid">
+				<source>Page ID [pid]</source>
+			</trans-unit>
+		</body>
+	</file>
 </xliff>

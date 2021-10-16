@@ -6,7 +6,6 @@ namespace SUDHAUS7\Xlsimport\ViewHelpers\Backend;
 
 use Closure;
 use TYPO3\CMS\Backend\Form\NodeFactory;
-use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
@@ -18,7 +17,7 @@ class TcaNodeViewHelper extends AbstractViewHelper
 
     protected $escapeChildren = false;
 
-    public function initializeArguments()
+    public function initializeArguments(): void
     {
         $this->registerArgument('config', 'array', 'The TCA configuration', true);
         $this->registerArgument('name', 'string', 'The form name field', true);
@@ -34,7 +33,7 @@ class TcaNodeViewHelper extends AbstractViewHelper
 
         $templateVariableContainer = $renderingContext->getVariableProvider();
 
-        if ($tcaConfig['foreign_table'] || ($tcaConfig['allowed'] && $tcaConfig['internal_type'] == 'db')) {
+        if ($tcaConfig['foreign_table'] || ($tcaConfig['allowed'] && $tcaConfig['internal_type'] === 'db')) {
             $table = $tcaConfig['allowed'] ?? $tcaConfig['foreign_table'];
             $db = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($table);
             $statement = $db
@@ -43,12 +42,12 @@ class TcaNodeViewHelper extends AbstractViewHelper
                     'uid',
                 ])
                 ->from($table);
-            if ($tcaConfig['foreign_table_where'] && stripos($tcaConfig['foreign_table_where'],'order by')===false) {
-	            $tcaConfig['foreign_table_where'] = str_replace('###CURRENT_PID###', 0,$tcaConfig['foreign_table_where']);
+            if ($tcaConfig['foreign_table_where'] && stripos($tcaConfig['foreign_table_where'], 'order by') === false) {
+                $tcaConfig['foreign_table_where'] = str_replace('###CURRENT_PID###', '0', $tcaConfig['foreign_table_where']);
 
-	            if (substr(trim($tcaConfig['foreign_table_where']),0,3)==='AND') {
-		            $tcaConfig['foreign_table_where'] = ' 1=1 '.$tcaConfig['foreign_table_where'];
-	            }
+                if (strpos(trim($tcaConfig['foreign_table_where']), 'AND') === 0) {
+                    $tcaConfig['foreign_table_where'] = ' 1=1 ' . $tcaConfig['foreign_table_where'];
+                }
 
                 $statement->andWhere($tcaConfig['foreign_table_where']);
             }

@@ -1,8 +1,8 @@
 <?php
-if (!defined ('TYPO3_MODE')) {
-	die ('Access denied.');
+if (!defined('TYPO3_MODE')) {
+    die ('Access denied.');
 }
-(function() {
+(function () {
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
         'SUDHAUS7.Xlsimport',
         'web',

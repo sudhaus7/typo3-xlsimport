@@ -1,5 +1,5 @@
 module.tx_xlsimport {
-	settings {
-		allowedTables = tt_address
-	}
+  settings {
+    allowedTables = tt_address
+  }
 }
