@@ -62,6 +62,9 @@
 			<trans-unit id="info_complete">
 				<source>Total datasets to import</source>
 			</trans-unit>
+			<trans-unit id="encoding">
+				<source>Only for CSV files: file is CP1252 encoded (e.g. Excel export)</source>
+			</trans-unit>
 			<trans-unit id="deleteRecord">
 				<source>Delete all records according to this table on current page?</source>
 			</trans-unit>

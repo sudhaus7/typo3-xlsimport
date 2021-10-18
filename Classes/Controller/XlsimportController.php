@@ -7,6 +7,7 @@ namespace SUDHAUS7\Xlsimport\Controller;
 use InvalidArgumentException;
 use PhpOffice\PhpSpreadsheet\Exception;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Reader\Csv;
 use PhpOffice\PhpSpreadsheet\Worksheet\RowCellIterator;
 use PhpOffice\PhpSpreadsheet\Worksheet\RowIterator;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -360,7 +361,20 @@ class XlsimportController extends ActionController
         $fileName = $file->getForLocalProcessing();
         if (is_file($fileName)) {
 
-            $oReader = IOFactory::createReaderForFile($fileName);
+            $inputFileType = IOFactory::identify($fileName);
+
+            if ($inputFileType === 'Csv') {
+                $oReader = new Csv();
+                $encoding = (bool)$this->request->getArgument('encoding');
+
+                if ($encoding === true) {
+                    $oReader->setInputEncoding('CP1252');
+                }
+            }
+            else {
+                $oReader = IOFactory::createReaderForFile($fileName);
+            }
+
             if (is_object($oReader) && $oReader->canRead($fileName)) {
                 //$oReader->getReadDataOnly();
                 $xls = $oReader->load($fileName);
