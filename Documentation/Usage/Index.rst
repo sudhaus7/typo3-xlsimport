@@ -25,7 +25,12 @@ Beginning from here you have to select a page inside the pagetree you want to im
    The view for selecting table and file for importing data.
 
 Inside this view you can select your table you want to import to. As actual supported files you can use all listed
-above file types. The checkbox allows you to delete all records in the selected table on the selected page.
+above file types.
+
+The first checkbox allows you to select if the uploaded file is CP1252 encoded. This is especially useful if you encounter problems
+with empty fields after the import due to UTF-8 problems.
+
+The second checkbox allows you to delete all records in the selected table on the selected page.
 
 For getting data updated instead of added, you have to define a row with the uid of the corresponding TYPO3 record inside
 your Excel sheet. If you set one column to uid, the system tries to update the existing dataset.

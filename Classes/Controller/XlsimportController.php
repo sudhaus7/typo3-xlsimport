@@ -1,18 +1,13 @@
 <?php
 
 declare(strict_types=1);
-/**
- * Created by PhpStorm.
- * User: markus
- * Date: 06.02.18
- * Time: 11:28
- */
 
 namespace SUDHAUS7\Xlsimport\Controller;
 
 use InvalidArgumentException;
 use PhpOffice\PhpSpreadsheet\Exception;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Reader\Csv;
 use PhpOffice\PhpSpreadsheet\Worksheet\RowCellIterator;
 use PhpOffice\PhpSpreadsheet\Worksheet\RowIterator;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
@@ -52,9 +47,23 @@ class XlsimportController extends ActionController
      * @var string[]
      */
     protected $disallowedFields = [
-         't3ver_oid', 'tstamp', 'crdate', 'cruser_id', 'hidden', 'deleted',
-        't3ver_id', 't3ver_wsid', 't3ver_label', 't3ver_state', 't3ver_stage', 't3ver_count',
-        't3ver_tstamp', 't3ver_move_id', 't3_origuid', 'l10n_diffsource', 'l10n_source'
+        't3ver_oid',
+        'tstamp',
+        'crdate',
+        'cruser_id',
+        'hidden',
+        'deleted',
+        't3ver_id',
+        't3ver_wsid',
+        't3ver_label',
+        't3ver_state',
+        't3ver_stage',
+        't3ver_count',
+        't3ver_tstamp',
+        't3ver_move_id',
+        't3_origuid',
+        'l10n_diffsource',
+        'l10n_source'
     ];
 
     /**
@@ -65,7 +74,7 @@ class XlsimportController extends ActionController
     /**
      * @param ResourceFactory $resourceFactory
      */
-    public function injectResourceFactory(ResourceFactory $resourceFactory)
+    public function injectResourceFactory(ResourceFactory $resourceFactory): void
     {
         $this->resourceFactory = $resourceFactory;
     }
@@ -74,7 +83,7 @@ class XlsimportController extends ActionController
      * XlsimportController constructor.
      * @throws \TYPO3\CMS\Extbase\Object\Exception
      */
-    public function initializeObject()
+    public function initializeObject(): void
     {
         $pageRenderer = $this->getPageRenderer();
         $pageRenderer->loadRequireJsModule('TYPO3/CMS/Xlsimport/Importer');
@@ -85,11 +94,10 @@ class XlsimportController extends ActionController
         $this->languageService = $this->objectManager->get(LanguageService::class);
     }
 
-    public function indexAction()
+    public function indexAction(): void
     {
         $page = GeneralUtility::_GET('id');
         $tempTables = GeneralUtility::trimExplode(',', $this->settings['allowedTables']);
-
 
 
         $allowedTables = [];
@@ -97,24 +105,22 @@ class XlsimportController extends ActionController
             if (array_key_exists($tempTable, $GLOBALS['TCA'])) {
                 $label = $GLOBALS['TCA'][$tempTable]['ctrl']['title'];
                 if (!isset($allowedTables[$tempTable])) {
-	                $allowedTables[ $tempTable ] = $this->getLang()->sL( $label ) ? $this->getLang()
-	                                                                                     ->sL( $label ) : $label;
+                    $allowedTables[$tempTable] = $this->getLang()->sL($label) ?: $label;
                 }
             }
         }
 
-        $pageTS = BackendUtility::getPagesTSconfig( $page);
+        $pageTS = BackendUtility::getPagesTSconfig($page);
         if (isset($pageTS['module.']['tx_xlsimport.']['settings.']['allowedTables'])) {
-	        $tempTables = GeneralUtility::trimExplode(',', $pageTS['module.']['tx_xlsimport.']['settings.']['allowedTables']);
-	        foreach ($tempTables as $tempTable) {
-		        if (array_key_exists($tempTable, $GLOBALS['TCA'])) {
-			        $label = $GLOBALS['TCA'][$tempTable]['ctrl']['title'];
-			        if (!isset($allowedTables[$tempTable])) {
-				        $allowedTables[ $tempTable ] = $this->getLang()->sL( $label ) ? $this->getLang()
-				                                                                             ->sL( $label ) : $label;
-			        }
-		        }
-	        }
+            $tempTables = GeneralUtility::trimExplode(',', $pageTS['module.']['tx_xlsimport.']['settings.']['allowedTables']);
+            foreach ($tempTables as $tempTable) {
+                if (array_key_exists($tempTable, $GLOBALS['TCA'])) {
+                    $label = $GLOBALS['TCA'][$tempTable]['ctrl']['title'];
+                    if (!isset($allowedTables[$tempTable])) {
+                        $allowedTables[$tempTable] = $this->getLang()->sL($label) ?: $label;
+                    }
+                }
+            }
         }
 
 
@@ -130,7 +136,7 @@ class XlsimportController extends ActionController
      * @throws NoSuchArgumentException
      * @throws StopActionException
      */
-    public function uploadAction()
+    public function uploadAction(): void
     {
         $page = GeneralUtility::_GET('id');
         if (!$page) {
@@ -161,7 +167,7 @@ class XlsimportController extends ActionController
         }
 
         $folder = $this->resourceFactory->getFolderObjectFromCombinedIdentifier($this->settings['uploadFolder']);
-        $newFile = $folder->addFile($file['tmp_name'], $file['name'], $this->settings['duplicationBehavior'] ?? DuplicationBehavior::RENAME);
+        $newFile = $folder->addFile($file['tmp_name'], $file['name'],$this->settings['duplicationBehavior'] ?? DuplicationBehavior::RENAME);
 
         $list = $this->getList($newFile);
         $uidConfig = [
@@ -186,12 +192,12 @@ class XlsimportController extends ActionController
                 if (empty($label)) {
                     $label = '[' . $field . ']';
                 }
-	            if ($field === 'uid') {
-		            $label = $this->languageService->sL('LLL:EXT:xlsimport/Resources/Private/Language/locallang.xlf:uid');
-	            }
-	            if ($field === 'pid') {
-		            $label = $this->languageService->sL('LLL:EXT:xlsimport/Resources/Private/Language/locallang.xlf:pid');
-	            }
+                if ($field === 'uid') {
+                    $label = $this->languageService->sL('LLL:EXT:xlsimport/Resources/Private/Language/locallang.xlf:uid');
+                }
+                if ($field === 'pid') {
+                    $label = $this->languageService->sL('LLL:EXT:xlsimport/Resources/Private/Language/locallang.xlf:pid');
+                }
                 $column['label'] = $label;
 
                 if (isset($column['config']['eval']) && in_array('password', GeneralUtility::trimExplode(',', $column['config']['eval']))) {
@@ -222,7 +228,7 @@ class XlsimportController extends ActionController
      * @throws StopActionException
      * @throws \TYPO3\CMS\Core\Exception
      */
-    public function importAction()
+    public function importAction(): void
     {
         $page = GeneralUtility::_GET('id');
         $table = $this->request->getArgument('table');
@@ -233,10 +239,10 @@ class XlsimportController extends ActionController
         /** @var array $fields */
         $fields = $this->request->getArgument('fields');
         /** @var array $overrides */
-	    $overrides = [];
-	    if($this->request->hasArgument( 'overrides')) {
-		    $overrides = $this->request->getArgument( 'overrides' );
-	    }
+        $overrides = [];
+        if ($this->request->hasArgument('overrides')) {
+            $overrides = $this->request->getArgument('overrides');
+        }
 
         $passwordOverride = (bool)$this->request->getArgument('passwordOverride');
         $passwordFields = GeneralUtility::trimExplode(',', $this->request->getArgument('passwordFields'));
@@ -355,7 +361,20 @@ class XlsimportController extends ActionController
         $fileName = $file->getForLocalProcessing();
         if (is_file($fileName)) {
 
-            $oReader = IOFactory::createReaderForFile($fileName);
+            $inputFileType = IOFactory::identify($fileName);
+
+            if ($inputFileType === 'Csv') {
+                $oReader = new Csv();
+                $encoding = (bool)$this->request->getArgument('encoding');
+
+                if ($encoding === true) {
+                    $oReader->setInputEncoding('CP1252');
+                }
+            }
+            else {
+                $oReader = IOFactory::createReaderForFile($fileName);
+            }
+
             if (is_object($oReader) && $oReader->canRead($fileName)) {
                 //$oReader->getReadDataOnly();
                 $xls = $oReader->load($fileName);
@@ -389,10 +408,7 @@ class XlsimportController extends ActionController
                     }
                 }
 
-                unset($rowI);
-                unset($sheet);
-                unset($xls);
-                unset($oReader);
+                unset($rowI, $sheet, $xls, $oReader);
             }
         }
         return ($aList);
@@ -401,7 +417,7 @@ class XlsimportController extends ActionController
     /**
      * @return LanguageService
      */
-    protected function getLang()
+    protected function getLang(): LanguageService
     {
         return $GLOBALS['LANG'];
     }
