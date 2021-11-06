@@ -79,6 +79,10 @@
 			<trans-unit id="pid">
 				<source>Page ID [pid]</source>
 			</trans-unit>
+
+			<trans-unit id="allowedTables">
+				<source>Allowed tables</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

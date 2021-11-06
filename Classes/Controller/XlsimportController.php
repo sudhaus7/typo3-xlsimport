@@ -10,8 +10,12 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Reader\Csv;
 use PhpOffice\PhpSpreadsheet\Worksheet\RowCellIterator;
 use PhpOffice\PhpSpreadsheet\Worksheet\RowIterator;
+use SUDHAUS7\Xlsimport\Service\DisallowedTablesService;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\View\BackendTemplateView;
+use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
+use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Localization\LanguageService;
@@ -88,41 +92,63 @@ class XlsimportController extends ActionController
         $pageRenderer = $this->getPageRenderer();
         $pageRenderer->loadRequireJsModule('TYPO3/CMS/Xlsimport/Importer');
 
-        if (!is_object($this->objectManager)) {
-            $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        }
-        $this->languageService = $this->objectManager->get(LanguageService::class);
+        $this->languageService = GeneralUtility::makeInstance(LanguageService::class);
     }
 
+    /**
+     * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws ExtensionConfigurationExtensionNotConfiguredException
+     */
     public function indexAction(): void
     {
-        $page = GeneralUtility::_GET('id');
+        $page = (int)GeneralUtility::_GET('id');
+        /**
+         * @deprecated, don't use TypoScript module setup anymore
+         * Use PageTSConfig or Extension setup instead
+         * will be removed in future version
+         */
         $tempTables = GeneralUtility::trimExplode(',', $this->settings['allowedTables']);
 
-
+        $pageTS = BackendUtility::getPagesTSconfig($page);
+        if (isset($pageTS['module.']['tx_xlsimport.']['settings.']['allowedTables'])) {
+            $tempTables = array_merge(
+                $tempTables,
+                GeneralUtility::trimExplode(
+                    ',',
+                    $pageTS['module.']['tx_xlsimport.']['settings.']['allowedTables']
+                )
+            );
+        }
+        if ($extConfTempTables
+            = GeneralUtility::makeInstance(ExtensionConfiguration::class)
+            ->get('xlsimport', 'tables')) {
+            $tempTables = array_merge(
+                $tempTables,
+                GeneralUtility::trimExplode(',', $extConfTempTables)
+            );
+        }
+        $tempTables = array_unique($tempTables);
         $allowedTables = [];
         foreach ($tempTables as $tempTable) {
+            if (in_array($tempTable, DisallowedTablesService::$disallowedTcaTables)) {
+                continue;
+            }
             if (array_key_exists($tempTable, $GLOBALS['TCA'])) {
                 $label = $GLOBALS['TCA'][$tempTable]['ctrl']['title'];
-                if (!isset($allowedTables[$tempTable])) {
+                if ($page === 0) {
+                    if ($GLOBALS['TCA'][$tempTable]['ctrl']['rootLevel'] === 1
+                        || $GLOBALS['TCA'][$tempTable]['ctrl']['rootLevel'] === -1) {
+                        $allowedTables[$tempTable] = $this->getLang()->sL($label) ?: $label;
+                    }
+                } else if (
+                    $GLOBALS['TCA'][$tempTable]['ctrl']['rootLevel'] === 0
+                    || $GLOBALS['TCA'][$tempTable]['ctrl']['rootLevel'] === -1
+                    || !isset($GLOBALS['TCA'][$tempTable]['ctrl']['rootLevel'])
+                ) {
                     $allowedTables[$tempTable] = $this->getLang()->sL($label) ?: $label;
                 }
             }
         }
-
-        $pageTS = BackendUtility::getPagesTSconfig($page);
-        if (isset($pageTS['module.']['tx_xlsimport.']['settings.']['allowedTables'])) {
-            $tempTables = GeneralUtility::trimExplode(',', $pageTS['module.']['tx_xlsimport.']['settings.']['allowedTables']);
-            foreach ($tempTables as $tempTable) {
-                if (array_key_exists($tempTable, $GLOBALS['TCA'])) {
-                    $label = $GLOBALS['TCA'][$tempTable]['ctrl']['title'];
-                    if (!isset($allowedTables[$tempTable])) {
-                        $allowedTables[$tempTable] = $this->getLang()->sL($label) ?: $label;
-                    }
-                }
-            }
-        }
-
 
         $assignedValues = [
             'page' => $page,
@@ -134,15 +160,11 @@ class XlsimportController extends ActionController
     /**
      * @throws Exception
      * @throws NoSuchArgumentException
-     * @throws StopActionException
      */
     public function uploadAction(): void
     {
         $page = GeneralUtility::_GET('id');
-        if (!$page) {
-            $this->redirect('index');
-            exit;
-        }
+
         $deleteOldRecords = (bool)$this->request->getArgument('deleteRecords');
         $file = $this->request->getArgument('file');
         $table = $this->request->getArgument('table');
@@ -176,7 +198,7 @@ class XlsimportController extends ActionController
             ]
         ];
         $tca = array_merge($uidConfig, $GLOBALS['TCA'][$table]['columns']);
-	    
+
         if(!array_key_exists('pid',$GLOBALS['TCA'][$table]['columns'])) {
             $pidConfig = [
                 'pid' => [
@@ -241,7 +263,7 @@ class XlsimportController extends ActionController
     {
         $page = GeneralUtility::_GET('id');
         $table = $this->request->getArgument('table');
-        if (!$page || !$table || !array_key_exists($table, $GLOBALS['TCA'])) {
+        if (!$table || !array_key_exists($table, $GLOBALS['TCA'])) {
             $this->redirect('index');
             exit;
         }
@@ -324,7 +346,7 @@ class XlsimportController extends ActionController
                     $insertArray[$passwordField] = md5(sha1(microtime()));
                 }
 
-                $inserts[$table][$update ? $import['uid'] : uniqid('NEW_')] = $insertArray;
+                $inserts[$table][$update ? $import['uid'] : uniqid('NEW_', true)] = $insertArray;
             }
         }
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][self::class]['Hooks'])) {
@@ -349,7 +371,7 @@ class XlsimportController extends ActionController
             true
         );
         /** @var FlashMessageService $flashMessageService */
-        $flashMessageService = $this->objectManager->get(FlashMessageService::class);
+        $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
         $messageQueue = $flashMessageService->getMessageQueueByIdentifier();
         $messageQueue->enqueue($message);
         $this->redirect('index');
