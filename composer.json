@@ -1,9 +1,10 @@
 {
   "name": "sudhaus7/xlsimport",
   "description": "(Sudhaus7) XLS Importer",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "type": "typo3-cms-extension",
   "license": "MIT",
+
   "authors": [
     {
       "name": "Frank Berger",
@@ -15,18 +16,18 @@
     }
   ],
   "require": {
-    "typo3/cms-core": "~7.6 | ~8.7 | ~9.5 | ~10.4.2",
+    "typo3/cms-backend": "~7.6 | ~8.7 | ~9.5",
     "phpoffice/phpspreadsheet": "^1.10"
   },
   "require-dev": {
-    "typo3/cms-fluid-styled-content": "~10.4.2",
-    "typo3/cms-tstemplate": "~10.4.2",
-    "typo3/cms-backend": "~10.4.2",
-    "phpstan/phpstan": "^0.11",
+    "typo3/cms-fluid-styled-content": "7.6.*",
+    "typo3/cms-tstemplate": "7.6.*",
+    "typo3/cms-backend": "7.6.*",
+    "phpstan/phpstan": "*",
     "codeception/codeception": "^3.1",
     "codeception/phpbuiltinserver": "^1.5",
-    "helhum/typo3-console": "^6.3",
-    "friendsoftypo3/tt-address": "^5"
+    "helhum/typo3-console": "*",
+    "friendsoftypo3/tt-address": "*"
   },
   "extra": {
     "typo3/cms": {
@@ -46,7 +47,19 @@
       "*": "dist"
     },
     "vendor-dir": ".Build/vendor",
-    "bin-dir": ".Build/bin"
+    "bin-dir": ".Build/bin",
+    "allow-plugins": {
+      "typo3/class-alias-loader": true,
+      "typo3/cms-composer-installers": true,
+      "helhum/typo3-console-plugin": true
+    },
+
+    "optimize-autoloader": true,
+    "sort-packages": true,
+    "platform": {
+      "php": "7.2.10"
+    }
+
   },
   "scripts": {
     "post-autoload-dump": [

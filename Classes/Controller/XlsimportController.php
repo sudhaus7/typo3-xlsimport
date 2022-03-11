@@ -28,7 +28,9 @@ use TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException;
 use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
 use TYPO3\CMS\Extbase\Mvc\Exception\UnsupportedRequestTypeException;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
-use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Lang\LanguageService;
+use function class_exists;
+
 
 /**
  * Class XlsimportController
@@ -43,7 +45,7 @@ class XlsimportController extends ActionController
      */
     protected $defaultViewObjectName = BackendTemplateView::class;
     /**
-     * @var LanguageService
+     * @var \TYPO3\CMS\Core\Localization\LanguageService|LanguageService
      */
     protected $languageService;
     /**
@@ -67,7 +69,11 @@ class XlsimportController extends ActionController
         if (!is_object($this->objectManager)) {
             $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
         }
-        $this->languageService = $this->objectManager->get(LanguageService::class);
+		if ( class_exists( '\TYPO3\CMS\Core\Localization\LanguageService')) {
+			$this->languageService = $this->objectManager->get( \TYPO3\CMS\Core\Localization\LanguageService::class );
+		} else {
+			$this->languageService = $this->objectManager->get( LanguageService::class );
+		}
     }
 
     public function indexAction()
