@@ -80,17 +80,12 @@ class XlsimportController extends ActionController
 
     /**
      * XlsimportController constructor.
-     * @throws \TYPO3\CMS\Extbase\Object\Exception
      */
     public function initializeObject(): void
     {
-        $pageRenderer = $this->getPageRenderer();
-        $pageRenderer->loadRequireJsModule('TYPO3/CMS/Xlsimport/Importer');
+        GeneralUtility::makeInstance(PageRenderer::class)->loadRequireJsModule('TYPO3/CMS/Xlsimport/Importer');
 
-        if (!is_object($this->objectManager)) {
-            $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        }
-        $this->languageService = $this->objectManager->get(LanguageService::class);
+        $this->languageService = $GLOBALS['LANG'] ?? GeneralUtility::makeInstance(LanguageService::class);
     }
 
     public function indexAction(): void
@@ -104,7 +99,7 @@ class XlsimportController extends ActionController
             if (array_key_exists($tempTable, $GLOBALS['TCA'])) {
                 $label = $GLOBALS['TCA'][$tempTable]['ctrl']['title'];
                 if (!isset($allowedTables[$tempTable])) {
-                    $allowedTables[$tempTable] = $this->getLang()->sL($label) ?: $label;
+                    $allowedTables[$tempTable] = $this->languageService->sL($label) ?: $label;
                 }
             }
         }
@@ -116,7 +111,7 @@ class XlsimportController extends ActionController
                 if (array_key_exists($tempTable, $GLOBALS['TCA'])) {
                     $label = $GLOBALS['TCA'][$tempTable]['ctrl']['title'];
                     if (!isset($allowedTables[$tempTable])) {
-                        $allowedTables[$tempTable] = $this->getLang()->sL($label) ?: $label;
+                        $allowedTables[$tempTable] = $this->languageService->sL($label) ?: $label;
                     }
                 }
             }
@@ -175,7 +170,7 @@ class XlsimportController extends ActionController
             ]
         ];
         $tca = array_merge($uidConfig, $GLOBALS['TCA'][$table]['columns']);
-	    
+
         if(!array_key_exists('pid',$GLOBALS['TCA'][$table]['columns'])) {
             $pidConfig = [
                 'pid' => [
@@ -189,7 +184,7 @@ class XlsimportController extends ActionController
         $passwordFields = [];
 
         foreach ($tca as $field => &$column) {
-            if (in_array($field, $this->disallowedFields)) {
+            if (in_array($field, $this->disallowedFields, false)) {
                 unset($tca[$field]);
             } else {
                 try {
@@ -208,7 +203,12 @@ class XlsimportController extends ActionController
                 }
                 $column['label'] = $label;
 
-                if (isset($column['config']['eval']) && in_array('password', GeneralUtility::trimExplode(',', $column['config']['eval']))) {
+                if (
+                    isset($column['config']['eval'])
+                    && in_array(
+                        'password',
+                        GeneralUtility::trimExplode(',', $column['config']['eval']))
+                ) {
                     $hasPasswordField = true;
                     $passwordFields[] = $field;
                 }
@@ -234,6 +234,7 @@ class XlsimportController extends ActionController
     /**
      * @throws NoSuchArgumentException
      * @throws StopActionException
+     * @throws JsonException
      * @throws \TYPO3\CMS\Core\Exception
      */
     public function importAction(): void
@@ -246,7 +247,6 @@ class XlsimportController extends ActionController
         }
         /** @var array $fields */
         $fields = $this->request->getArgument('fields');
-        /** @var array $overrides */
         $overrides = [];
         if ($this->request->hasArgument('overrides')) {
             $overrides = $this->request->getArgument('overrides');
@@ -256,7 +256,7 @@ class XlsimportController extends ActionController
         $passwordFields = GeneralUtility::trimExplode(',', $this->request->getArgument('passwordFields'));
 
         /** @var array $imports */
-        $imports = json_decode($this->request->getArgument('dataset'), true);
+        $imports = json_decode($this->request->getArgument('dataset'), true, 512, JSON_THROW_ON_ERROR);
         $a = [];
         foreach ($imports as $import) {
             $s = sprintf('%s=%s', $import['name'], urlencode($import['value']));
@@ -275,20 +275,20 @@ class XlsimportController extends ActionController
             if (empty($field)) {
                 unset($fields[$key]);
             }
-            if (in_array($field, $this->disallowedFields)) {
+            if (in_array($field, $this->disallowedFields, false)) {
                 unset($fields[$key]);
             }
         }
         // get override field and take a look inside fieldlist, if defined
         foreach ($overrides as $key => $override) {
-            if (in_array($override, $fields) || empty($override)) {
+            if (empty($override) || in_array($override, $fields, false)) {
                 unset($overrides[$key]);
             }
         }
 
         if ($passwordOverride) {
             foreach ($passwordFields as $key => $passwordField) {
-                if (in_array($passwordField, $fields)) {
+                if (in_array($passwordField, $fields, false)) {
                     unset($passwordFields[$key]);
                 }
             }
@@ -323,7 +323,7 @@ class XlsimportController extends ActionController
                     $insertArray[$passwordField] = md5(sha1(microtime()));
                 }
 
-                $inserts[$table][$update ? $import['uid'] : uniqid('NEW_')] = $insertArray;
+                $inserts[$table][$update ? $import['uid'] : uniqid('NEW_', true)] = $insertArray;
             }
         }
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][self::class]['Hooks'])) {
@@ -338,17 +338,15 @@ class XlsimportController extends ActionController
         $tce = GeneralUtility::makeInstance(DataHandler::class);
         $tce->start($inserts, []);
         $tce->process_datamap();
-        $lang = $this->getLang();
         /** @var FlashMessage $message */
         $message = GeneralUtility::makeInstance(
             FlashMessage::class,
-            $lang->sL('LLL:EXT:xlsimport/Resources/Private/Language/locallang.xlf:success'),
-            $lang->sL('LLL:EXT:xlsimport/Resources/Private/Language/locallang.xlf:complete'),
+            $this->languageService->sL('LLL:EXT:xlsimport/Resources/Private/Language/locallang.xlf:success'),
+            $this->languageService->sL('LLL:EXT:xlsimport/Resources/Private/Language/locallang.xlf:complete'),
             FlashMessage::OK,
             true
         );
-        /** @var FlashMessageService $flashMessageService */
-        $flashMessageService = $this->objectManager->get(FlashMessageService::class);
+        $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
         $messageQueue = $flashMessageService->getMessageQueueByIdentifier();
         $messageQueue->enqueue($message);
         $this->redirect('index');
@@ -420,21 +418,5 @@ class XlsimportController extends ActionController
             }
         }
         return ($aList);
-    }
-
-    /**
-     * @return LanguageService
-     */
-    protected function getLang(): LanguageService
-    {
-        return $GLOBALS['LANG'];
-    }
-
-    /**
-     * @return object|PageRenderer
-     */
-    protected function getPageRenderer()
-    {
-        return GeneralUtility::makeInstance(PageRenderer::class);
     }
 }

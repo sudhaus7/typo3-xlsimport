@@ -51,7 +51,7 @@ class TcaNodeViewHelper extends AbstractViewHelper
 
                 $statement->andWhere($tcaConfig['foreign_table_where']);
             }
-            $tcaConfig['items'] = array_merge_recursive($tcaConfig['items'] ?? [], $statement->execute()->fetchAllNumeric());
+            $tcaConfig['items'] = array_merge_recursive($tcaConfig['items'] ?? [], $statement->execute()->fetchAll());
         }
         $data = [
             'renderType' => $arguments['config']['renderType'] ?? $arguments['config']['type'],
