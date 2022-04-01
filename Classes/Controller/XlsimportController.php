@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SUDHAUS7\Xlsimport\Controller;
 
 use InvalidArgumentException;
+use JsonException;
 use PhpOffice\PhpSpreadsheet\Exception;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Reader\Csv;
@@ -14,18 +15,16 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\View\BackendTemplateView;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\Http\UploadedFileFactory;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Page\PageRenderer;
-use TYPO3\CMS\Core\Resource\DuplicationBehavior;
-use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException;
 use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  * Class XlsimportController
@@ -166,10 +165,10 @@ class XlsimportController extends ActionController
             }
         }
 
-        $folder = $this->resourceFactory->getFolderObjectFromCombinedIdentifier($this->settings['uploadFolder']);
-        $newFile = $folder->addFile($file['tmp_name'], $file['name'],$this->settings['duplicationBehavior'] ?? DuplicationBehavior::RENAME);
+        $uploadedFile = GeneralUtility::tempnam('xlsimport');
+        GeneralUtility::upload_copy_move($file['tmp_name'], $uploadedFile);
 
-        $list = $this->getList($newFile);
+        $list = $this->getList($uploadedFile);
         $uidConfig = [
             'uid' => [
                 'label' => 'uid'
@@ -356,18 +355,18 @@ class XlsimportController extends ActionController
     }
 
     /**
-     * @param File $file
-     *
+     * @param string $fileName
      * @return array
      * @throws Exception
+     * @throws NoSuchArgumentException
+     * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
      */
-    protected function getList(File $file)
+    protected function getList(string $fileName): array
     {
         $aList = [];
         $aList['rows'] = 0;
         $aList['cols'] = 0;
         $aList['data'] = [];
-        $fileName = $file->getForLocalProcessing();
         if (is_file($fileName)) {
 
             $inputFileType = IOFactory::identify($fileName);
