@@ -212,7 +212,7 @@ class XlsimportController extends ActionController
         $passwordFields = [];
 
         foreach ($tca as $field => &$column) {
-            if (in_array($field, $this->disallowedFields)) {
+            if (in_array($field, $this->disallowedFields, true)) {
                 unset($tca[$field]);
             } else {
                 try {
@@ -237,6 +237,7 @@ class XlsimportController extends ActionController
                 }
             }
         }
+        unset($column);
 
         $assignedValues = [
             'fields' => $tca,
@@ -269,7 +270,6 @@ class XlsimportController extends ActionController
         }
         /** @var array $fields */
         $fields = $this->request->getArgument('fields');
-        /** @var array $overrides */
         $overrides = [];
         if ($this->request->hasArgument('overrides')) {
             $overrides = $this->request->getArgument('overrides');
@@ -298,20 +298,20 @@ class XlsimportController extends ActionController
             if (empty($field)) {
                 unset($fields[$key]);
             }
-            if (in_array($field, $this->disallowedFields)) {
+            if (in_array($field, $this->disallowedFields, true)) {
                 unset($fields[$key]);
             }
         }
         // get override field and take a look inside fieldlist, if defined
         foreach ($overrides as $key => $override) {
-            if (in_array($override, $fields) || empty($override)) {
+            if (empty($override) | in_array($override, $fields, true)) {
                 unset($overrides[$key]);
             }
         }
 
         if ($passwordOverride) {
             foreach ($passwordFields as $key => $passwordField) {
-                if (in_array($passwordField, $fields)) {
+                if (in_array($passwordField, $fields, true)) {
                     unset($passwordFields[$key]);
                 }
             }
@@ -327,7 +327,7 @@ class XlsimportController extends ActionController
                 $insertArray = [];
                 $update = false;
                 foreach ($fields as $key => $field) {
-                    if ($field == 'uid') {
+                    if ($field === 'uid') {
                         if (!empty($import[$key])) {
                             $update = true;
                         }
@@ -381,9 +381,9 @@ class XlsimportController extends ActionController
      * @param File $file
      *
      * @return array
-     * @throws Exception
+     * @throws Exception|NoSuchArgumentException
      */
-    protected function getList(File $file)
+    protected function getList(File $file): array
     {
         $aList = [];
         $aList['rows'] = 0;
@@ -406,7 +406,7 @@ class XlsimportController extends ActionController
                 $oReader = IOFactory::createReaderForFile($fileName);
             }
 
-            if (is_object($oReader) && $oReader->canRead($fileName)) {
+            if ($oReader->canRead($fileName)) {
                 //$oReader->getReadDataOnly();
                 $xls = $oReader->load($fileName);
                 $xls->setActiveSheetIndex(0);

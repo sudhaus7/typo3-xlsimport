@@ -14,20 +14,21 @@
     }
   ],
   "require": {
-    "typo3/cms-core": "10.4.*",
-    "phpoffice/phpspreadsheet": "1.17.*",
+    "typo3/cms-core": "^10 | ^11",
+    "phpoffice/phpspreadsheet": "^1.17",
     "ext-json": "*",
     "php": ">=7.3"
   },
   "require-dev": {
-    "typo3/cms-fluid-styled-content": "10.4.*",
-    "typo3/cms-tstemplate": "10.4.*",
-    "typo3/cms-backend": "10.4.*",
+    "typo3/cms-fluid-styled-content": "^11",
+    "typo3/cms-tstemplate": "^11",
+    "typo3/cms-backend": "^11",
     "phpstan/phpstan": "*",
     "codeception/codeception": "*",
     "codeception/phpbuiltinserver": "*",
-    "helhum/typo3-console": "^6.3",
-    "friendsoftypo3/tt-address": "^5.3"
+    "helhum/typo3-console": "^v7",
+    "friendsoftypo3/tt-address": "^6.1",
+    "rector/rector": "^0.12"
   },
   "suggest": {
     "friendsoftypo3/tt-address": "*"
@@ -50,7 +51,11 @@
       "*": "dist"
     },
     "vendor-dir": ".Build/vendor",
-    "bin-dir": ".Build/bin"
+    "bin-dir": ".Build/bin",
+    "allow-plugins": {
+      "typo3/class-alias-loader": true,
+      "typo3/cms-composer-installers": true
+    }
   },
   "scripts": {
     "post-autoload-dump": [
