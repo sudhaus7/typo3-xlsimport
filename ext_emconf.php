@@ -4,7 +4,7 @@ $EM_CONF['xlsimport'] = [
     'title' => '(Sudhaus7) XLS Importer',
     'description' => 'A simple importer to import data into the database',
     'category' => 'module',
-    'version' => '2.0.8',
+    'version' => '3.0.0',
     'state' => 'stable',
     'uploadfolder' => 1,
     'clearcacheonload' => 0,
@@ -13,7 +13,7 @@ $EM_CONF['xlsimport'] = [
     'author_company' => 'Sudhaus7, ein Label der B-Factor GmbH',
     'constraints' => [
         'depends' => [
-            'typo3' => '10.4.0-10.4.99'
+            'typo3' => '10.4.0-11.5.99'
         ],
         'conflicts' => [
         ],
@@ -34,4 +34,3 @@ $EM_CONF['xlsimport'] = [
         ]
     ],
 ];
-
