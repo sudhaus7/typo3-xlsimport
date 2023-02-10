@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SUDHAUS7\Xlsimport\Controller;
 
+use Doctrine\DBAL\DBALException;
 use InvalidArgumentException;
 use JsonException;
 use PhpOffice\PhpSpreadsheet\Exception;
@@ -39,11 +40,11 @@ class XlsimportController extends ActionController
     /**
      * @var LanguageService
      */
-    protected $languageService;
+    protected LanguageService $languageService;
     /**
      * @var string[]
      */
-    protected $disallowedFields = [
+    protected array $disallowedFields = [
         't3ver_oid',
         'tstamp',
         'crdate',
@@ -66,7 +67,7 @@ class XlsimportController extends ActionController
     /**
      * @var ResourceFactory
      */
-    protected $resourceFactory;
+    protected ResourceFactory $resourceFactory;
 
     /**
      * @param ResourceFactory $resourceFactory
@@ -125,6 +126,7 @@ class XlsimportController extends ActionController
      * @throws Exception
      * @throws NoSuchArgumentException
      * @throws StopActionException
+     * @throws DBALException
      */
     public function uploadAction(): void
     {
