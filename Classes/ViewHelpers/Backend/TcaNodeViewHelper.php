@@ -60,7 +60,7 @@ class TcaNodeViewHelper extends AbstractViewHelper
                 'itemFormElID' => sprintf('tx_xlsimport_web_xlsimporttxxlsimport_%s', $arguments['name']),
                 'itemFormElValue' => [],
                 'fieldConf' => [
-                    'config' => $tcaConfig
+                    'config' => $tcaConfig,
                 ],
                 'itemFormElName' => sprintf('tx_xlsimport_web_xlsimporttxxlsimport[overrides][%s]', $arguments['name']),
                 'fieldChangeFunc' => [
@@ -69,9 +69,9 @@ class TcaNodeViewHelper extends AbstractViewHelper
                         $arguments['name'],
                         $arguments['table'],
                         $arguments['page']
-                    )
+                    ),
                 ],
-            ]
+            ],
         ];
         $result = $nodeFactory->create($data)->render();
 

@@ -1,61 +1,79 @@
 {
-  "name": "sudhaus7/xlsimport",
-  "description": "(Sudhaus7) XLS Importer",
-  "type": "typo3-cms-extension",
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "Frank Berger",
-      "role": "Developer"
-    },
-    {
-      "name": "Markus Hofmann",
-      "role": "Developer"
-    }
-  ],
-  "require": {
-    "typo3/cms-core": "10.4.*",
-    "phpoffice/phpspreadsheet": "1.17.*",
-    "ext-json": "*",
-    "php": ">=7.3"
-  },
-  "require-dev": {
-    "typo3/cms-fluid-styled-content": "10.4.*",
-    "typo3/cms-tstemplate": "10.4.*",
-    "typo3/cms-backend": "10.4.*",
-    "phpstan/phpstan": "*",
-    "codeception/codeception": "*",
-    "codeception/phpbuiltinserver": "*",
-    "helhum/typo3-console": "^6.3",
-    "friendsoftypo3/tt-address": "^5.3"
-  },
-  "suggest": {
-    "friendsoftypo3/tt-address": "*"
-  },
-  "extra": {
-    "typo3/cms": {
-      "extension-key": "xlsimport",
-      "cms-package-dir": "{$vendor-dir}/typo3/cms",
-      "web-dir": ".Build/public"
-
-    }
-  },
-  "autoload": {
-    "psr-4": {
-      "SUDHAUS7\\Xlsimport\\": "Classes/"
-    }
-  },
-  "config": {
-    "preferred-install": {
-      "*": "dist"
-    },
-    "vendor-dir": ".Build/vendor",
-    "bin-dir": ".Build/bin"
-  },
-  "scripts": {
-    "post-autoload-dump": [
-      "mkdir -p .Build/public/typo3conf/ext/",
-      "[ -L .Build/public/typo3conf/ext/xlsimport ] || ln -snvf ../../../../. .Build/public/typo3conf/ext/xlsimport"
-    ]
-  }
+	"name": "sudhaus7/xlsimport",
+	"description": "(Sudhaus7) XLS Importer",
+	"type": "typo3-cms-extension",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Frank Berger",
+			"role": "Developer",
+			"email": "fberger@sudhaus7.de"
+		},
+		{
+			"name": "Markus Hofmann",
+			"role": "Developer",
+			"email": "typo3@calien.de"
+		}
+	],
+	"require": {
+		"typo3/cms-core": "^10.4 || ^11.5",
+		"phpoffice/phpspreadsheet": "1.17.*",
+		"ext-json": "*",
+		"php": "^7.4 || ^8.0"
+	},
+	"require-dev": {
+		"typo3/cms-fluid-styled-content": "^10.4 || ^11.5",
+		"typo3/cms-tstemplate": "^10.4 || ^11.5",
+		"typo3/cms-backend": "^10.4 || ^11.5",
+		"phpstan/phpstan": "*",
+		"friendsofphp/php-cs-fixer": "^2.19",
+		"codeception/codeception": "*",
+		"codeception/phpbuiltinserver": "*",
+		"helhum/typo3-console": "^7.1",
+		"friendsoftypo3/tt-address": "^7",
+		"armin/editorconfig-cli": "^1.5"
+	},
+	"suggest": {
+		"friendsoftypo3/tt-address": "*"
+	},
+	"extra": {
+		"typo3/cms": {
+			"extension-key": "xlsimport",
+			"cms-package-dir": "{$vendor-dir}/typo3/cms",
+			"web-dir": ".Build/public"
+		}
+	},
+	"autoload": {
+		"psr-4": {
+			"SUDHAUS7\\Xlsimport\\": "Classes/"
+		}
+	},
+	"config": {
+		"preferred-install": {
+			"*": "dist"
+		},
+		"vendor-dir": ".Build/vendor",
+		"bin-dir": ".Build/bin",
+		"allow-plugins": {
+			"typo3/cms-composer-installers": true,
+			"typo3/class-alias-loader": true
+		}
+	},
+	"scripts": {
+		"ec:check": "ec -v -n --no-progress -e'var/log' -e'.Build' -e'.ddev' -e'phpstan-baseline.neon'",
+		"ec:fix": "ec -v -n --fix -e'var/log' -e'.Build' -e'.ddev'",
+		"cs:check": "php-cs-fixer fix --config .config/.php-cs-rules.php --ansi --diff --verbose --dry-run",
+		"cs:fix": "php-cs-fixer fix --config .config/.php-cs-rules.php --ansi",
+		"analyze:php": "phpstan analyse --ansi --no-progress --memory-limit=768M --configuration=.config/phpstan.neon",
+		"test:php": [
+			"@test:php:unit",
+			"@test:php:functional"
+		],
+		"test:php:unit": "phpunit --colors=always --configuration .config/phpunit-unit.xml",
+		"test:php:functional": "@test:php:unit --configuration .config/phpunit-functional.xml",
+		"post-autoload-dump": [
+			"mkdir -p .Build/public/typo3conf/ext/",
+			"[ -L .Build/public/typo3conf/ext/xlsimport ] || ln -snvf ../../../../. .Build/public/typo3conf/ext/xlsimport"
+		]
+	}
 }

@@ -15,7 +15,6 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\View\BackendTemplateView;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
-use TYPO3\CMS\Core\Http\UploadedFileFactory;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
@@ -28,7 +27,6 @@ use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
 
 /**
  * Class XlsimportController
- * @package SUDHAUS7\Xlsimport\Controller
  */
 class XlsimportController extends ActionController
 {
@@ -62,7 +60,7 @@ class XlsimportController extends ActionController
         't3ver_move_id',
         't3_origuid',
         'l10n_diffsource',
-        'l10n_source'
+        'l10n_source',
     ];
 
     /**
@@ -93,7 +91,6 @@ class XlsimportController extends ActionController
         $page = GeneralUtility::_GET('id');
         $tempTables = GeneralUtility::trimExplode(',', $this->settings['allowedTables']);
 
-
         $allowedTables = [];
         foreach ($tempTables as $tempTable) {
             if (array_key_exists($tempTable, $GLOBALS['TCA'])) {
@@ -117,10 +114,9 @@ class XlsimportController extends ActionController
             }
         }
 
-
         $assignedValues = [
             'page' => $page,
-            'allowedTables' => $allowedTables
+            'allowedTables' => $allowedTables,
         ];
         $this->view->assignMultiple($assignedValues);
     }
@@ -166,16 +162,16 @@ class XlsimportController extends ActionController
         $list = $this->getList($uploadedFile);
         $uidConfig = [
             'uid' => [
-                'label' => 'uid'
-            ]
+                'label' => 'uid',
+            ],
         ];
         $tca = array_merge($uidConfig, $GLOBALS['TCA'][$table]['columns']);
 
-        if(!array_key_exists('pid',$GLOBALS['TCA'][$table]['columns'])) {
+        if (!array_key_exists('pid', $GLOBALS['TCA'][$table]['columns'])) {
             $pidConfig = [
                 'pid' => [
-                    'label' => 'pid'
-                ]
+                    'label' => 'pid',
+                ],
             ];
             $tca = array_merge($uidConfig, $pidConfig, $GLOBALS['TCA'][$table]['columns']);
         }
@@ -207,7 +203,8 @@ class XlsimportController extends ActionController
                     isset($column['config']['eval'])
                     && in_array(
                         'password',
-                        GeneralUtility::trimExplode(',', $column['config']['eval']))
+                        GeneralUtility::trimExplode(',', $column['config']['eval'])
+                    )
                 ) {
                     $hasPasswordField = true;
                     $passwordFields[] = $field;
@@ -224,9 +221,9 @@ class XlsimportController extends ActionController
             'passwordFields' => implode(',', $passwordFields),
             'addInlineSettings' => [
                 'FormEngine' => [
-                    'formName' => 'importData'
-                ]
-            ]
+                    'formName' => 'importData',
+                ],
+            ],
         ];
         $this->view->assignMultiple($assignedValues);
     }
@@ -297,7 +294,7 @@ class XlsimportController extends ActionController
         }
 
         $inserts = [
-            $table => []
+            $table => [],
         ];
         foreach ($imports as $import) {
             if ($import['import']) {
@@ -366,7 +363,6 @@ class XlsimportController extends ActionController
         $aList['cols'] = 0;
         $aList['data'] = [];
         if (is_file($fileName)) {
-
             $inputFileType = IOFactory::identify($fileName);
 
             if ($inputFileType === 'Csv') {
@@ -376,8 +372,7 @@ class XlsimportController extends ActionController
                 if ($encoding === true) {
                     $oReader->setInputEncoding('CP1252');
                 }
-            }
-            else {
+            } else {
                 $oReader = IOFactory::createReaderForFile($fileName);
             }
 
@@ -417,6 +412,6 @@ class XlsimportController extends ActionController
                 unset($rowI, $sheet, $xls, $oReader);
             }
         }
-        return ($aList);
+        return $aList;
     }
 }

@@ -13,7 +13,7 @@ $EM_CONF['xlsimport'] = [
     'author_company' => 'Sudhaus7, ein Label der B-Factor GmbH',
     'constraints' => [
         'depends' => [
-            'typo3' => '10.4.0-10.4.99'
+            'typo3' => '10.4.0-10.4.99',
         ],
         'conflicts' => [
         ],
@@ -31,7 +31,6 @@ $EM_CONF['xlsimport'] = [
             'MyCLabs\\Enum\\' => 'vendor/myclabs/php-enum/src',
             'Matrix\\' => 'vendor/markbaker/matrix/classes/src',
             'Complex\\' => 'vendor/markbaker/complex/classes/src',
-        ]
+        ],
     ],
 ];
-
