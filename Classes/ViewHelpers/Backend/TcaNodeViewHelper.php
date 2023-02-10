@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace SUDHAUS7\Xlsimport\ViewHelpers\Backend;
 
 use Closure;
+use Doctrine\DBAL\DBALException;
+use TYPO3\CMS\Backend\Form\Exception;
 use TYPO3\CMS\Backend\Form\NodeFactory;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -26,6 +28,15 @@ class TcaNodeViewHelper extends AbstractViewHelper
         $this->registerArgument('as', 'string', 'The value', false, 'tcaField');
     }
 
+    /**
+     * renderStatic
+     * @param array $arguments
+     * @param Closure $renderChildrenClosure
+     * @param RenderingContextInterface $renderingContext
+     * @return mixed
+     * @throws DBALException
+     * @throws Exception
+     */
     public static function renderStatic(array $arguments, Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
     {
         $nodeFactory = GeneralUtility::makeInstance(NodeFactory::class);
@@ -51,7 +62,7 @@ class TcaNodeViewHelper extends AbstractViewHelper
 
                 $statement->andWhere($tcaConfig['foreign_table_where']);
             }
-            $tcaConfig['items'] = array_merge_recursive($tcaConfig['items'] ?? [], $statement->execute()->fetchAll());
+            $tcaConfig['items'] = array_merge_recursive($tcaConfig['items'] ?? [], $statement->execute()->fetchAll(\PDO::FETCH_NUM));
         }
         $data = [
             'renderType' => $arguments['config']['renderType'] ?? $arguments['config']['type'],

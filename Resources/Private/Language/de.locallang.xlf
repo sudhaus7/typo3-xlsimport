@@ -104,6 +104,11 @@
 				<source>Page ID [pid]</source>
 				<target>Seiten ID [pid]</target>
 			</trans-unit>
+
+			<trans-unit id="allowedTables">
+				<source>Allowed tables</source>
+				<target>Erlaubte Tabellen</target>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

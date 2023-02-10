@@ -2,7 +2,7 @@
 
 defined('TYPO3_MODE') || die();
 
-(function () {
+(static function () {
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
         'Xlsimport',
         'web',

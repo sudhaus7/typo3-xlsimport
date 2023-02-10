@@ -56,7 +56,7 @@ column is ignored. Selecting uid will update the dataset with the uid inside thi
 Updating a dataset won't take effect on the pid, the data is stored. If no uid is set, a new dataset is created
 at the current page. This allows to mix up updating records and creating new ones with only one import.
 
-After a succcessful import you will get a success message and your data is imported.
+After a successful import you will get a success message and your data is imported.
 
 .. figure:: ../Images/ImportedData.png
    :alt: Table view from tt_address with imported data

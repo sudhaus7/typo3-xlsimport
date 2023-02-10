@@ -12,8 +12,12 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Reader\Csv;
 use PhpOffice\PhpSpreadsheet\Worksheet\RowCellIterator;
 use PhpOffice\PhpSpreadsheet\Worksheet\RowIterator;
+use SUDHAUS7\Xlsimport\Service\DisallowedTablesService;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\View\BackendTemplateView;
+use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
+use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Localization\LanguageService;
@@ -84,33 +88,60 @@ class XlsimportController extends ActionController
     {
         GeneralUtility::makeInstance(PageRenderer::class)->loadRequireJsModule('TYPO3/CMS/Xlsimport/Importer');
 
-        $this->languageService = $GLOBALS['LANG'] ?? GeneralUtility::makeInstance(LanguageService::class);
+        $this->languageService = GeneralUtility::makeInstance(LanguageService::class);
     }
 
+    /**
+     * @throws ExtensionConfigurationPathDoesNotExistException
+     * @throws ExtensionConfigurationExtensionNotConfiguredException
+     */
     public function indexAction(): void
     {
-        $page = GeneralUtility::_GET('id');
+        $page = (int)GeneralUtility::_GET('id');
+        /**
+         * @deprecated, don't use TypoScript module setup anymore
+         * Use PageTSConfig or Extension setup instead
+         * will be removed in future version
+         */
         $tempTables = GeneralUtility::trimExplode(',', $this->settings['allowedTables']);
-
-        $allowedTables = [];
-        foreach ($tempTables as $tempTable) {
-            if (array_key_exists($tempTable, $GLOBALS['TCA'])) {
-                $label = $GLOBALS['TCA'][$tempTable]['ctrl']['title'];
-                if (!isset($allowedTables[$tempTable])) {
-                    $allowedTables[$tempTable] = $this->languageService->sL($label) ?: $label;
-                }
-            }
-        }
 
         $pageTS = BackendUtility::getPagesTSconfig($page);
         if (isset($pageTS['module.']['tx_xlsimport.']['settings.']['allowedTables'])) {
-            $tempTables = GeneralUtility::trimExplode(',', $pageTS['module.']['tx_xlsimport.']['settings.']['allowedTables']);
-            foreach ($tempTables as $tempTable) {
-                if (array_key_exists($tempTable, $GLOBALS['TCA'])) {
-                    $label = $GLOBALS['TCA'][$tempTable]['ctrl']['title'];
-                    if (!isset($allowedTables[$tempTable])) {
+            $tempTables = array_merge(
+                $tempTables,
+                GeneralUtility::trimExplode(
+                    ',',
+                    $pageTS['module.']['tx_xlsimport.']['settings.']['allowedTables']
+                )
+            );
+        }
+        if ($extConfTempTables
+            = GeneralUtility::makeInstance(ExtensionConfiguration::class)
+            ->get('xlsimport', 'tables')) {
+            $tempTables = array_merge(
+                $tempTables,
+                GeneralUtility::trimExplode(',', $extConfTempTables)
+            );
+        }
+        $tempTables = array_unique($tempTables);
+        $allowedTables = [];
+        foreach ($tempTables as $tempTable) {
+            if (in_array($tempTable, DisallowedTablesService::$disallowedTcaTables)) {
+                continue;
+            }
+            if (array_key_exists($tempTable, $GLOBALS['TCA'])) {
+                $label = $GLOBALS['TCA'][$tempTable]['ctrl']['title'];
+                if ($page === 0) {
+                    if ($GLOBALS['TCA'][$tempTable]['ctrl']['rootLevel'] === 1
+                        || $GLOBALS['TCA'][$tempTable]['ctrl']['rootLevel'] === -1) {
                         $allowedTables[$tempTable] = $this->languageService->sL($label) ?: $label;
                     }
+                } else if (
+                    $GLOBALS['TCA'][$tempTable]['ctrl']['rootLevel'] === 0
+                    || $GLOBALS['TCA'][$tempTable]['ctrl']['rootLevel'] === -1
+                    || !isset($GLOBALS['TCA'][$tempTable]['ctrl']['rootLevel'])
+                ) {
+                    $allowedTables[$tempTable] = $this->languageService->sL($label) ?: $label;
                 }
             }
         }
@@ -131,10 +162,7 @@ class XlsimportController extends ActionController
     public function uploadAction(): void
     {
         $page = GeneralUtility::_GET('id');
-        if (!$page) {
-            $this->redirect('index');
-            exit;
-        }
+
         $deleteOldRecords = (bool)$this->request->getArgument('deleteRecords');
         $file = $this->request->getArgument('file');
         $table = $this->request->getArgument('table');
@@ -182,7 +210,7 @@ class XlsimportController extends ActionController
         $passwordFields = [];
 
         foreach ($tca as $field => &$column) {
-            if (in_array($field, $this->disallowedFields, false)) {
+            if (in_array($field, $this->disallowedFields, true)) {
                 unset($tca[$field]);
             } else {
                 try {
@@ -213,6 +241,7 @@ class XlsimportController extends ActionController
                 }
             }
         }
+        unset($column);
 
         $assignedValues = [
             'fields' => $tca,
@@ -240,7 +269,7 @@ class XlsimportController extends ActionController
     {
         $page = GeneralUtility::_GET('id');
         $table = $this->request->getArgument('table');
-        if (!$page || !$table || !array_key_exists($table, $GLOBALS['TCA'])) {
+        if (!$table || !array_key_exists($table, $GLOBALS['TCA'])) {
             $this->redirect('index');
             exit;
         }
@@ -274,20 +303,20 @@ class XlsimportController extends ActionController
             if (empty($field)) {
                 unset($fields[$key]);
             }
-            if (in_array($field, $this->disallowedFields, false)) {
+            if (in_array($field, $this->disallowedFields, true)) {
                 unset($fields[$key]);
             }
         }
         // get override field and take a look inside fieldlist, if defined
         foreach ($overrides as $key => $override) {
-            if (empty($override) || in_array($override, $fields, false)) {
+            if (empty($override) | in_array($override, $fields, true)) {
                 unset($overrides[$key]);
             }
         }
 
         if ($passwordOverride) {
             foreach ($passwordFields as $key => $passwordField) {
-                if (in_array($passwordField, $fields, false)) {
+                if (in_array($passwordField, $fields, true)) {
                     unset($passwordFields[$key]);
                 }
             }
@@ -303,7 +332,7 @@ class XlsimportController extends ActionController
                 $insertArray = [];
                 $update = false;
                 foreach ($fields as $key => $field) {
-                    if ($field == 'uid') {
+                    if ($field === 'uid') {
                         if (!empty($import[$key])) {
                             $update = true;
                         }
@@ -345,7 +374,8 @@ class XlsimportController extends ActionController
             FlashMessage::OK,
             true
         );
-        $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
+        /** @var FlashMessageService $flashMessageService */
+        $flashMessageService = $this->objectManager->get(FlashMessageService::class);
         $messageQueue = $flashMessageService->getMessageQueueByIdentifier();
         $messageQueue->enqueue($message);
         $this->redirect('index');
@@ -378,7 +408,7 @@ class XlsimportController extends ActionController
                 $oReader = IOFactory::createReaderForFile($fileName);
             }
 
-            if (is_object($oReader) && $oReader->canRead($fileName)) {
+            if ($oReader->canRead($fileName)) {
                 //$oReader->getReadDataOnly();
                 $xls = $oReader->load($fileName);
                 $xls->setActiveSheetIndex(0);
