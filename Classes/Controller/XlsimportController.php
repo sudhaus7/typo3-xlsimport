@@ -12,7 +12,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Reader\Csv;
 use PhpOffice\PhpSpreadsheet\Worksheet\RowCellIterator;
 use PhpOffice\PhpSpreadsheet\Worksheet\RowIterator;
-use SUDHAUS7\Xlsimport\Service\DisallowedTablesService;
+use SUDHAUS7\Xlsimport\Utility\AccessUtility;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Backend\View\BackendTemplateView;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
@@ -25,10 +25,12 @@ use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
+use TYPO3\CMS\Core\Type\Bitmask\Permission;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException;
 use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
+use TYPO3\CMS\Recordlist\Controller\AccessDeniedException;
 
 /**
  * Class XlsimportController
@@ -45,40 +47,19 @@ class XlsimportController extends ActionController
      * @var LanguageService
      */
     protected LanguageService $languageService;
-    /**
-     * @var string[]
-     */
-    protected array $disallowedFields = [
-        't3ver_oid',
-        'tstamp',
-        'crdate',
-        'cruser_id',
-        'hidden',
-        'deleted',
-        't3ver_id',
-        't3ver_wsid',
-        't3ver_label',
-        't3ver_state',
-        't3ver_stage',
-        't3ver_count',
-        't3ver_tstamp',
-        't3ver_move_id',
-        't3_origuid',
-        'l10n_diffsource',
-        'l10n_source',
-    ];
 
     /**
      * @var ResourceFactory
      */
     protected ResourceFactory $resourceFactory;
 
-    /**
-     * @param ResourceFactory $resourceFactory
-     */
-    public function injectResourceFactory(ResourceFactory $resourceFactory): void
+    public function __construct(
+        ResourceFactory $resourceFactory,
+        LanguageService $languageService
+    )
     {
         $this->resourceFactory = $resourceFactory;
+        $this->languageService = $languageService;
     }
 
     /**
@@ -86,18 +67,28 @@ class XlsimportController extends ActionController
      */
     public function initializeObject(): void
     {
-        GeneralUtility::makeInstance(PageRenderer::class)->loadRequireJsModule('TYPO3/CMS/Xlsimport/Importer');
-
-        $this->languageService = GeneralUtility::makeInstance(LanguageService::class);
+        GeneralUtility::makeInstance(PageRenderer::class)
+            ->loadRequireJsModule('TYPO3/CMS/Xlsimport/Importer');
     }
 
     /**
      * @throws ExtensionConfigurationPathDoesNotExistException
      * @throws ExtensionConfigurationExtensionNotConfiguredException
+     * @throws AccessDeniedException
      */
     public function indexAction(): void
     {
         $page = (int)GeneralUtility::_GET('id');
+        $minimalPage = [
+            'uid' => $page,
+        ];
+
+        if (!AccessUtility::getBackendUser()->doesUserHaveAccess($minimalPage, Permission::PAGE_EDIT)) {
+            throw new AccessDeniedException(
+                'You are not allowed to manipulate records on this page',
+                1676071343135
+            );
+        }
         /**
          * @deprecated, don't use TypoScript module setup anymore
          * Use PageTSConfig or Extension setup instead
@@ -115,36 +106,17 @@ class XlsimportController extends ActionController
                 )
             );
         }
-        if ($extConfTempTables
-            = GeneralUtility::makeInstance(ExtensionConfiguration::class)
-            ->get('xlsimport', 'tables')) {
+        if ($extConfTempTables = GeneralUtility::makeInstance(
+            ExtensionConfiguration::class
+        )->get('xlsimport', 'tables')
+        ) {
             $tempTables = array_merge(
                 $tempTables,
                 GeneralUtility::trimExplode(',', $extConfTempTables)
             );
         }
         $tempTables = array_unique($tempTables);
-        $allowedTables = [];
-        foreach ($tempTables as $tempTable) {
-            if (in_array($tempTable, DisallowedTablesService::$disallowedTcaTables)) {
-                continue;
-            }
-            if (array_key_exists($tempTable, $GLOBALS['TCA'])) {
-                $label = $GLOBALS['TCA'][$tempTable]['ctrl']['title'];
-                if ($page === 0) {
-                    if ($GLOBALS['TCA'][$tempTable]['ctrl']['rootLevel'] === 1
-                        || $GLOBALS['TCA'][$tempTable]['ctrl']['rootLevel'] === -1) {
-                        $allowedTables[$tempTable] = $this->languageService->sL($label) ?: $label;
-                    }
-                } else if (
-                    $GLOBALS['TCA'][$tempTable]['ctrl']['rootLevel'] === 0
-                    || $GLOBALS['TCA'][$tempTable]['ctrl']['rootLevel'] === -1
-                    || !isset($GLOBALS['TCA'][$tempTable]['ctrl']['rootLevel'])
-                ) {
-                    $allowedTables[$tempTable] = $this->languageService->sL($label) ?: $label;
-                }
-            }
-        }
+        $allowedTables = $this->checkTableAndAccessAllowed($tempTables, $page);
 
         $assignedValues = [
             'page' => $page,
@@ -154,21 +126,47 @@ class XlsimportController extends ActionController
     }
 
     /**
+     * Check if table has TCA definition
+     * and user is allowed to edit table on this page
+     * for each table and return array with allowed tables
+     */
+    private function checkTableAndAccessAllowed(array $possibleTables, int $pid): array
+    {
+        $allowedTables = [];
+        foreach ($possibleTables as $possibleTable) {
+            if (AccessUtility::isAllowedTable($possibleTable, $pid)) {
+                $label = $GLOBALS['TCA'][$possibleTable]['ctrl']['title'];
+                $allowedTables[$possibleTable] = $this->languageService->sL($label) ?: $label;            }
+        }
+
+        return $allowedTables;
+    }
+
+    /**
      * @throws Exception
      * @throws NoSuchArgumentException
      * @throws StopActionException
      * @throws DBALException
+     * @throws AccessDeniedException
      */
     public function uploadAction(): void
     {
         $page = GeneralUtility::_GET('id');
+        $tempPage = [
+            'uid' => $page,
+        ];
+        if (!AccessUtility::getBackendUser()->doesUserHaveAccess($tempPage, Permission::PAGE_EDIT)) {
+            throw new AccessDeniedException(
+                'You are not allowed on editing this page',
+                1676074682764
+            );
+        }
 
         $deleteOldRecords = (bool)$this->request->getArgument('deleteRecords');
         $file = $this->request->getArgument('file');
         $table = $this->request->getArgument('table');
-        if ($deleteOldRecords) {
-            /** @var DataHandler $tce */
-            $tce = GeneralUtility::makeInstance(DataHandler::class);
+        if ($deleteOldRecords && AccessUtility::isAllowedTable($table, $page)) {
+            $dataHandler = GeneralUtility::makeInstance(DataHandler::class);
 
             $db = GeneralUtility::makeInstance(ConnectionPool::class);
             $builder = $db->getQueryBuilderForTable($table);
@@ -180,9 +178,8 @@ class XlsimportController extends ActionController
                 foreach ($ids as $id) {
                     $cmd[$table][$id['uid']]['delete'] = 1;
                 }
-                $tce->start([], $cmd);
-                $tce->process_datamap();
-                $tce->process_cmdmap();
+                $dataHandler->start([], $cmd);
+                $dataHandler->process_cmdmap();
             }
         }
 
@@ -210,7 +207,7 @@ class XlsimportController extends ActionController
         $passwordFields = [];
 
         foreach ($tca as $field => &$column) {
-            if (in_array($field, $this->disallowedFields, true)) {
+            if (!AccessUtility::isAllowedField($table, $field)) {
                 unset($tca[$field]);
             } else {
                 try {
@@ -303,7 +300,7 @@ class XlsimportController extends ActionController
             if (empty($field)) {
                 unset($fields[$key]);
             }
-            if (in_array($field, $this->disallowedFields, true)) {
+            if (!AccessUtility::isAllowedField($table, $field)) {
                 unset($fields[$key]);
             }
         }
@@ -375,7 +372,7 @@ class XlsimportController extends ActionController
             true
         );
         /** @var FlashMessageService $flashMessageService */
-        $flashMessageService = $this->objectManager->get(FlashMessageService::class);
+        $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
         $messageQueue = $flashMessageService->getMessageQueueByIdentifier();
         $messageQueue->enqueue($message);
         $this->redirect('index');
