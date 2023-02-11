@@ -109,6 +109,31 @@
 				<source>Allowed tables</source>
 				<target>Erlaubte Tabellen</target>
 			</trans-unit>
+
+			<trans-unit id="warning.fieldlist.empty.header">
+				<source>Empty field list</source>
+				<target>Leere Feldliste</target>
+			</trans-unit>
+			<trans-unit id="warning.fieldlist.empty.message">
+				<source>You didn't choose any fields to map. Please correct in dropdowns below and submit again.</source>
+				<target>Sie haben keine Felder zugeordnet. Bitte korrigieren Sie das in den Auswahlfeldern und senden das Formular erneut ab.</target>
+			</trans-unit>
+			<trans-unit id="error.file.uploadFailed.header">
+				<source>File upload failed</source>
+				<target>Datei hochladen fehlgeschlagen</target>
+			</trans-unit>
+			<trans-unit id="error.file.uploadFailed.message">
+				<source>Something went wrong during the upload. Please try again.</source>
+				<target>Beim Hochladen ist etwas schiefgelaufen. Bitte versuchen Sie es erneut.</target>
+			</trans-unit>
+			<trans-unit id="error.jsonFile.header">
+				<source>Temporarily saved file not found</source>
+				<target>Temporäre Datei nicht gefunden</target>
+			</trans-unit>
+			<trans-unit id="error.jsonFile.message">
+				<source>The temporarily saved file was not found. Please try again with upload your data.</source>
+				<target>Die temporär gespeicherte Datei konnte nicht geladen werden. Bitte versuchen Sie einen erneuten Upload.</target>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

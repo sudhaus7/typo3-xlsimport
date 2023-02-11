@@ -38,4 +38,5 @@ extension configuration file
    set" from the "Static Template Files from TYPO3 Extensions" dropdown
    list in your TypoScript template.
 
-Every TCA defined table could be used. Field names are taken by locallang files, so localization is done.
+Every TCA defined table could be used. Field names are taken by locallang
+files, so localization is done.

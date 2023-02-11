@@ -83,6 +83,26 @@
 			<trans-unit id="allowedTables">
 				<source>Allowed tables</source>
 			</trans-unit>
+
+			<trans-unit id="warning.fieldlist.empty.header">
+				<source>Empty field list</source>
+			</trans-unit>
+			<trans-unit id="warning.fieldlist.empty.message">
+				<source>You didn't choose any fields to map. Please correct in dropdowns below and submit again.</source>
+			</trans-unit>
+
+			<trans-unit id="error.file.uploadFailed.header">
+				<source>File upload failed</source>
+			</trans-unit>
+			<trans-unit id="error.file.uploadFailed.message">
+				<source>Something went wrong during the upload. Please try again.</source>
+			</trans-unit>
+			<trans-unit id="error.jsonFile.header">
+				<source>Temporarily saved file not found</source>
+			</trans-unit>
+			<trans-unit id="error.jsonFile.message">
+				<source>The temporarily saved file was not found. Please try again with upload your data.</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

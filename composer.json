@@ -7,24 +7,35 @@
 		{
 			"name": "Frank Berger",
 			"role": "Developer",
-			"email": "fberger@sudhaus7.de"
+			"email": "fberger@sudhaus7.de",
+			"homepage": "https://code711.de/"
 		},
 		{
 			"name": "Markus Hofmann",
 			"role": "Developer",
 			"email": "typo3@calien.de"
+		},
+		{
+			"name": "Daniel Simon",
+			"role": "Developer",
+			"email": "dsimon@code711.de"
 		}
 	],
+	"support": {
+		"issues": "https://github.com/sudhaus7/typo3-xlsimport/issues",
+		"source": "https://github.com/sudhaus7/typo3-xlsimport",
+		"docs": "https://docs.typo3.org/p/sudhaus7/xlsimport/3.0/en-us/Index.html"
+	},
 	"require": {
-		"typo3/cms-core": "^10.4 || ^11.5",
-		"phpoffice/phpspreadsheet": "1.17.*",
+		"typo3/cms-core": "^11.5",
+		"phpoffice/phpspreadsheet": "1.27.*",
 		"ext-json": "*",
 		"php": "^7.4 || ^8.0"
 	},
 	"require-dev": {
-		"typo3/cms-fluid-styled-content": "^10.4 || ^11.5",
-		"typo3/cms-tstemplate": "^10.4 || ^11.5",
-		"typo3/cms-backend": "^10.4 || ^11.5",
+		"typo3/cms-fluid-styled-content": "^11.5",
+		"typo3/cms-tstemplate": "^11.5",
+		"typo3/cms-backend": "^11.5",
 		"phpstan/phpstan": "*",
 		"friendsofphp/php-cs-fixer": "^3.14",
 		"codeception/codeception": "*",

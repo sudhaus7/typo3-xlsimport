@@ -23,6 +23,13 @@ final class AccessUtility
     public static function isAllowedField(string $table, string $fieldName): bool
     {
         $allowedFields = BackendUtility::getAllowedFieldsForTable($table);
+        // Disallow PID, as the Backend module selects by choosing the site
+        // in page tree. Allowing import with PID set will cause side effects.
+        // Admins are allowed to do.
+        $pidKey = array_search('pid', $allowedFields);
+        if ($pidKey && !self::getBackendUser()->isAdmin()) {
+            unset($allowedFields[$pidKey]);
+        }
         return in_array($fieldName, $allowedFields);
     }
     private static function checkTableIsAllowedOnPage(string $tableName, int $pageId): bool

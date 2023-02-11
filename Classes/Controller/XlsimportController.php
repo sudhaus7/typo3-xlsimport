@@ -12,24 +12,28 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Reader\Csv;
 use PhpOffice\PhpSpreadsheet\Worksheet\RowCellIterator;
 use PhpOffice\PhpSpreadsheet\Worksheet\RowIterator;
+use Psr\Http\Message\ResponseInterface;
+use SUDHAUS7\Xlsimport\Property\TypeConverter\UploadedFileConverter;
 use SUDHAUS7\Xlsimport\Utility\AccessUtility;
+use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Backend\View\BackendTemplateView;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
+use TYPO3\CMS\Core\Http\UploadedFile;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
-use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
 use TYPO3\CMS\Core\Type\Bitmask\Permission;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException;
 use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
+use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Recordlist\Controller\AccessDeniedException;
 
 /**
@@ -37,12 +41,6 @@ use TYPO3\CMS\Recordlist\Controller\AccessDeniedException;
  */
 class XlsimportController extends ActionController
 {
-    /**
-     * Backend Template Container
-     *
-     * @var string
-     */
-    protected $defaultViewObjectName = BackendTemplateView::class;
     /**
      * @var LanguageService
      */
@@ -53,21 +51,16 @@ class XlsimportController extends ActionController
      */
     protected ResourceFactory $resourceFactory;
 
+    protected ModuleTemplateFactory $moduleTemplateFactory;
+
     public function __construct(
         ResourceFactory $resourceFactory,
-        LanguageService $languageService
+        LanguageService $languageService,
+        ModuleTemplateFactory $moduleTemplateFactory
     ) {
         $this->resourceFactory = $resourceFactory;
         $this->languageService = $languageService;
-    }
-
-    /**
-     * XlsimportController constructor.
-     */
-    public function initializeObject(): void
-    {
-        GeneralUtility::makeInstance(PageRenderer::class)
-            ->loadRequireJsModule('TYPO3/CMS/Xlsimport/Importer');
+        $this->moduleTemplateFactory = $moduleTemplateFactory;
     }
 
     /**
@@ -75,8 +68,9 @@ class XlsimportController extends ActionController
      * @throws ExtensionConfigurationExtensionNotConfiguredException
      * @throws AccessDeniedException
      */
-    public function indexAction(): void
+    public function indexAction(): ResponseInterface
     {
+        $moduleTemplate = $this->moduleTemplateFactory->create($this->request);
         $page = (int)GeneralUtility::_GET('id');
         $minimalPage = [
             'uid' => $page,
@@ -122,6 +116,21 @@ class XlsimportController extends ActionController
             'allowedTables' => $allowedTables,
         ];
         $this->view->assignMultiple($assignedValues);
+        $moduleTemplate
+            ->setTitle('S7 XLS Importer')
+            ->setModuleName('Importer')
+            ->setContent($this->view->render());
+        return $this->htmlResponse($moduleTemplate->renderContent());
+    }
+
+    public function initializeUploadAction(): void
+    {
+        if ($this->arguments->hasArgument('file')) {
+            $this->arguments
+                ->getArgument('file')
+                ->getPropertyMappingConfiguration()
+                ->setTypeConverter(new UploadedFileConverter());
+        }
     }
 
     /**
@@ -131,9 +140,30 @@ class XlsimportController extends ActionController
      * @throws DBALException
      * @throws AccessDeniedException
      */
-    public function uploadAction(): void
-    {
-        $page = GeneralUtility::_GET('id');
+    public function uploadAction(
+        string $table,
+        UploadedFile $file = null,
+        bool $deleteRecords = false,
+        bool $encoding = false,
+        bool $retry = false,
+        string $jsonData = ''
+    ): ResponseInterface {
+        // we didn't receive a retry and the file upload failed. Redirect to index
+        if ($file === null && !$retry) {
+            $message = GeneralUtility::makeInstance(
+                FlashMessage::class,
+                $this->languageService->sL('LLL:EXT:xlsimport/Resources/Private/Language/locallang.xlf:error.file.uploadFailed.message'),
+                $this->languageService->sL('LLL:EXT:xlsimport/Resources/Private/Language/locallang.xlf:error.file.uploadFailed.header'),
+                FlashMessage::ERROR,
+                true
+            );
+            $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
+            $messageQueue = $flashMessageService->getMessageQueueByIdentifier();
+            $messageQueue->enqueue($message);
+            $this->redirect('index');
+        }
+        $moduleTemplate = $this->moduleTemplateFactory->create($this->request);
+        $page = (int)GeneralUtility::_GET('id');
         $tempPage = [
             'uid' => $page,
         ];
@@ -144,10 +174,7 @@ class XlsimportController extends ActionController
             );
         }
 
-        $deleteOldRecords = (bool)$this->request->getArgument('deleteRecords');
-        $file = $this->request->getArgument('file');
-        $table = $this->request->getArgument('table');
-        if ($deleteOldRecords && AccessUtility::isAllowedTable($table, $page)) {
+        if ($deleteRecords && AccessUtility::isAllowedTable($table, $page)) {
             $dataHandler = GeneralUtility::makeInstance(DataHandler::class);
 
             $db = GeneralUtility::makeInstance(ConnectionPool::class);
@@ -165,10 +192,6 @@ class XlsimportController extends ActionController
             }
         }
 
-        $uploadedFile = GeneralUtility::tempnam('xlsimport');
-        GeneralUtility::upload_copy_move($file['tmp_name'], $uploadedFile);
-
-        $list = $this->getList($uploadedFile);
         $uidConfig = [
             'uid' => [
                 'label' => 'uid',
@@ -222,13 +245,35 @@ class XlsimportController extends ActionController
         }
         unset($column);
 
+        $fields = [];
+
+        foreach ($tca as $field => $config) {
+            $fields[] = [
+                'type' => $field,
+                'label' => $config['label'],
+            ];
+        }
+
+        if (!$retry) {
+            $uploadedFile = GeneralUtility::tempnam('xlsimport');
+            $file->moveTo($uploadedFile);
+            $list = $this->prepareFileForImport($uploadedFile, $encoding);
+            GeneralUtility::unlink_tempfile($uploadedFile);
+            $jsonData = json_encode($list);
+            $fileName = GeneralUtility::tempnam('xlsimport', '.json');
+            GeneralUtility::writeFile($fileName, $jsonData);
+        } else {
+            $list = $this->loadDataFromJsonFile($jsonData);
+        }
+
         $assignedValues = [
-            'fields' => $tca,
-            'data' => $list['data'],
+            'fields' => $fields,
+            'data' => $list,
+            'jsonData' => basename($fileName ?? $jsonData),
             'page' => $page,
             'table' => $table,
             'hasPasswordField' => $hasPasswordField,
-            'passwordFields' => implode(',', $passwordFields),
+            'passwordFields' => $passwordFields,
             'addInlineSettings' => [
                 'FormEngine' => [
                     'formName' => 'importData',
@@ -236,6 +281,10 @@ class XlsimportController extends ActionController
             ],
         ];
         $this->view->assignMultiple($assignedValues);
+        $moduleTemplate
+            ->setTitle('S7 XLS Import', LocalizationUtility::translate('prepare', 'xlsimport'))
+            ->setContent($this->view->render());
+        return $this->htmlResponse($moduleTemplate->renderContent());
     }
 
     /**
@@ -244,38 +293,34 @@ class XlsimportController extends ActionController
      * @throws JsonException
      * @throws \TYPO3\CMS\Core\Exception
      */
-    public function importAction(): void
-    {
+    public function importAction(
+        string $table,
+        string $jsonData,
+        array $fields,
+        array $dataset,
+        bool $passwordOverride = false,
+        array $passwordFields = []
+    ): void {
         $page = GeneralUtility::_GET('id');
-        $table = $this->request->getArgument('table');
         if (!$table || !array_key_exists($table, $GLOBALS['TCA'])) {
             $this->redirect('index');
             exit;
         }
-        /** @var array $fields */
-        $fields = $this->request->getArgument('fields');
         $overrides = [];
         if ($this->request->hasArgument('overrides')) {
             $overrides = $this->request->getArgument('overrides');
         }
 
-        $passwordOverride = (bool)$this->request->getArgument('passwordOverride');
-        $passwordFields = GeneralUtility::trimExplode(',', $this->request->getArgument('passwordFields'));
+        // load saved data from JSON
+        $data = $this->loadDataFromJsonFile($jsonData);
 
-        /** @var array $imports */
-        $imports = json_decode($this->request->getArgument('dataset'), true, 512, JSON_THROW_ON_ERROR);
-        $a = [];
-        foreach ($imports as $import) {
-            $s = sprintf('%s=%s', $import['name'], urlencode($import['value']));
-            $temp = [];
-            parse_str($s, $temp);
-            foreach ($temp['tx_xlsimport_web_xlsimporttxxlsimport']['dataset'] as $k => $v) {
-                foreach ($v as $key => $value) {
-                    $a[$k][$key] = $value;
-                }
+        // remove all data, which should not be imported
+        foreach ($data as $index => $value) {
+            if (!array_key_exists($index, $dataset) || $dataset[$index] != 1) {
+                unset($data[$index]);
             }
         }
-        $imports = $a;
+        $imports = array_values($data);
 
         // unset all fields not assigned to a TCA field
         foreach ($fields as $key => $field) {
@@ -286,6 +331,31 @@ class XlsimportController extends ActionController
                 unset($fields[$key]);
             }
         }
+
+        // if fieldlist is empty from now, return data to importer and create flashMessage
+        if (empty($fields)) {
+            $message = GeneralUtility::makeInstance(
+                FlashMessage::class,
+                $this->languageService->sL('LLL:EXT:xlsimport/Resources/Private/Language/locallang.xlf:warning.fieldlist.empty.message'),
+                $this->languageService->sL('LLL:EXT:xlsimport/Resources/Private/Language/locallang.xlf:warning.fieldlist.empty.header'),
+                FlashMessage::WARNING,
+                true
+            );
+            $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
+            $messageQueue = $flashMessageService->getMessageQueueByIdentifier();
+            $messageQueue->enqueue($message);
+            $this->redirect(
+                'upload',
+                null,
+                null,
+                [
+                    'retry' => true,
+                    'jsonData' => $jsonData,
+                    'table' => $table,
+                ]
+            );
+        }
+
         // get override field and take a look inside fieldlist, if defined
         foreach ($overrides as $key => $override) {
             if (empty($override) | in_array($override, $fields, true)) {
@@ -307,31 +377,29 @@ class XlsimportController extends ActionController
             $table => [],
         ];
         foreach ($imports as $import) {
-            if ($import['import']) {
-                $insertArray = [];
-                $update = false;
-                foreach ($fields as $key => $field) {
-                    if ($field === 'uid') {
-                        if (!empty($import[$key])) {
-                            $update = true;
-                        }
-                    } else {
-                        $insertArray[$field] = $import[$key];
+            $insertArray = [];
+            $update = false;
+            foreach ($fields as $key => $field) {
+                if ($field === 'uid') {
+                    if (!empty($import[$key])) {
+                        $update = true;
                     }
-                    if (!isset($insertArray['pid'])) {
-                        $insertArray['pid'] = $page;
-                    }
+                } else {
+                    $insertArray[$field] = $import[$key];
                 }
-                foreach ($overrides as $key => $override) {
-                    $insertArray[$key] = $override;
-                }
-
-                foreach ($passwordFields as $passwordField) {
-                    $insertArray[$passwordField] = md5(sha1(microtime()));
-                }
-
-                $inserts[$table][$update ? $import['uid'] : uniqid('NEW_', true)] = $insertArray;
             }
+            if (!isset($insertArray['pid'])) {
+                $insertArray['pid'] = $page;
+            }
+            foreach ($overrides as $key => $override) {
+                $insertArray[$key] = $override;
+            }
+
+            foreach ($passwordFields as $passwordField) {
+                $insertArray[$passwordField] = md5(sha1(microtime()));
+            }
+
+            $inserts[$table][$update ? $import['uid'] : uniqid('NEW_', true)] = $insertArray;
         }
         if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][self::class]['Hooks'])) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][self::class]['Hooks'] as $_classRef) {
@@ -345,7 +413,7 @@ class XlsimportController extends ActionController
         $tce = GeneralUtility::makeInstance(DataHandler::class);
         $tce->start($inserts, []);
         $tce->process_datamap();
-        /** @var FlashMessage $message */
+
         $message = GeneralUtility::makeInstance(
             FlashMessage::class,
             $this->languageService->sL('LLL:EXT:xlsimport/Resources/Private/Language/locallang.xlf:success'),
@@ -353,33 +421,29 @@ class XlsimportController extends ActionController
             FlashMessage::OK,
             true
         );
-        /** @var FlashMessageService $flashMessageService */
+
         $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
         $messageQueue = $flashMessageService->getMessageQueueByIdentifier();
         $messageQueue->enqueue($message);
+        GeneralUtility::unlink_tempfile($this->buildJsonFileName($jsonData));
         $this->redirect('index');
     }
 
     /**
-     * @param string $fileName
      * @return array
      * @throws Exception
-     * @throws NoSuchArgumentException
      * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
      */
-    protected function getList(string $fileName): array
-    {
+    protected function prepareFileForImport(
+        string $fileName,
+        bool $encoding = false
+    ): array {
         $aList = [];
-        $aList['rows'] = 0;
-        $aList['cols'] = 0;
-        $aList['data'] = [];
         if (is_file($fileName)) {
             $inputFileType = IOFactory::identify($fileName);
 
             if ($inputFileType === 'Csv') {
                 $oReader = new Csv();
-                $encoding = (bool)$this->request->getArgument('encoding');
-
                 if ($encoding === true) {
                     $oReader->setInputEncoding('CP1252');
                 }
@@ -388,7 +452,6 @@ class XlsimportController extends ActionController
             }
 
             if ($oReader->canRead($fileName)) {
-                //$oReader->getReadDataOnly();
                 $xls = $oReader->load($fileName);
                 $xls->setActiveSheetIndex(0);
                 $sheet = $xls->getActiveSheet();
@@ -396,7 +459,7 @@ class XlsimportController extends ActionController
 
                 $rowcount = 1;
                 $colcount = 1;
-                foreach ($rowI as $k => $row) {
+                foreach ($rowI as $row) {
                     $rowcount++;
                     $cell = new RowCellIterator($sheet, 1, 'A');
 
@@ -411,12 +474,9 @@ class XlsimportController extends ActionController
                     }
                 }
 
-                $aList['rows'] = $rowcount;
-                $aList['cols'] = $colcount;
-
                 for ($y = 1; $y < $rowcount; $y++) {
                     for ($x = 1; $x <= $colcount; $x++) {
-                        $aList['data'][$y][$x] = $sheet->getCellByColumnAndRow($x, $y)->getValue();
+                        $aList[$y][$x] = $sheet->getCellByColumnAndRow($x, $y)->getValue();
                     }
                 }
 
@@ -442,5 +502,31 @@ class XlsimportController extends ActionController
         }
 
         return $allowedTables;
+    }
+
+    private function loadDataFromJsonFile(string $jsonFileName): ?array
+    {
+        $jsonFile = $this->buildJsonFileName($jsonFileName);
+        if (is_file($jsonFile)) {
+            return json_decode(file_get_contents($jsonFile), true);
+        }
+        $message = GeneralUtility::makeInstance(
+            FlashMessage::class,
+            $this->languageService->sL('LLL:EXT:xlsimport/Resources/Private/Language/locallang.xlf:error.jsonFile.message'),
+            $this->languageService->sL('LLL:EXT:xlsimport/Resources/Private/Language/locallang.xlf:error.jsonFile.header'),
+            FlashMessage::WARNING,
+            true
+        );
+        $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
+        $messageQueue = $flashMessageService->getMessageQueueByIdentifier();
+        $messageQueue->enqueue($message);
+        $this->redirect('index');
+        return null;
+    }
+
+    private function buildJsonFileName(string $jsonFileName): string
+    {
+        $temporaryPath = Environment::getVarPath() . '/transient/';
+        return sprintf('%s%s', $temporaryPath, $jsonFileName);
     }
 }

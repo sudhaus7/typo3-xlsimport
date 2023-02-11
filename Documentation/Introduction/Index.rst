@@ -18,7 +18,8 @@ Introduction
 What does it do?
 ^^^^^^^^^^^^^^^^
 
-This extension allows the import of data to every database table inside TYPO3 defined in TCA configuration.
+This extension allows the import of data to every database table inside TYPO3
+defined in TCA configuration.
 
 .. _screenshots:
 

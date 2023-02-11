@@ -14,34 +14,36 @@
 <f:section name="content">
     <f:be.pagePath />
     <f:be.infobox title="{f:translate(key:'prepareinfo')}" state="-1">
-        <f:translate key="prepareinfo_text" />
+        <ol>
+            <li>{f:translate(key: 'prepareinfo_text')}</li>
+            <li>{f:translate(key: 'importinfo_text')}</li>
+        </ol>
     </f:be.infobox>
-    <f:be.infobox title="{f:translate(key:'importinfo')}" state="-1">
-        <f:translate key="importinfo_text" />
-    </f:be.infobox>
-    <f:form pageUid="{page}" id="importData" action="import" name="importData">
-        <fieldset>
-            <legend>{f:translate(key: 'multiple')}</legend>
-            <f:comment>
-            <f:for each="{fields}" as="field" key="fieldName">
-                <f:if condition="{field.config.type} == 'select' || {field.config.type} == 'group'">
-                    <f:render partial="TcaField" arguments="{_all}"/>
-                </f:if>
-            </f:for>
-            </f:comment>
-            <f:form.hidden name="passwordFields" value="{passwordFields}"/>
-            <f:form.hidden name="passwordOverride" value="0" />
-            <f:if condition="{hasPasswordField}">
+    <f:form pageUid="{page}" id="importData" action="import" objectName="importData" name="importData">
+        <f:form.hidden name="jsonData" value="{jsonData}"/>
+        <f:for each="{passwordFields}" as="passwordField">
+            <f:form.hidden name="passwordFields[]" value="{passwordField}"/>
+        </f:for>
+        <f:if condition="{hasPasswordField}">
+            <fieldset class="form-section">
+                <legend>{f:translate(key: 'multiple')}</legend>
                 <label for="overridePassword">
                     {f:translate(key: 'overridePassword')}
                 </label>
                 <f:form.checkbox
-                        id="overridePassword"
-                        name="passwordOverride"
-                        value="1"
+                    id="overridePassword"
+                    name="passwordOverride"
+                    value="1"
                 />
+            </fieldset>
+        </f:if>
+        <f:comment><!--
+        <f:for each="{fields}" as="field" key="fieldName">
+            <f:if condition="{field.config.type} == 'select' || {field.config.type} == 'group'">
+                <f:render partial="TcaField" arguments="{_all}"/>
             </f:if>
-        </fieldset>
+        </f:for>
+        --></f:comment>
         <fieldset>
             <legend>
                 <f:translate key="info_complete" />: <span class="counter">{data -> f:count()}</span>/{data -> f:count()}
@@ -60,17 +62,18 @@
                         <f:if condition="{i.isFirst}">
                             <f:for each="{row}" as="value" iteration="it">
                                 <td>
-                                    <select name="tx_xlsimport_web_xlsimporttxxlsimport[fields][field-{it.index}]">
-                                        <option value=""><f:translate key="ignore" /></option>
-                                        <f:comment>
+                                    <f:form.select
+                                        name="fields[{it.cycle}]"
+                                        options="{fields}"
+                                        optionLabelField="label"
+                                        optionValueField="type"
+                                        prependOptionLabel="{f:translate(key: 'ignore')}"
+                                        prependOptionValue=""
+                                    >
+                                        <f:comment><!--
                                         <option value="mm"><f:translate key="relation"/></option>
-                                        </f:comment>
-                                        <f:for each="{fields}" key="type" as="field">
-                                            <option value="{type}">
-                                                {field.label}
-                                            </option>
-                                        </f:for>
-                                    </select>
+                                         --></f:comment>
+                                    </f:form.select>
                                 </td>
                             </f:for>
                         </f:if>
@@ -81,13 +84,10 @@
                 <f:for each="{data}" as="row" key="number">
                     <tr>
                         <td>
-                            <f:form.checkbox class="count" name="dataset[{number}][import]" value="1" checked="true" />
+                            <f:form.checkbox class="count" name="dataset[{number}]" value="1" checked="true" />
                         </td>
                         <f:for each="{row}" as="value" iteration="i">
-                            <td>
-                                {value}
-                                <f:form.hidden name="dataset[{number}][field-{i.index}]" value="{value}" />
-                            </td>
+                            <td>{value}</td>
                         </f:for>
                     </tr>
                 </f:for>
@@ -97,40 +97,6 @@
                 <f:form.submit value="{f:translate(key:'import')}" />
             </p>
         </fieldset>
-
-
     </f:form>
-    <f:format.raw>
-        <script type="text/javascript">
-            document.getElementById('importData').onsubmit = function(ev) {
-
-                if (!document.getElementById('asdojasdlkasdopjsdokvnsdlkfmasdlk')) {
-
-                    ev.preventDefault();
-                    //  console.log(ev,ev.srcElement[2]);
-                    var data = ev.target.querySelectorAll('input[name^="tx_xlsimport_web_xlsimporttxxlsimport[dataset]"]');
-
-                    var json = [];
-                    data.forEach(function(inp) {
-                        if (inp.getAttribute('type')=='checkbox' && !inp.checked) return;
-                        json.push({
-                            'name':inp.getAttribute('name'),
-                            'value':inp.getAttribute('value')
-                        });
-                        inp.parentNode.removeChild(inp);
-                        //console.log(inp);
-                    });
-                    var newdata = document.createElement('input');
-                    newdata.setAttribute("id","asdojasdlkasdopjsdokvnsdlkfmasdlk");
-                    newdata.setAttribute("name","tx_xlsimport_web_xlsimporttxxlsimport[dataset]");
-                    newdata.setAttribute("type","hidden");
-                    newdata.setAttribute('value',JSON.stringify(json));
-
-                    ev.srcElement.appendChild(newdata);
-                    ev.srcElement.submit();
-                }
-            }
-        </script>
-    </f:format.raw>
 </f:section>
 </html>
