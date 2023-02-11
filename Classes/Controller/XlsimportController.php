@@ -56,8 +56,7 @@ class XlsimportController extends ActionController
     public function __construct(
         ResourceFactory $resourceFactory,
         LanguageService $languageService
-    )
-    {
+    ) {
         $this->resourceFactory = $resourceFactory;
         $this->languageService = $languageService;
     }
@@ -123,23 +122,6 @@ class XlsimportController extends ActionController
             'allowedTables' => $allowedTables,
         ];
         $this->view->assignMultiple($assignedValues);
-    }
-
-    /**
-     * Check if table has TCA definition
-     * and user is allowed to edit table on this page
-     * for each table and return array with allowed tables
-     */
-    private function checkTableAndAccessAllowed(array $possibleTables, int $pid): array
-    {
-        $allowedTables = [];
-        foreach ($possibleTables as $possibleTable) {
-            if (AccessUtility::isAllowedTable($possibleTable, $pid)) {
-                $label = $GLOBALS['TCA'][$possibleTable]['ctrl']['title'];
-                $allowedTables[$possibleTable] = $this->languageService->sL($label) ?: $label;            }
-        }
-
-        return $allowedTables;
     }
 
     /**
@@ -442,5 +424,23 @@ class XlsimportController extends ActionController
             }
         }
         return $aList;
+    }
+
+    /**
+     * Check if table has TCA definition
+     * and user is allowed to edit table on this page
+     * for each table and return array with allowed tables
+     */
+    private function checkTableAndAccessAllowed(array $possibleTables, int $pid): array
+    {
+        $allowedTables = [];
+        foreach ($possibleTables as $possibleTable) {
+            if (AccessUtility::isAllowedTable($possibleTable, $pid)) {
+                $label = $GLOBALS['TCA'][$possibleTable]['ctrl']['title'];
+                $allowedTables[$possibleTable] = $this->languageService->sL($label) ?: $label;
+            }
+        }
+
+        return $allowedTables;
     }
 }

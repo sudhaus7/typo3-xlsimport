@@ -15,9 +15,9 @@ final class AccessUtility
 
     public static function isAllowedTable(string $possibleTable, int $pageId): bool
     {
-        return (array_key_exists($possibleTable, $GLOBALS['TCA'])
+        return array_key_exists($possibleTable, $GLOBALS['TCA'])
         && self::getBackendUser()->check('tables_modify', $possibleTable)
-        && self::checkTableIsAllowedOnPage($possibleTable, $pageId));
+        && self::checkTableIsAllowedOnPage($possibleTable, $pageId);
     }
 
     public static function isAllowedField(string $table, string $fieldName): bool
