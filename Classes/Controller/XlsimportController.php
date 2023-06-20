@@ -401,7 +401,7 @@ class XlsimportController extends ActionController
 
             $inserts[$table][$update ? $import['uid'] : uniqid('NEW_', true)] = $insertArray;
         }
-        if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][self::class]['Hooks'])) {
+        if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][self::class]['Hooks'] ?? false)) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][self::class]['Hooks'] as $_classRef) {
                 $hookObj = GeneralUtility::makeInstance($_classRef);
                 if (method_exists($hookObj, 'manipulateRelations')) {
