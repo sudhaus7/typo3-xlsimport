@@ -27,22 +27,22 @@
 		"docs": "https://docs.typo3.org/p/sudhaus7/xlsimport/3.0/en-us/Index.html"
 	},
 	"require": {
-		"typo3/cms-core": "^11.5",
-		"phpoffice/phpspreadsheet": "1.27.*",
+		"typo3/cms-core": "^12.4",
+		"phpoffice/phpspreadsheet": "1.29.*",
 		"ext-json": "*",
-		"php": "^7.4 || ^8.0"
+		"php": "^8.0 || ^8.1 || ^8.2"
 	},
 	"require-dev": {
-		"typo3/cms-fluid-styled-content": "^11.5",
-		"typo3/cms-tstemplate": "^11.5",
-		"typo3/cms-backend": "^11.5",
+		"typo3/cms-fluid-styled-content": "^12.4",
+		"typo3/cms-tstemplate": "^12.4",
+		"typo3/cms-backend": "^12.4",
 		"phpstan/phpstan": "*",
-		"friendsofphp/php-cs-fixer": "^3.14",
+		"friendsofphp/php-cs-fixer": "^3.21",
 		"codeception/codeception": "*",
 		"codeception/phpbuiltinserver": "*",
-		"helhum/typo3-console": "^7.1",
-		"friendsoftypo3/tt-address": "^7",
-		"armin/editorconfig-cli": "^1.5"
+		"helhum/typo3-console": "^8.0",
+		"friendsoftypo3/tt-address": "^8.0",
+		"armin/editorconfig-cli": "^1.6"
 	},
 	"suggest": {
 		"friendsoftypo3/tt-address": "*"
