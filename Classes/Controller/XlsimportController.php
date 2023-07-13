@@ -42,9 +42,9 @@ use TYPO3\CMS\Recordlist\Controller\AccessDeniedException;
 class XlsimportController extends ActionController
 {
     /**
-     * @var LanguageService
+     * @var LanguageServiceFactory
      */
-    protected LanguageService $languageService;
+    protected LanguageServiceFactory $languageService;
 
     /**
      * @var ResourceFactory
@@ -55,7 +55,7 @@ class XlsimportController extends ActionController
 
     public function __construct(
         ResourceFactory $resourceFactory,
-        LanguageService $languageService,
+        LanguageServiceFactory $languageService,
         ModuleTemplateFactory $moduleTemplateFactory
     ) {
         $this->resourceFactory = $resourceFactory;
