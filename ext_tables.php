@@ -1,6 +1,6 @@
 <?php
 
-defined('TYPO3_MODE') || die();
+defined('TYPO3') || die('Access denied.');
 
 (static function () {
     \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
