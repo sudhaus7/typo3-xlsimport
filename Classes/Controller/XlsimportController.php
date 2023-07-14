@@ -24,7 +24,7 @@ use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Http\UploadedFile;
-use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Resource\ResourceFactory;
@@ -59,7 +59,7 @@ class XlsimportController extends ActionController
         ModuleTemplateFactory $moduleTemplateFactory
     ) {
         $this->resourceFactory = $resourceFactory;
-        $this->languageService = $languageService;
+        $this->languageServiceFactory = $languageService;
         $this->moduleTemplateFactory = $moduleTemplateFactory;
     }
 
