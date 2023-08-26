@@ -1,30 +1,16 @@
 name: Publish
 on:
-  push:
-    tags:
-      - '*'
+  release:
+    types: [published]
+
 
 jobs:
-  publish:
-    name: Publish to TER
+  TERUpload:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
     steps:
-      - name: Checkout code
-        uses: actions/checkout@master
-      - name: Set up PHP Version 7.4
-        uses: shivammathur/setup-php@v2
+      - uses: actions/checkout@v1
+      - uses: tomasnorre/typo3-upload-ter@v2
         with:
-          php-version: 7.4
-      - name: Install Dependencies - move old composer.json
-        run: |
-          mv composer.json composer.json-orig
-          composer require phpoffice/phpspreadsheet 1.17.1 --ignore-platform-reqs --no-progress
-          mv composer.json-orig composer.json
-          rm composer.lock
-      - name: Publish to TER
-        uses: the-coding-owl/action-typo3-extension-repository-upload@0.0.1
-        env:
-          SECRET_USERNAME: ${{ secrets.USERNAME }}
-          SECRET_PASSWORD: ${{ secrets.PASSWORD }}
-          EXTENSION_KEY: 'xlsimport'
-          UPLOAD_MESSAGE: ${{ github.event.head_commit.message }}
+          api-token: ${{ secrets.TYPO3_API_TOKEN }}
