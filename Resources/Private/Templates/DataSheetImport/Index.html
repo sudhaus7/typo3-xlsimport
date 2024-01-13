@@ -1,22 +1,22 @@
-<html xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
-      xmlns:be="http://typo3.org/ns/TYPO3/CMS/Backend/ViewHelpers"
-      xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
-      xmlns="http://www.w3.org/1999/xhtml"
-      lang="en"
-      f:schemaLocation="https://fluidtypo3.org/schemas/fluid-master.xsd"
-      data-namespace-typo3-fluid="true">
+<html
+    xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
+    xmlns:be="http://typo3.org/ns/TYPO3/CMS/Backend/ViewHelpers"
+    xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
+    xmlns="http://www.w3.org/1999/xhtml"
+    lang="en"
+    f:schemaLocation="https://fluidtypo3.org/schemas/fluid-master.xsd"
+    data-namespace-typo3-fluid="true"
+>
 <f:layout name="Default" />
 
 <f:section name="headline">
-    <f:debug>{_all}</f:debug>
-    <h1><f:translate key="module_name" /></h1>
+    <h1><f:translate key="module_name" extensionName="xlsimport" /></h1>
 </f:section>
 
 <f:section name="content">
-    <f:be.pagePath />
     <f:flashMessages />
-    <f:be.infobox title="{f:translate(key:'importinfo')}" state="-1">
-        <f:translate key="importinfo_format" />
+    <f:be.infobox title="{f:translate(key:'importinfo', extensionName: 'xlsimport')}" state="-1">
+        <f:translate key="importinfo_format" extensionName="xlsimport" />
         <ul>
             <li>Excel 2007 (.xlsx)</li>
             <li>Excel5 (.xls)</li>
@@ -26,13 +26,17 @@
             <li>CSV (.csv/.txt)</li>
         </ul>
     </f:be.infobox>
-    <f:form pageUid="{page}" action="upload" enctype="multipart/form-data">
+    <form
+        action="{f:be.uri(route: 'web_xlsimport', parameters: '{action: \'upload\', id: \'{page}\'}')}"
+        enctype="multipart/form-data"
+        method="post"
+    >
         <div class="typo3-TCEforms">
             <fieldset class="form-section">
                 <div class="row">
                     <div class="form-group col col-sm-6">
                         <label class="t3js-formengine-label" for="table">
-                            <f:translate key="tableselect" />
+                            <f:translate key="tableselect" extensionName="xlsimport" />
                         </label>
                         <f:form.select
                             class="form-select"
@@ -45,7 +49,7 @@
                 <div class="row">
                     <div class="form-group col col-sm-12">
                         <label class="t3js-formengine-label" for="fileUpload">
-                            <f:translate key="fileselect" />
+                            <f:translate key="fileselect" extensionName="xlsimport" />
                         </label>
                         <f:form.upload
                             class="btn btn-default"
@@ -57,18 +61,20 @@
                 <div class="row">
                     <div class="form-group col col-sm-12">
                         <f:form.checkbox name="encoding" id="encoding" value="1" />
-                        <label class="t3js-formengine-label" for="encoding"><f:translate key="encoding" /></label><br>
+                        <label class="t3js-formengine-label" for="encoding"><f:translate key="encoding" extensionName="xlsimport" /></label><br>
                         <f:form.checkbox name="deleteRecords" id="deleteRecords" value="1" />
-                        <label class="t3js-formengine-label" for="deleteRecords"><f:translate key="deleteRecord" /></label>
+                        <label class="t3js-formengine-label" for="deleteRecords"><f:translate key="deleteRecord" extensionName="xlsimport" /></label>
                     </div>
                 </div>
                 <div class="row">
                     <div class="form-group col col-sm-12">
-                        <f:form.button type="submit" class="btn btn-default">{f:translate(key:'upload')}</f:form.button>
+                        <f:form.button type="submit" class="btn btn-default">{f:translate(key:'upload', extensionName: 'xlsimport')}</f:form.button>
                     </div>
                 </div>
             </fieldset>
         </div>
+    </form>
+    <f:form pageUid="{page}" action="upload" enctype="multipart/form-data">
     </f:form>
 </f:section>
 </html>

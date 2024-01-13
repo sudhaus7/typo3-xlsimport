@@ -8,7 +8,6 @@ use Closure;
 use Doctrine\DBAL\DBALException;
 use TYPO3\CMS\Backend\Form\Exception;
 use TYPO3\CMS\Backend\Form\NodeFactory;
-use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
