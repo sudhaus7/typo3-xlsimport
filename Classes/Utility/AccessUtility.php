@@ -38,16 +38,19 @@ final class AccessUtility
         return $dataHandler->isTableAllowedForThisPage($pageId, $tableName);
     }
 
+    /**
+     * @todo: We have to handle root page separately
+     */
     public static function checkAccessOnPage(int $pageId, int $permissions): bool
     {
         $pageRow = BackendUtility::getRecord('pages', $pageId);
-        if ($pageRow === null) {
+        if ($pageRow === null && $pageId !== 0) {
             return false;
         }
         return self::getBackendUser()->doesUserHaveAccess($pageRow, $permissions);
     }
 
-    private static function getBackendUser(): BackendUserAuthentication
+    public static function getBackendUser(): BackendUserAuthentication
     {
         return $GLOBALS['BE_USER'] ?? GeneralUtility::makeInstance(BackendUserAuthentication::class);
     }
