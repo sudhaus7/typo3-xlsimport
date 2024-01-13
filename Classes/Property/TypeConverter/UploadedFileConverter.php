@@ -21,6 +21,7 @@ class UploadedFileConverter extends AbstractTypeConverter
 
     /**
      * @inheritDoc
+     * @param array<array-key, mixed> $convertedChildProperties
      */
     public function convertFrom(
         $source,
