@@ -41,14 +41,8 @@ use TYPO3\CMS\Recordlist\Controller\AccessDeniedException;
  */
 class XlsimportController extends ActionController
 {
-    /**
-     * @var LanguageService
-     */
     protected LanguageService $languageService;
 
-    /**
-     * @var ResourceFactory
-     */
     protected ResourceFactory $resourceFactory;
 
     protected ModuleTemplateFactory $moduleTemplateFactory;
@@ -72,11 +66,8 @@ class XlsimportController extends ActionController
     {
         $moduleTemplate = $this->moduleTemplateFactory->create($this->request);
         $page = (int)GeneralUtility::_GET('id');
-        $minimalPage = [
-            'uid' => $page,
-        ];
 
-        if (!AccessUtility::getBackendUser()->doesUserHaveAccess($minimalPage, Permission::PAGE_EDIT)) {
+        if (!AccessUtility::checkAccessOnPage($page, Permission::PAGE_EDIT)) {
             throw new AccessDeniedException(
                 'You are not allowed to manipulate records on this page',
                 1676071343135
@@ -164,10 +155,8 @@ class XlsimportController extends ActionController
         }
         $moduleTemplate = $this->moduleTemplateFactory->create($this->request);
         $page = (int)GeneralUtility::_GET('id');
-        $tempPage = [
-            'uid' => $page,
-        ];
-        if (!AccessUtility::getBackendUser()->doesUserHaveAccess($tempPage, Permission::PAGE_EDIT)) {
+
+        if (!AccessUtility::checkAccessOnPage($page, Permission::PAGE_EDIT)) {
             throw new AccessDeniedException(
                 'You are not allowed on editing this page',
                 1676074682764
