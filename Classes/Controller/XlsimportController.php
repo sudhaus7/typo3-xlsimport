@@ -35,6 +35,7 @@ use TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException;
 use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Recordlist\Controller\AccessDeniedException;
+use function is_array;
 
 /**
  * Class XlsimportController
@@ -390,7 +391,7 @@ class XlsimportController extends ActionController
 
             $inserts[$table][$update ? $import['uid'] : uniqid('NEW_', true)] = $insertArray;
         }
-        if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][self::class]['Hooks'])) {
+        if (isset($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][self::class]['Hooks']) && is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][self::class]['Hooks'])) {
             foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][self::class]['Hooks'] as $_classRef) {
                 $hookObj = GeneralUtility::makeInstance($_classRef);
                 if (method_exists($hookObj, 'manipulateRelations')) {

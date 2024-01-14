@@ -1,5 +1,10 @@
 # XLS Importer
 
+[![Latest Stable Version](https://poser.pugx.org/sudhaus7/xlsimport/v/stable.svg)](https://extensions.typo3.org/extension/xlsimport/)
+[![TYPO3 11](https://img.shields.io/badge/TYPO3-11-orange.svg)](https://get.typo3.org/version/11)
+[![Total Downloads](https://poser.pugx.org/sudhaus7/logformatter/d/total.svg)](https://packagist.org/packages/sudhaus7/xlsimport)
+[![Monthly Downloads](https://poser.pugx.org/sudhaus7/xlsimport/d/monthly)](https://packagist.org/packages/sudhaus7/logformatter)
+
 ## TCA driven import Script for Spreadsheets
 
 ### What does it do?
@@ -51,10 +56,14 @@ module.tx_xlsimport {
 
 The extension in itself does not maintain relations out of the box.
 
-TODO:
-- deprecate TYPO3 8.7
+### Limitations
+
+When a non-admin user is using the tool, the folder the import is made to has to either be inside a site-setup with defined languages OR the sys_language_id (0,1,2,3) has to be part of the imported data. If these requisits are not met, the tool will report a successful import, while no data has been imported. We hope to address this in a future update.
+
+### TODO:
 - add Events/Signalslots for datamanipulation
 - add support for multiple sheets
 
-FUTURE: (hit me up if you are willing to help funding)
+### FUTURE: (hit me up if you are willing to help funding)
 - support for related data as far as it is modelled in the TCA
+- support for import-presets or templates for recurring import tasks
