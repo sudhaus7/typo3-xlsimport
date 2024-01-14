@@ -4,7 +4,8 @@ $EM_CONF['xlsimport'] = [
     'title' => '(Sudhaus7) XLS Importer',
     'description' => 'A simple importer to import data into the database',
     'category' => 'module',
-    'version' => '4.0.1',
+
+    'version' => '4.0.2',
     'state' => 'stable',
     'uploadfolder' => 1,
     'clearcacheonload' => 0,

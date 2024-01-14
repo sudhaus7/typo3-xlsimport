@@ -11,6 +11,14 @@ jobs:
       fail-fast: false
     steps:
       - uses: actions/checkout@v1
+      - name: prepare for TER
+        uses: shivammathur/setup-php
+      - name: Install Dependencies - move old composer.json
+        run: |
+          mv composer.json composer.json-orig
+          composer require phpoffice/phpspreadsheet 1.17.1 --ignore-platform-reqs --no-progress
+          mv composer.json-orig composer.json
+          rm composer.lock
       - uses: tomasnorre/typo3-upload-ter@v2
         with:
           api-token: ${{ secrets.TYPO3_API_TOKEN }}

@@ -35,20 +35,15 @@ use TYPO3\CMS\Extbase\Mvc\Exception\NoSuchArgumentException;
 use TYPO3\CMS\Extbase\Mvc\Exception\StopActionException;
 use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 use TYPO3\CMS\Recordlist\Controller\AccessDeniedException;
+use function is_array;
 
 /**
  * Class XlsimportController
  */
 class XlsimportController extends ActionController
 {
-    /**
-     * @var LanguageService
-     */
     protected LanguageService $languageService;
 
-    /**
-     * @var ResourceFactory
-     */
     protected ResourceFactory $resourceFactory;
 
     protected ModuleTemplateFactory $moduleTemplateFactory;
@@ -72,11 +67,8 @@ class XlsimportController extends ActionController
     {
         $moduleTemplate = $this->moduleTemplateFactory->create($this->request);
         $page = (int)GeneralUtility::_GET('id');
-        $minimalPage = [
-            'uid' => $page,
-        ];
 
-        if (!AccessUtility::getBackendUser()->doesUserHaveAccess($minimalPage, Permission::PAGE_EDIT)) {
+        if (!AccessUtility::checkAccessOnPage($page, Permission::PAGE_EDIT)) {
             throw new AccessDeniedException(
                 'You are not allowed to manipulate records on this page',
                 1676071343135
@@ -164,10 +156,8 @@ class XlsimportController extends ActionController
         }
         $moduleTemplate = $this->moduleTemplateFactory->create($this->request);
         $page = (int)GeneralUtility::_GET('id');
-        $tempPage = [
-            'uid' => $page,
-        ];
-        if (!AccessUtility::getBackendUser()->doesUserHaveAccess($tempPage, Permission::PAGE_EDIT)) {
+
+        if (!AccessUtility::checkAccessOnPage($page, Permission::PAGE_EDIT)) {
             throw new AccessDeniedException(
                 'You are not allowed on editing this page',
                 1676074682764
@@ -401,7 +391,8 @@ class XlsimportController extends ActionController
 
             $inserts[$table][$update ? $import['uid'] : uniqid('NEW_', true)] = $insertArray;
         }
-        if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][self::class]['Hooks'] ?? false)) {
+        if (isset($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][self::class]['Hooks']) && is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][self::class]['Hooks'])) {
+
             foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS'][self::class]['Hooks'] as $_classRef) {
                 $hookObj = GeneralUtility::makeInstance($_classRef);
                 if (method_exists($hookObj, 'manipulateRelations')) {
