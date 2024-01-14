@@ -1,10 +1,16 @@
 <?php
 
-defined('TYPO3_MODE') || die();
+defined('TYPO3') || die();
 
 (static function () {
     $typo3Version = new \TYPO3\CMS\Core\Information\Typo3Version();
 
+    /**
+     * @deprecated will be removed with removal of v11 support
+     * registration for v12 @see Configuration/Backend/Modules.php
+     * Core Change: @see https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/12.0/Feature-96733-NewBackendModuleRegistrationAPI.html
+     * @see https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/12.0/Deprecation-96903-DeprecateOldModuleTemplateAPI.html
+     */
     if ($typo3Version->getMajorVersion() <= 11) {
         \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addModule(
             'web',

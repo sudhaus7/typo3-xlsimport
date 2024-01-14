@@ -1,7 +1,7 @@
 name: typo3-xlsimport
 type: typo3
 docroot: .Build/public
-php_version: "8.0"
+php_version: "8.1"
 webserver_type: nginx-fpm
 router_http_port: "80"
 router_https_port: "443"
@@ -181,7 +181,7 @@ nodejs_version: "16"
 
 # disable_settings_management: false
 # If true, ddev will not create CMS-specific settings files like
-# Drupal's settings.php/settings.ddev.php or TYPO3's AdditionalConfiguration.php
+# Drupal's LocalConfiguration.php/settings.ddev.php or TYPO3's AdditionalConfiguration.php
 # In this case the user must provide all such settings.
 
 # You can inject environment variables into the web container with:

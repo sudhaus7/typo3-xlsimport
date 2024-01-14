@@ -8,8 +8,10 @@ namespace SUDHAUS7\Xlsimport\Domain\Dto;
  * Class ImportJob
  *
  * Represents a job for importing data into a table.
+ *
+ * @internal only for usage within this extension, no public API
  */
-class ImportJob
+final class ImportJob
 {
     private string $table;
 

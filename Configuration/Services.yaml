@@ -9,7 +9,7 @@ services:
     exclude: '../Classes/Domain/Dto/*'
 
   SUDHAUS7\Xlsimport\Controller\DataSheetImportController:
-    public: true
+    tags: ['backend.controller']
 
   SUDHAUS7\Xlsimport\Service\ImportService:
     public: true

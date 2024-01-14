@@ -107,11 +107,10 @@ Options:
             - 8.1: use PHP 8.1
             - 8.2: use PHP 8.2
 
-    -t <11i3|11i4|12>
+    -t <11|12>
         Only with -s composerUpdate
         Specifies the TYPO3 core major version to be used
-            - 11i3 (default): use TYPO3 core v11 with typo3/cms-composer-installers 3.x
-            - 11i4: use TYPO3 core v11 with typo3/cms-composer-installers 4.0-RC1
+            - 11 (default): use TYPO3 core v11
             - 12: use TYPO3 core v12
 
     -e "<phpunit, codeception or additional phpstan scan options>"
@@ -174,7 +173,7 @@ else
   ROOT_DIR=`realpath ${PWD}/../../`
 fi
 TEST_SUITE="unit"
-TYPO3_VERSION="11i3"
+TYPO3_VERSION="11"
 DBMS="mariadb"
 PHP_VERSION="7.4"
 PHP_XDEBUG_ON=0
@@ -220,7 +219,7 @@ while getopts ":s:a:d:p:t:e:xy:nhuv" OPT; do
             ;;
         t)
             TYPO3_VERSION=${OPTARG}
-            if ! [[ ${TYPO3_VERSION} =~ ^(11i3|11i4|12)$ ]]; then
+            if ! [[ ${TYPO3_VERSION} =~ ^(11|12)$ ]]; then
                 INVALID_OPTIONS+=("t ${OPTARG}")
             fi
             ;;

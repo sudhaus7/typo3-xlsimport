@@ -8,6 +8,12 @@
 			<trans-unit id="module_name">
 				<source>XLS Importer</source>
 			</trans-unit>
+			<trans-unit id="description">
+				<source>This module provides an importer for spreadsheet data for the most in TYPO3 configured tables using a fluid importer.</source>
+			</trans-unit>
+			<trans-unit id="shortDescription">
+				<source>Spreadsheet importer for TYPO3</source>
+			</trans-unit>
 			<trans-unit id="choosepage">
 				<source>Choose page</source>
 			</trans-unit>

@@ -24,14 +24,16 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Core\Environment;
-use TYPO3\CMS\Core\DataHandling\DataHandler;
 use TYPO3\CMS\Core\Http\HtmlResponse;
 use TYPO3\CMS\Core\Http\RedirectResponse;
 use TYPO3\CMS\Core\Imaging\IconFactory;
 use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Localization\LanguageService;
+use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
+use TYPO3\CMS\Core\Page\JavaScriptModuleInstruction;
+use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Resource\Exception\FileDoesNotExistException;
 use TYPO3\CMS\Core\Type\Bitmask\Permission;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -53,18 +55,18 @@ final class DataSheetImportController
      */
     protected StandaloneView $view;
 
-    protected int $majorVersion;
+    protected Typo3Version $typo3Version;
 
     public function __construct(
         ModuleTemplateFactory $templateFactory,
         IconFactory $iconFactory,
-        LanguageService $languageService,
-        Typo3Version $typo3Version
+        Typo3Version $typo3Version,
+        LanguageServiceFactory $languageServiceFactory
     ) {
         $this->templateFactory = $templateFactory;
         $this->iconFactory = $iconFactory;
-        $this->languageService = $languageService;
-        $this->majorVersion = $typo3Version->getMajorVersion();
+        $this->languageService = $languageServiceFactory->createFromUserPreferences($GLOBALS['BE_USER']);
+        $this->typo3Version = $typo3Version;
     }
 
     /**
@@ -85,11 +87,17 @@ final class DataSheetImportController
 
         $moduleTemplate = $this->templateFactory->create($request);
 
-        if ($this->majorVersion <= 11) {
+        if ($this->typo3Version->getMajorVersion() <= 11) {
             $this->view = GeneralUtility::makeInstance(StandaloneView::class);
-            $this->view->setPartialRootPaths(['EXT:xlsimport/Resources/Private/Partials/']);
-            $this->view->setTemplateRootPaths(['EXT:xlsimport/Resources/Private/Templates/']);
-            $this->view->setLayoutRootPaths(['EXT:xlsimport/Resources/Private/Layouts/']);
+            $this->view->setPartialRootPaths([
+                'EXT:xlsimport/Resources/Private/Partials/',
+            ]);
+            $this->view->setTemplateRootPaths([
+                'EXT:xlsimport/Resources/Private/Templates/Core11/',
+            ]);
+            $this->view->setLayoutRootPaths([
+                'EXT:xlsimport/Resources/Private/Layouts/',
+                ]);
             $this->view->getRenderingContext()->setControllerAction($action);
             $this->view->getRenderingContext()->setControllerName('DataSheetImport');
         }
@@ -134,7 +142,7 @@ final class DataSheetImportController
         ];
 
         // TYPO3 version switcher, as the implementation of rendering changed in V12
-        if ($this->majorVersion <= 11) {
+        if (!method_exists($moduleTemplate, 'assignMultiple') || !method_exists($moduleTemplate, 'renderResponse')) {
             $this->view->assignMultiple($assignedValues);
             $moduleTemplate->setContent($this->view->render());
             $content = $moduleTemplate->renderContent();
@@ -153,6 +161,7 @@ final class DataSheetImportController
      * @throws Exception
      * @throws RouteNotFoundException
      * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
+     * @throws \JsonException
      */
     private function uploadAction(
         int $pageId,
@@ -160,16 +169,16 @@ final class DataSheetImportController
         ServerRequestInterface $request
     ): ResponseInterface {
         /** @var array{
-         *     deleteRecords: string,
-         *     encoding: string,
+         *     deleteRecords?: string,
+         *     encoding?: string,
          *     table: non-empty-string,
          *     retry?: string,
          *     jsonFile?: string
          * } $args
          */
         $args = $request->getParsedBody();
-        $encoding = (bool)$args['encoding'];
-        $deleteRecords = (bool)$args['deleteRecords'];
+        $encoding = (bool)($args['encoding'] ?? false);
+        $deleteRecords = (bool)($args['deleteRecords'] ?? false);
         $table = $args['table'];
         $retry = (bool)($args['retry'] ?? false);
         $jsonFile = $args['jsonFile'] ?? '';
@@ -254,13 +263,23 @@ final class DataSheetImportController
             ],
         ];
 
-        if ($this->majorVersion <= 11) {
+        if (
+            !method_exists(JavaScriptModuleInstruction::class, 'create')
+            || !method_exists($moduleTemplate, 'assignMultiple')
+            || !method_exists($moduleTemplate, 'renderResponse')
+        ) {
             $this->view->assignMultiple($assignedValues);
             $moduleTemplate->setContent($this->view->render());
             $content = $moduleTemplate->renderContent();
             return new HtmlResponse($content);
         }
 
+        /** @var PageRenderer $pageRenderer */
+        $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
+        $javaScriptRenderer = $pageRenderer->getJavaScriptRenderer();
+        $javaScriptRenderer->addJavaScriptModuleInstruction(
+            JavaScriptModuleInstruction::create('@sudhaus7/xlsimport/import-count.js')
+        );
         $moduleTemplate->assignMultiple($assignedValues);
         return $moduleTemplate->renderResponse('DataSheetImport/Upload');
     }
@@ -417,13 +436,7 @@ final class DataSheetImportController
      */
     private function checkAccessForPage(ServerRequestInterface $request): int
     {
-        $pageIdString = ($request->getQueryParams()['id'] ?? $request->getParsedBody()['id']);
-        if ($pageIdString === null) {
-            throw new \InvalidArgumentException(
-                'No page ID given for import. Choose a page.',
-                1705150238041
-            );
-        }
+        $pageIdString = ($request->getQueryParams()['id'] ?? $request->getParsedBody()['id'] ?? 0);
 
         $pageId = (int)$pageIdString;
 

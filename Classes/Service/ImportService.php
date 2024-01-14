@@ -6,7 +6,6 @@ namespace SUDHAUS7\Xlsimport\Service;
 
 use Doctrine\DBAL\DBALException;
 use Psr\EventDispatcher\EventDispatcherInterface;
-use SUDHAUS7\Xlsimport\Controller\XlsimportController;
 use SUDHAUS7\Xlsimport\Domain\Dto\ImportJob;
 use SUDHAUS7\Xlsimport\Event\ManipulateRelationsEvent;
 use TYPO3\CMS\Core\Core\Environment;
@@ -32,7 +31,7 @@ final class ImportService
 
     public function isImportAllowed(string $table): bool
     {
-        return array_key_exists($table, $GLOBALS['TCA']);
+        return array_key_exists($table, $GLOBALS['TCA']) && is_array($GLOBALS['TCA'][$table]);
     }
 
     /**
@@ -114,14 +113,13 @@ final class ImportService
      */
     private function callHook(array $insertData, string $table): array
     {
-        if (is_array($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['SUDHAUS7\\Xlsimport\\Controller\\XlsimportController']['Hooks'])) {
-            trigger_deprecation(
-                'xlsimport',
-                '5.0',
+        if (count($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['SUDHAUS7\\Xlsimport\\Controller\\XlsimportController']['Hooks'] ?? []) > 0) {
+            trigger_error(
                 sprintf(
                     'Using hooks for manipulating relations is deprecated and will be removed with version 6. Use "%s" instead.',
                     ManipulateRelationsEvent::class
                 ),
+                E_USER_DEPRECATED
             );
             foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['SUDHAUS7\\Xlsimport\\Controller\\XlsimportController']['Hooks'] as $_classRef) {
                 $hookObj = GeneralUtility::makeInstance($_classRef);
@@ -165,15 +163,17 @@ final class ImportService
     {
         $db = GeneralUtility::makeInstance(ConnectionPool::class);
         $builder = $db->getQueryBuilderForTable($job->getTable());
-        $ids = $builder->select('uid')->from($job->getTable())->where(
-            $builder->expr()->eq('pid', $job->getPid())
-        )->executeQuery()->fetchAllAssociative();
+        $ids = $builder
+            ->select('uid')
+            ->from($job->getTable())
+            ->where(
+                $builder->expr()->eq('pid', $job->getPid())
+            )
+            ->executeQuery();
 
         $cmd = [];
-        if (is_array($ids)) {
-            foreach ($ids as $id) {
-                $cmd[$job->getTable()][$id['uid']]['delete'] = 1;
-            }
+        while ($id = $ids->fetchAssociative()) {
+            $cmd[$job->getTable()][$id['uid']]['delete'] = 1;
         }
 
         return $cmd;
