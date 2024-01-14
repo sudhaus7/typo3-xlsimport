@@ -8,6 +8,7 @@ use Closure;
 use Doctrine\DBAL\DBALException;
 use TYPO3\CMS\Backend\Form\Exception;
 use TYPO3\CMS\Backend\Form\NodeFactory;
+use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3Fluid\Fluid\Core\Rendering\RenderingContextInterface;
@@ -15,8 +16,14 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 class TcaNodeViewHelper extends AbstractViewHelper
 {
+    /**
+     * @var bool
+     */
     protected $escapeOutput = false;
 
+    /**
+     * @var bool
+     */
     protected $escapeChildren = false;
 
     public function initializeArguments(): void
@@ -30,15 +37,22 @@ class TcaNodeViewHelper extends AbstractViewHelper
 
     /**
      * renderStatic
-     * @param array $arguments
-     * @param Closure $renderChildrenClosure
-     * @param RenderingContextInterface $renderingContext
+     * @param array{
+     *     config: array<array-key, mixed>,
+     *     name: non-empty-string,
+     *     table: non-empty-string,
+     *     page: positive-int,
+     *     as: non-empty-string
+     * } $arguments
      * @return mixed
      * @throws DBALException
      * @throws Exception
      */
-    public static function renderStatic(array $arguments, Closure $renderChildrenClosure, RenderingContextInterface $renderingContext)
-    {
+    public static function renderStatic(
+        array $arguments,
+        Closure $renderChildrenClosure,
+        RenderingContextInterface $renderingContext
+    ) {
         $nodeFactory = GeneralUtility::makeInstance(NodeFactory::class);
         $tcaConfig = $arguments['config'];
 
@@ -48,10 +62,10 @@ class TcaNodeViewHelper extends AbstractViewHelper
             $table = $tcaConfig['allowed'] ?? $tcaConfig['foreign_table'];
             $db = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable($table);
             $statement = $db
-                ->select(...[
+                ->select(
                     $GLOBALS['TCA'][$table]['ctrl']['label'],
-                    'uid',
-                ])
+                    'uid'
+                )
                 ->from($table);
             if ($tcaConfig['foreign_table_where'] && stripos($tcaConfig['foreign_table_where'], 'order by') === false) {
                 $tcaConfig['foreign_table_where'] = str_replace('###CURRENT_PID###', '0', $tcaConfig['foreign_table_where']);
@@ -62,7 +76,7 @@ class TcaNodeViewHelper extends AbstractViewHelper
 
                 $statement->andWhere($tcaConfig['foreign_table_where']);
             }
-            $tcaConfig['items'] = array_merge_recursive($tcaConfig['items'] ?? [], $statement->execute()->fetchAll(\PDO::FETCH_NUM));
+            $tcaConfig['items'] = array_merge_recursive($tcaConfig['items'] ?? [], $statement->executeQuery()->fetchAllNumeric());
         }
         $data = [
             'renderType' => $arguments['config']['renderType'] ?? $arguments['config']['type'],

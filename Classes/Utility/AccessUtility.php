@@ -38,8 +38,17 @@ final class AccessUtility
         return $dataHandler->isTableAllowedForThisPage($pageId, $tableName);
     }
 
-    public static function getBackendUser(): ?BackendUserAuthentication
+    public static function checkAccessOnPage(int $pageId, int $permissions): bool
     {
-        return $GLOBALS['BE_USER'] ?? null;
+        $pageRow = BackendUtility::getRecord('pages', $pageId);
+        if ($pageRow === null) {
+            return false;
+        }
+        return self::getBackendUser()->doesUserHaveAccess($pageRow, $permissions);
+    }
+
+    private static function getBackendUser(): BackendUserAuthentication
+    {
+        return $GLOBALS['BE_USER'] ?? GeneralUtility::makeInstance(BackendUserAuthentication::class);
     }
 }
