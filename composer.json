@@ -77,7 +77,6 @@
 			"*": "dist"
 		},
 		"sort-packages": true,
-		"vendor-dir": ".Build/vendor",
 		"bin-dir": ".Build/bin",
 		"allow-plugins": {
 			"typo3/cms-composer-installers": true,
@@ -99,6 +98,13 @@
 		"post-autoload-dump": [
 			"mkdir -p .Build/public/typo3conf/ext/",
 			"[ -L .Build/public/typo3conf/ext/xlsimport ] || ln -snvf ../../../../. .Build/public/typo3conf/ext/xlsimport"
+		],
+		"prepare-release": [
+			"rm -rf .run",
+			"rm -rf .config",
+			"composer rm typo3/cms-core --no-progress --no-update",
+			"composer install --no-dev --ignore-platform-reqs --no-progress",
+			"composer req 'typo3/cms-core:^11.5 || ^12.4' --no-progress --no-update"
 		]
 	}
 }
