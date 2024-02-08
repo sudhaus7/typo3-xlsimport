@@ -38,17 +38,25 @@ final class AccessUtility
         return $dataHandler->isTableAllowedForThisPage($pageId, $tableName);
     }
 
+    /**
+     * @todo: We have to handle root page separately
+     */
     public static function checkAccessOnPage(int $pageId, int $permissions): bool
     {
         $pageRow = BackendUtility::getRecord('pages', $pageId);
-        if ($pageRow === null) {
+        /**
+         * if pageId is 0 (Root), getRecord gives null in $pageRow
+         * In this case, we want to check, if user is admin.
+         * That's why we bypass pageId 0 with null row
+         */
+        if ($pageRow === null && $pageId !== 0) {
             return false;
         }
         return self::getBackendUser()->doesUserHaveAccess($pageRow, $permissions);
     }
 
-    private static function getBackendUser(): BackendUserAuthentication
+    public static function getBackendUser(): BackendUserAuthentication
     {
-        return $GLOBALS['BE_USER'] ?? GeneralUtility::makeInstance(BackendUserAuthentication::class);
+        return $GLOBALS['BE_USER'];
     }
 }

@@ -1,17 +1,17 @@
 includes:
   - phpstan-baseline.neon
-  - ../../.Build/vendor/friendsoftypo3/phpstan-typo3/extension.neon
+  - ../../../.Build/vendor/friendsoftypo3/phpstan-typo3/extension.neon
 
 parameters:
   level: 8
 
   # Use local cache dir instead of /tmp
-  tmpDir: ../../.Build/.cache/phpstan
+  tmpDir: ../../../.Build/.cache/phpstan
 
   paths:
-    - ../../Classes
-    - ../../Tests
+    - ../../../Classes
+    - ../../../Tests
 
   excludePaths:
     # Checking acceptance Cest and Support files is cumbersome due to codeception dynamic mixin generation
-    - ../../Tests/Acceptance/*
+    - ../../../Tests/Acceptance/*

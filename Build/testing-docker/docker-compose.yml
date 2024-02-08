@@ -193,11 +193,7 @@ services:
         fi
         php -v | grep '^PHP';
         if [ ${PHP_XDEBUG_ON} -eq 0 ]; then
-          php -dxdebug.mode=off \
-            .Build/bin/php-cs-fixer fix \
-              -v \
-              ${CGLCHECK_DRY_RUN} \
-              --config=Build/php-cs-fixer/config.php
+          php -dxdebug.mode=off .Build/bin/php-cs-fixer fix -v ${CGLCHECK_DRY_RUN} --config=Build/php-cs-fixer/config.php
         else
           XDEBUG_MODE=\"debug,develop\" \
           XDEBUG_TRIGGER=\"foo\" \
@@ -224,13 +220,7 @@ services:
           set -x
         fi
         php -v | grep '^PHP';
-        if [ "${TYPO3_VERSION}" == "11i3" ]; then
-              composer req --dev --no-update \
-                "phpunit/phpunit":"^9.6.7" \
-                "typo3/cms-composer-installers":"^3" \
-                "typo3/cms-core":"~11.5@dev"
-        fi
-        if [ "${TYPO3_VERSION}" == "11i4" ]; then
+        if [ "${TYPO3_VERSION}" == "11" ]; then
               composer req --dev --no-update \
                 "phpunit/phpunit":"^9.6.7" \
                 "typo3/cms-composer-installers":"4.0.x@dev" \
@@ -433,7 +423,7 @@ services:
         fi
         mkdir -p .Build/.cache
         php -v | grep '^PHP';
-        php -dxdebug.mode=off .Build/bin/phpstan analyze -c Build/phpstan/phpstan.neon --no-progress --no-interaction ${EXTRA_TEST_OPTIONS}
+        php -dxdebug.mode=off .Build/bin/phpstan analyze -c Build/phpstan/Core${TYPO3_VERSION}/phpstan.neon --no-progress --no-interaction ${EXTRA_TEST_OPTIONS}
       "
 
   phpstan_generate_baseline:
@@ -449,7 +439,7 @@ services:
         fi
         mkdir -p .Build/.cache
         php -v | grep '^PHP';
-        php -dxdebug.mode=off .Build/bin/phpstan analyze -c Build/phpstan/phpstan.neon --no-progress --no-interaction --allow-empty-baseline --generate-baseline=Build/phpstan/phpstan-baseline.neon
+        php -dxdebug.mode=off .Build/bin/phpstan analyze -c Build/phpstan/Core${TYPO3_VERSION}/phpstan.neon --no-progress --no-interaction --allow-empty-baseline --generate-baseline=Build/phpstan/Core${TYPO3_VERSION}/phpstan-baseline.neon
       "
 
   unit:

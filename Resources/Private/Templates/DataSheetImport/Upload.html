@@ -1,0 +1,103 @@
+<html
+    xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
+    xmlns:be="http://typo3.org/ns/TYPO3/CMS/Backend/ViewHelpers"
+    xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
+    xmlns="http://www.w3.org/1999/xhtml"
+    lang="en"
+    f:schemaLocation="https://fluidtypo3.org/schemas/fluid-master.xsd"
+    data-namespace-typo3-fluid="true"
+>
+<f:layout name="Module" />
+
+<f:section name="Content">
+    <h1><f:translate key="module_name" extensionName="xlsimport" /> - <f:translate key="prepare" extensionName="xlsimport" /></h1>
+    <f:be.infobox title="{f:translate(key:'prepareinfo', extensionName: 'xlsimport')}" state="-1">
+        <ol>
+            <li>{f:translate(key: 'prepareinfo_text', extensionName: 'xlsimport')}</li>
+            <li>{f:translate(key: 'importinfo_text', extensionName: 'xlsimport')}</li>
+        </ol>
+    </f:be.infobox>
+    <form
+        id="importData"
+        action="{f:be.uri(route: 'web_xlsimport', parameters: '{id: \'{page}\', action: \'import\'}')}"
+        name="importData"
+        method="post"
+        enctype="multipart/form-data"
+    >
+        <input type="hidden" name="jsonFile" value="{jsonFile}">
+        <input type="hidden" name="deleteRecords" value="{deleteRecords}">
+        <f:for each="{passwordFields}" as="passwordField">
+            <input type="hidden" name="passwordFields[]" value="{passwordField}">
+        </f:for>
+        <f:if condition="{hasPasswordField}">
+            <fieldset class="form-section">
+                <legend>{f:translate(key: 'multiple', extensionName: 'xlsimport')}</legend>
+                <label for="overridePassword">
+                    {f:translate(key: 'overridePassword', extensionName: 'xlsimport')}
+                </label>
+                <input type="checkbox" id="overridePassword" name="passwordOverride" value="1">
+            </fieldset>
+        </f:if>
+        <f:comment><!--
+        Disabled for the moment. This should be used for working with selects in TCA, but doesn't work properly
+        -->
+            <!--
+        <f:for each="{fields}" as="field" key="fieldName">
+            <f:if condition="{field.config.type} == 'select' || {field.config.type} == 'group'">
+                <f:render partial="TcaField" arguments="{_all}"/>
+            </f:if>
+        </f:for>
+        --></f:comment>
+        <fieldset>
+            <legend>
+                <f:variable name="countData" value="{data -> f:count()}"/>
+                <f:translate key="info_complete" extensionName="xlsimport" />: <span class="counter">{countData}</span>/{countData}
+            </legend>
+            <p>
+                <button type="submit" class="btn btn-default">{f:translate(key:'import', extensionName: 'xlsimport')}</button>
+            </p>
+            <input type="hidden" name="table" value="{table}">
+            <table class="table table-striped table-hover">
+                <thead>
+                <tr>
+                    <td>
+                        <f:translate key="record" extensionName="xlsimport" />
+                    </td>
+                    <f:for each="{data}" as="row" iteration="i">
+                        <f:if condition="{i.isFirst}">
+                            <f:for each="{row}" as="value" iteration="it">
+                                <td>
+                                    <select
+                                        name="fields[{it.cycle}]"
+                                    >
+                                        <option value="">{f:translate(key: 'ignore', extensionName: 'xlsimport')}</option>
+                                        <f:for each="{fields}" as="field">
+                                            <option value="{field.type}">{field.label}</option>
+                                        </f:for>
+                                    </select>
+                                </td>
+                            </f:for>
+                        </f:if>
+                    </f:for>
+                </tr>
+                </thead>
+                <tbody>
+                <f:for each="{data}" as="row" key="number">
+                    <tr>
+                        <td>
+                            <input type="checkbox" class="count" name="dataset[{number}]" value="1" checked="true">
+                        </td>
+                        <f:for each="{row}" as="value" iteration="i">
+                            <td>{value}</td>
+                        </f:for>
+                    </tr>
+                </f:for>
+                </tbody>
+            </table>
+            <p>
+                <button type="submit" class="btn btn-default">{f:translate(key:'import', extensionName: 'xlsimport')}</button>
+            </p>
+        </fieldset>
+    </form>
+</f:section>
+</html>
