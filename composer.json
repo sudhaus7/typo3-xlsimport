@@ -102,9 +102,9 @@
 		"prepare-release": [
 			"rm -rf .run",
 			"rm -rf .config",
-			"composer rm typo3/cms-core --no-progress --no-update",
+			"composer remove typo3/cms-core --no-progress --no-update",
 			"composer install --no-dev --ignore-platform-reqs --no-progress",
-			"composer req 'typo3/cms-core:^11.5 || ^12.4' --no-progress --no-update"
+			"composer require 'typo3/cms-core:^11.5 || ^12.4' --no-progress --no-update"
 		]
 	}
 }

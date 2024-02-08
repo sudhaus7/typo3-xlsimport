@@ -16,6 +16,13 @@ This section describes the configuration options for XLS importer.
 
 Adding configuration needs a TCA defined table.
 
+.. _extension_setup:
+
+Extension Setup
+^^^^^^^^^^^^^^^
+
+Go to `Install Tool > Settings > Extension Settings` and add your tables as
+comma separated list.
 
 .. _module_setup:
 
@@ -24,7 +31,7 @@ Module Setup
 
 Add the TypoScript setup as usual to your sitepackage
 extension configuration file
-:file:`mysitepackage/Configuration/TypoScript/setup.typoscript`::
+:file:`mysitepackage/Configuration/TSConfig/PageTS/tx_xlsimport.tsconfig`::
 
    module.tx_xlsimport {
        settings {
@@ -32,11 +39,6 @@ extension configuration file
        }
    }
 
-.. note::
-   If you have problems overwriting the configuration in your sitepackage,
-   make sure to select "Include before all static templates if root flag is
-   set" from the "Static Template Files from TYPO3 Extensions" dropdown
-   list in your TypoScript template.
 
 Every TCA defined table could be used. Field names are taken by locallang
 files, so localization is done.
