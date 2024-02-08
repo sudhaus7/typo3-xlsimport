@@ -5,7 +5,7 @@ $EM_CONF[$_EXTKEY] = [
     'description' => 'A simple importer to import data into the database',
     'category' => 'module',
 
-    'version' => '5.0.2',
+    'version' => '5.0.3',
     'state' => 'stable',
     'uploadfolder' => 1,
     'clearcacheonload' => 0,
@@ -24,14 +24,14 @@ $EM_CONF[$_EXTKEY] = [
     'autoload' => [
         'psr-4' => [
             'SUDHAUS7\\Xlsimport\\' => 'Classes',
-            'ZipStream\\' => 'vendor/maennchen/zipstream-php/src',
-            'Symfony\\Polyfill\\Mbstring\\' => 'vendor/symfony/polyfill-mbstring',
-            'Psr\\SimpleCache\\' => 'vendor/psr/simple-cache/src',
-            'Psr\\Http\\Message\\' => 'vendor/psr/http-message/src',
-            'PhpOffice\\PhpSpreadsheet\\' => 'vendor/phpoffice/phpspreadsheet/src/PhpSpreadsheet',
-            'MyCLabs\\Enum\\' => 'vendor/myclabs/php-enum/src',
-            'Matrix\\' => 'vendor/markbaker/matrix/classes/src',
-            'Complex\\' => 'vendor/markbaker/complex/classes/src',
+            'ZipStream\\' => 'Resources/Private/Php/maennchen/zipstream-php/src',
+            'Symfony\\Polyfill\\Mbstring\\' => 'Resources/Private/Php/symfony/polyfill-mbstring',
+            'Psr\\SimpleCache\\' => 'Resources/Private/Php/psr/simple-cache/src',
+            'Psr\\Http\\Message\\' => 'Resources/Private/Php/psr/http-message/src',
+            'PhpOffice\\PhpSpreadsheet\\' => 'Resources/Private/Php/phpoffice/phpspreadsheet/src/PhpSpreadsheet',
+            'MyCLabs\\Enum\\' => 'Resources/Private/Php/myclabs/php-enum/src',
+            'Matrix\\' => 'Resources/Private/Php/markbaker/matrix/classes/src',
+            'Complex\\' => 'Resources/Private/Php/markbaker/complex/classes/src',
         ],
     ],
 ];
