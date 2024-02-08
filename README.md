@@ -2,6 +2,7 @@
 
 [![Latest Stable Version](https://poser.pugx.org/sudhaus7/xlsimport/v/stable.svg)](https://extensions.typo3.org/extension/xlsimport/)
 [![TYPO3 11](https://img.shields.io/badge/TYPO3-11-orange.svg)](https://get.typo3.org/version/11)
+[![TYPO3 12](https://img.shields.io/badge/TYPO3-11-green.svg)](https://get.typo3.org/version/12)
 [![Total Downloads](https://poser.pugx.org/sudhaus7/logformatter/d/total.svg)](https://packagist.org/packages/sudhaus7/xlsimport)
 [![Monthly Downloads](https://poser.pugx.org/sudhaus7/xlsimport/d/monthly)](https://packagist.org/packages/sudhaus7/logformatter)
 
