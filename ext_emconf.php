@@ -5,7 +5,7 @@ $EM_CONF['xlsimport'] = [
     'description' => 'A simple importer to import data into the database',
     'category' => 'module',
 
-    'version' => '5.0.0',
+    'version' => '5.0.1',
     'state' => 'stable',
     'uploadfolder' => 1,
     'clearcacheonload' => 0,
