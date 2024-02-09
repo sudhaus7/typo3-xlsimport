@@ -1,6 +1,26 @@
 parameters:
 	ignoreErrors:
 		-
+			message: "#^PHPDoc tag @throws with type Doctrine\\\\DBAL\\\\DBALException\\|Doctrine\\\\DBAL\\\\Driver\\\\Exception\\|JsonException\\|PhpOffice\\\\PhpSpreadsheet\\\\Exception\\|TYPO3\\\\CMS\\\\Core\\\\Exception is not subtype of Throwable$#"
+			count: 1
+			path: ../../../Classes/Controller/DataSheetImportController.php
+
+		-
+			message: "#^PHPDoc tag @throws with type Doctrine\\\\DBAL\\\\DBALException\\|Doctrine\\\\DBAL\\\\Driver\\\\Exception is not subtype of Throwable$#"
+			count: 1
+			path: ../../../Classes/Service/ImportService.php
+
+		-
+			message: "#^Unable to resolve the template type T in call to method static method TYPO3\\\\CMS\\\\Core\\\\Utility\\\\GeneralUtility\\:\\:makeInstance\\(\\)$#"
+			count: 1
+			path: ../../../Classes/Service/ImportService.php
+
+		-
 			message: "#^Parameter \\#1 \\$row of method TYPO3\\\\CMS\\\\Core\\\\Authentication\\\\BackendUserAuthentication\\:\\:doesUserHaveAccess\\(\\) expects array, array\\|null given\\.$#"
 			count: 1
 			path: ../../../Classes/Utility/AccessUtility.php
+
+		-
+			message: "#^PHPDoc tag @throws with type Doctrine\\\\DBAL\\\\DBALException\\|TYPO3\\\\CMS\\\\Backend\\\\Form\\\\Exception is not subtype of Throwable$#"
+			count: 1
+			path: ../../../Classes/ViewHelpers/Backend/TcaNodeViewHelper.php

@@ -76,7 +76,7 @@
 			"*": "dist"
 		},
 		"sort-packages": true,
-		"vendor-dir": "Resources/Private/Php",
+		"vendor-dir": ".Build/vendor",
 		"bin-dir": ".Build/bin",
 		"allow-plugins": {
 			"typo3/cms-composer-installers": true,
@@ -103,6 +103,7 @@
 			"rm -rf .run",
 			"rm -rf .config",
 			"composer remove typo3/cms-core --no-progress --no-update",
+			"composer config vendor-dir Resources/Private/Php",
 			"composer install --no-dev --ignore-platform-reqs --no-progress",
 			"composer require 'typo3/cms-core:^11.5 || ^12.4' --no-progress --no-update"
 		]

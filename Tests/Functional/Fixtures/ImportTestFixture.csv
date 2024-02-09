@@ -1,0 +1,14 @@
+tt_address,,,,,,
+,uid,pid,last_name,first_name,hidden,deleted
+,10,1,Doe,John,0,0
+,11,1,Doe,John,0,0
+,12,1,Doe,John,0,0
+,13,1,Doe,John,0,0
+,14,1,Doe,John,0,0
+pages,,,,,,
+,uid,pid,doktype,title,hidden,deleted
+,1,0,1,Import,0,0
+"be_users"
+,"uid","pid","tstamp","username","password","admin","disable","starttime","endtime","options","crdate","workspace_perms","deleted","TSconfig","lastlogin","workspace_id"
+# The password is "password"
+,1,0,1366642540,"admin","$1$tCrlLajZ$C0sikFQQ3SWaFAZ1Me0Z/1",1,0,0,0,0,1366642540,1,0,,1371033743,0
