@@ -4,11 +4,8 @@ $EM_CONF[$_EXTKEY] = [
     'title' => '(Sudhaus7) XLS Importer',
     'description' => 'A simple importer to import data into the database',
     'category' => 'module',
-
-    'version' => '5.0.3',
+    'version' => '5.0.5',
     'state' => 'stable',
-    'uploadfolder' => 1,
-    'clearcacheonload' => 0,
     'author' => 'Frank Berger, Markus Hofmann & Daniel Simon',
     'author_email' => 'fberger@sudhaus7.de',
     'author_company' => 'Sudhaus7, a label of B-Factor GmbH',
