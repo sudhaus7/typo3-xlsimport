@@ -56,11 +56,11 @@ final class ImportService
                 continue;
             }
             $insertArray = [];
-            $update = false;
+            $identifier = StringUtility::getUniqueId('NEW');
             foreach ($importJob->getFieldMapping() as $position => $field) {
                 if ($field === 'uid') {
                     if (!empty($data[$position])) {
-                        $update = true;
+                        $identifier = $data[$position];
                     }
                 } else {
                     $insertArray[$field] = $data[$position];
@@ -76,8 +76,6 @@ final class ImportService
             foreach ($importJob->getPasswordFields() as $passwordField) {
                 $insertArray[$passwordField] = md5(sha1(microtime()));
             }
-
-            $identifier = $update ? $data['uid'] : StringUtility::getUniqueId('NEW');
 
             $insertData[$importJob->getTable()][$identifier] = $insertArray;
         }
