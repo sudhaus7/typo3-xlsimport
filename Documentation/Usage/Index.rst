@@ -48,7 +48,7 @@ with pid will cause side effects.
 
    The view of the pre imported data with empty selects
 
-You will get a preview of your data. Now you have to decide, to witch column
+You will get a preview of your data. Now you have to decide, to which column
 your data has to be written. With the checkbox in the front you can exclude
 data from getting imported, this is useful for header lines and empty lines
 to avoid problems with the TCA import.
@@ -58,7 +58,7 @@ to avoid problems with the TCA import.
 
    An opened select for selecting the data column
 
-Select for every column to witch column inside the database this column has
+Select for every column to which column inside the database this column has
 to be added. If you choose ignore, the column is ignored. Selecting uid will
 update the dataset with the uid inside this column instead of creating a new
 one. Updating a dataset won't take effect on the pid, the data is stored. If
