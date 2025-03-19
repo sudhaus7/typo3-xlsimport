@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace SUDHAUS7\Xlsimport\Controller;
 
 use Doctrine\DBAL\DBALException;
+use InvalidArgumentException;
+use JsonException;
 use PhpOffice\PhpSpreadsheet\Exception;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Reader\Csv;
@@ -36,6 +38,7 @@ use TYPO3\CMS\Core\Page\JavaScriptModuleInstruction;
 use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Resource\Exception\FileDoesNotExistException;
 use TYPO3\CMS\Core\Type\Bitmask\Permission;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\View\StandaloneView;
 use TYPO3\CMS\Recordlist\Controller\AccessDeniedException;
@@ -70,7 +73,7 @@ final class DataSheetImportController
     }
 
     /**
-     * @throws AccessDeniedException
+     * @throws \TYPO3\CMS\Backend\Exception\AccessDeniedException
      */
     public function handleRequest(ServerRequestInterface $request): ResponseInterface
     {
@@ -161,7 +164,7 @@ final class DataSheetImportController
      * @throws Exception
      * @throws RouteNotFoundException
      * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
-     * @throws \JsonException
+     * @throws JsonException
      */
     private function uploadAction(
         int $pageId,
@@ -198,7 +201,7 @@ final class DataSheetImportController
                 FlashMessage::class,
                 $this->languageService->sL('LLL:EXT:xlsimport/Resources/Private/Language/locallang.xlf:error.file.uploadFailed.message'),
                 $this->languageService->sL('LLL:EXT:xlsimport/Resources/Private/Language/locallang.xlf:error.file.uploadFailed.header'),
-                FlashMessage::ERROR,
+                ContextualFeedbackSeverity::ERROR,
                 true
             );
             $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
@@ -224,12 +227,12 @@ final class DataSheetImportController
 
         try {
             $list = $this->loadDataFromJsonFile($jsonFile);
-        } catch (\JsonException|FileDoesNotExistException $e) {
+        } catch ( JsonException|FileDoesNotExistException $e) {
             $message = GeneralUtility::makeInstance(
                 FlashMessage::class,
                 $this->languageService->sL('LLL:EXT:xlsimport/Resources/Private/Language/locallang.xlf:error.jsonFile.message'),
                 $this->languageService->sL('LLL:EXT:xlsimport/Resources/Private/Language/locallang.xlf:error.jsonFile.header'),
-                FlashMessage::WARNING,
+                ContextualFeedbackSeverity::WARNING,
                 true
             );
             $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
@@ -335,7 +338,7 @@ final class DataSheetImportController
                 FlashMessage::class,
                 $this->languageService->sL('LLL:EXT:xlsimport/Resources/Private/Language/locallang.xlf:warning.fieldlist.empty.message'),
                 $this->languageService->sL('LLL:EXT:xlsimport/Resources/Private/Language/locallang.xlf:warning.fieldlist.empty.header'),
-                FlashMessage::WARNING,
+                ContextualFeedbackSeverity::WARNING,
                 true
             );
             $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
@@ -382,7 +385,7 @@ final class DataSheetImportController
             FlashMessage::class,
             $this->languageService->sL('LLL:EXT:xlsimport/Resources/Private/Language/locallang.xlf:success'),
             $this->languageService->sL('LLL:EXT:xlsimport/Resources/Private/Language/locallang.xlf:complete'),
-            FlashMessage::OK,
+            ContextualFeedbackSeverity::OK,
             true
         );
 
@@ -432,7 +435,7 @@ final class DataSheetImportController
 
     /**
      * @return int
-     * @throws AccessDeniedException
+     * @throws \TYPO3\CMS\Backend\Exception\AccessDeniedException
      */
     private function checkAccessForPage(ServerRequestInterface $request): int
     {
@@ -441,7 +444,7 @@ final class DataSheetImportController
         $pageId = (int)$pageIdString;
 
         if (!AccessUtility::checkAccessOnPage($pageId, Permission::PAGE_EDIT)) {
-            throw new AccessDeniedException(
+            throw new \TYPO3\CMS\Backend\Exception\AccessDeniedException(
                 'You are not allowed to manipulate records on this page',
                 1705150307860
             );
@@ -488,7 +491,7 @@ final class DataSheetImportController
             } else {
                 try {
                     $label = $this->languageService->sL($column['label']);
-                } catch (\InvalidArgumentException $e) {
+                } catch ( InvalidArgumentException $e) {
                     $label = $column['label'];
                 }
                 if (empty($label)) {
@@ -598,7 +601,7 @@ final class DataSheetImportController
 
     /**
      * @throws FileDoesNotExistException
-     * @throws \JsonException
+     * @throws JsonException
      * @return array<array-key, mixed>
      */
     private function loadDataFromJsonFile(string $jsonFileName): array
