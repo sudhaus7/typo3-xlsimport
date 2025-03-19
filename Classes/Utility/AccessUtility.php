@@ -14,6 +14,7 @@ use TYPO3\CMS\Core\Schema\Capability\TcaSchemaCapability;
 use TYPO3\CMS\Core\Schema\Exception\UndefinedSchemaException;
 use TYPO3\CMS\Core\Schema\TcaSchemaFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use function is_array;
 
 final class AccessUtility
 {
@@ -76,8 +77,11 @@ final class AccessUtility
         }
         // Check non-root-level
         $page = BackendUtility::getRecord('pages', $pageId);
-
-        return GeneralUtility::makeInstance(PageDoktypeRegistry::class)?->isRecordTypeAllowedForDoktype($tableName, (int)$page['doktype']);
+        if ( is_array( $page) && isset($page['doktype'])) {
+            return GeneralUtility::makeInstance( PageDoktypeRegistry::class )
+                                 ->isRecordTypeAllowedForDoktype( $tableName, (int) $page['doktype'] );
+        }
+        return false;
     }
 
     /**
@@ -94,6 +98,7 @@ final class AccessUtility
         if ($pageRow === null && $pageId !== 0) {
             return false;
         }
+        /** @phpstan-ignore argument.type */
         return self::getBackendUser()->doesUserHaveAccess($pageRow, $permissions);
     }
 

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace SUDHAUS7\Xlsimport\ViewHelpers\Backend;
 
 use Closure;
-use Doctrine\DBAL\DBALException;
 use TYPO3\CMS\Backend\Form\Exception;
 use TYPO3\CMS\Backend\Form\NodeFactory;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -44,7 +43,7 @@ class TcaNodeViewHelper extends AbstractViewHelper
      *     as: non-empty-string
      * } $arguments
      * @return mixed
-     * @throws DBALException
+     * @throws \Doctrine\DBAL\Exception
      * @throws Exception
      */
     public static function renderStatic(

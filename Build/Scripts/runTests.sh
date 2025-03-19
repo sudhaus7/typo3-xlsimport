@@ -175,7 +175,7 @@ fi
 TEST_SUITE="unit"
 TYPO3_VERSION="11"
 DBMS="mariadb"
-PHP_VERSION="7.4"
+PHP_VERSION="8.3"
 PHP_XDEBUG_ON=0
 PHP_XDEBUG_PORT=9003
 EXTRA_TEST_OPTIONS=""
@@ -213,7 +213,7 @@ while getopts ":s:a:d:p:t:e:xy:nhuv" OPT; do
             ;;
         p)
             PHP_VERSION=${OPTARG}
-            if ! [[ ${PHP_VERSION} =~ ^(7.4|8.0|8.1|8.2)$ ]]; then
+            if ! [[ ${PHP_VERSION} =~ ^(7.4|8.0|8.1|8.2|8.3)$ ]]; then
                 INVALID_OPTIONS+=("p ${OPTARG}")
             fi
             ;;

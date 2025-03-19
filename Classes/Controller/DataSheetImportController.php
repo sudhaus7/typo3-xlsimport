@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SUDHAUS7\Xlsimport\Controller;
 
-use Doctrine\DBAL\DBALException;
 use InvalidArgumentException;
 use JsonException;
 use PhpOffice\PhpSpreadsheet\Exception;
@@ -77,6 +76,7 @@ final class DataSheetImportController
      */
     public function handleRequest(ServerRequestInterface $request): ResponseInterface
     {
+        /** @phpstan-ignore offsetAccess.nonOffsetAccessible  */
         $action = (string)($request->getQueryParams()['action'] ?? $request->getParsedBody()['action'] ?? 'index');
 
         /**
@@ -144,21 +144,13 @@ final class DataSheetImportController
             'allowedTables' => $allowedTables,
         ];
 
-        // TYPO3 version switcher, as the implementation of rendering changed in V12
-        if (!method_exists($moduleTemplate, 'assignMultiple') || !method_exists($moduleTemplate, 'renderResponse')) {
-            $this->view->assignMultiple($assignedValues);
-            $moduleTemplate->setContent($this->view->render());
-            $content = $moduleTemplate->renderContent();
-            return new HtmlResponse($content);
-        }
-
         $moduleTemplate->assignMultiple($assignedValues);
         return $moduleTemplate->renderResponse('DataSheetImport/Index');
     }
 
     /**
      * @throws \TYPO3\CMS\Core\Exception
-     * @throws DBALException
+     * @throws \Doctrine\DBAL\Exception
      * @throws \Doctrine\DBAL\Driver\Exception
      * @throws AccessDeniedTableModifyException
      * @throws Exception
@@ -266,16 +258,6 @@ final class DataSheetImportController
             ],
         ];
 
-        if (
-            !method_exists(JavaScriptModuleInstruction::class, 'create')
-            || !method_exists($moduleTemplate, 'assignMultiple')
-            || !method_exists($moduleTemplate, 'renderResponse')
-        ) {
-            $this->view->assignMultiple($assignedValues);
-            $moduleTemplate->setContent($this->view->render());
-            $content = $moduleTemplate->renderContent();
-            return new HtmlResponse($content);
-        }
 
         /** @var PageRenderer $pageRenderer */
         $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
@@ -439,6 +421,7 @@ final class DataSheetImportController
      */
     private function checkAccessForPage(ServerRequestInterface $request): int
     {
+        /** @phpstan-ignore offsetAccess.nonOffsetAccessible  */
         $pageIdString = ($request->getQueryParams()['id'] ?? $request->getParsedBody()['id'] ?? 0);
 
         $pageId = (int)$pageIdString;

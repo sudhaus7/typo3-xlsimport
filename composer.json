@@ -96,8 +96,8 @@
 			"@test:php:unit",
 			"@test:php:functional"
 		],
-		"test:php:unit": "phpunit --colors=always --configuration .config/phpunit-unit.xml",
-		"test:php:functional": "@test:php:unit --configuration .config/phpunit-functional.xml",
+		"test:php:unit": ".Build/bin/phpunit --colors=always --configuration .config/phpunit-unit.xml",
+		"test:php:functional": ".Build/bin/phpunit --colors=always  --configuration .config/phpunit-functional.xml",
 		"post-autoload-dump": [
 			"mkdir -p .Build/public/typo3conf/ext/",
 			"[ -L .Build/public/typo3conf/ext/xlsimport ] || ln -snvf ../../../../. .Build/public/typo3conf/ext/xlsimport"
