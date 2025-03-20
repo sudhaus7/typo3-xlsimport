@@ -100,18 +100,16 @@ Options:
             - postgres: use postgres
             - sqlite: use sqlite (not for -s acceptance)
 
-    -p <7.4|8.0|8.1|8.2>
+    -p <8.2|8.3|8.4>
         Specifies the PHP minor version to be used
-            - 7.4 (default): use PHP 7.4
-            - 8.0: use PHP 8.0
-            - 8.1: use PHP 8.1
-            - 8.2: use PHP 8.2
+            - 8.2: use PHP 8.2 (default)
+            - 8.3: use PHP 8.3
+            - 8.4: use PHP 8.4
 
-    -t <11|12>
+    -t <13>
         Only with -s composerUpdate
         Specifies the TYPO3 core major version to be used
-            - 11 (default): use TYPO3 core v11
-            - 12: use TYPO3 core v12
+            - 13 (default): use TYPO3 core v13
 
     -e "<phpunit, codeception or additional phpstan scan options>"
         Only with -s acceptance|functional|unit
@@ -147,7 +145,7 @@ Options:
         Show this help.
 
 Examples:
-    # Run unit tests using PHP 8.1
+    # Run unit tests using PHP 8.2
     ./Build/Scripts/runTests.sh
 EOF
 
@@ -213,13 +211,13 @@ while getopts ":s:a:d:p:t:e:xy:nhuv" OPT; do
             ;;
         p)
             PHP_VERSION=${OPTARG}
-            if ! [[ ${PHP_VERSION} =~ ^(8.1|8.2|8.3|8.4)$ ]]; then
+            if ! [[ ${PHP_VERSION} =~ ^(8.2|8.3|8.4)$ ]]; then
                 INVALID_OPTIONS+=("p ${OPTARG}")
             fi
             ;;
         t)
             TYPO3_VERSION=${OPTARG}
-            if ! [[ ${TYPO3_VERSION} =~ ^(11|12)$ ]]; then
+            if ! [[ ${TYPO3_VERSION} =~ ^(13)$ ]]; then
                 INVALID_OPTIONS+=("t ${OPTARG}")
             fi
             ;;
