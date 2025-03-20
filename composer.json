@@ -27,7 +27,7 @@
 		"docs": "https://docs.typo3.org/p/sudhaus7/xlsimport/3.0/en-us/Index.html"
 	},
 	"require": {
-		"php": "8.*",
+		"php": "^8.2 || ^8.3 || ^8.4",
 		"ext-json": "*",
 		"phpoffice/phpspreadsheet": "^1.29",
 		"typo3/cms-core": "^13.4"

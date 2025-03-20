@@ -76,7 +76,6 @@ final class DataSheetImportController
      */
     public function handleRequest(ServerRequestInterface $request): ResponseInterface
     {
-        /** @phpstan-ignore offsetAccess.nonOffsetAccessible  */
         $action = (string)($request->getQueryParams()['action'] ?? $request->getParsedBody()['action'] ?? 'index');
 
         /**
@@ -421,7 +420,6 @@ final class DataSheetImportController
      */
     private function checkAccessForPage(ServerRequestInterface $request): int
     {
-        /** @phpstan-ignore offsetAccess.nonOffsetAccessible  */
         $pageIdString = ($request->getQueryParams()['id'] ?? $request->getParsedBody()['id'] ?? 0);
 
         $pageId = (int)$pageIdString;
