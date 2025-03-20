@@ -1,0 +1,16 @@
+parameters:
+	ignoreErrors:
+		- message: '#Variable \$_EXTKEY might not be defined.#'
+		  path: ../*/ext_emconf.php
+
+		-
+			message: '#^Cannot access offset ''action'' on array\|object\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: ../Classes/Controller/DataSheetImportController.php
+
+		-
+			message: '#^Cannot access offset ''id'' on array\|object\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: ../Classes/Controller/DataSheetImportController.php

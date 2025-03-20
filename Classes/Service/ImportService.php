@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace SUDHAUS7\Xlsimport\Service;
 
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception;
+use JsonException;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use SUDHAUS7\Xlsimport\Domain\Dto\ImportJob;
 use SUDHAUS7\Xlsimport\Event\ManipulateRelationsEvent;
@@ -35,7 +36,7 @@ final class ImportService
     }
 
     /**
-     * @throws \JsonException
+     * @throws JsonException
      * @throws FileDoesNotExistException
      */
     public function prepareImport(ImportJob $importJob): void
@@ -120,6 +121,7 @@ final class ImportService
                 E_USER_DEPRECATED
             );
             foreach ($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['SUDHAUS7\\Xlsimport\\Controller\\XlsimportController']['Hooks'] as $_classRef) {
+                /** @phpstan-ignore argument.templateType */
                 $hookObj = GeneralUtility::makeInstance($_classRef);
                 if (method_exists($hookObj, 'manipulateRelations')) {
                     $hookObj->manipulateRelations($insertData, $table, $this);
@@ -131,7 +133,7 @@ final class ImportService
 
     /**
      * @throws FileDoesNotExistException
-     * @throws \JsonException
+     * @throws JsonException
      * @return array<array-key, mixed>
      */
     private function loadDataFromJsonFile(string $jsonFileName): array
@@ -154,7 +156,7 @@ final class ImportService
 
     /**
      * @throws \Doctrine\DBAL\Driver\Exception
-     * @throws DBALException
+     * @throws Exception
      * @return array<string, array<int|string, array<string, int>>>
      */
     private function prepareRecordDeleteByJob(ImportJob $job): array

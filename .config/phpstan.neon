@@ -1,12 +1,11 @@
 includes:
   - ../.Build/vendor/saschaegerer/phpstan-typo3/extension.neon
-
+  - ../.config/phpstan-baseline.neon
 parameters:
   level: 8
   paths:
     - ../Classes
-    - ../ext_emconf.php
-    - ../ext_localconf.php
+    # - ../ext_emconf.php
     - ../ext_tables.php
     - ../Configuration
   excludePaths:
