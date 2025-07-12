@@ -470,10 +470,12 @@ final class DataSheetImportController
             if (!AccessUtility::isAllowedField($table, $field)) {
                 unset($tca[$field]);
             } else {
-                try {
-                    $label = $this->languageService->sL($column['label']);
-                } catch ( InvalidArgumentException $e) {
-                    $label = $column['label'];
+                $label = '';
+                if (isset($column['label'])) {
+                    $label = $this->languageService->sL((string)$column['label']);
+                    if (empty($label)) {
+                        $label = ((string)$column['label']);
+                    }
                 }
                 if (empty($label)) {
                     $label = '[' . $field . ']';
