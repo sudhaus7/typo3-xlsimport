@@ -42,3 +42,5 @@ extension configuration file
 
 Every TCA defined table could be used. Field names are taken by locallang
 files, so localization is done.
+
+Definition of allowed tables can be done either way. Both lists will be merged afterwards.
