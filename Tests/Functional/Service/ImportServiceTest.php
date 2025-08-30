@@ -10,9 +10,7 @@ use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
-/**
- * @covers \SUDHAUS7\Xlsimport\Service\ImportService
- */
+#[\PHPUnit\Framework\Attributes\CoversClass(\SUDHAUS7\Xlsimport\Service\ImportService::class)]
 final class ImportServiceTest extends FunctionalTestCase
 {
     protected array $configurationToUseInTestInstance = [];
@@ -41,9 +39,7 @@ final class ImportServiceTest extends FunctionalTestCase
         $GLOBALS['LANG'] = $this->get(LanguageServiceFactory::class)->createFromUserPreferences($backendUser);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function deleteFlagRemovesData(): void
     {
         $jsonFile = $this->prepareJsonFile();
@@ -66,9 +62,7 @@ final class ImportServiceTest extends FunctionalTestCase
         $this->assertCSVDataSet(__DIR__ . '/../Fixtures/ImportTestFixtureAfterDelete.csv');
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function addEntriesWithoutDeletingPrependsEntries(): void
     {
         $jsonFile = $this->prepareJsonFile([
@@ -114,9 +108,7 @@ final class ImportServiceTest extends FunctionalTestCase
         $this->assertCSVDataSet(__DIR__ . '/../Fixtures/ImportTestFixtureAddItems.csv');
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function updateEntriesWithUidGivenUpdates(): void
     {
         $jsonFile = $this->prepareJsonFile([
@@ -163,9 +155,7 @@ final class ImportServiceTest extends FunctionalTestCase
         $this->assertCSVDataSet(__DIR__ . '/../Fixtures/ImportTestFixtureUpdateItems.csv');
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function addEntriesWithDeleteReplacesEntries(): void
     {
         $jsonFile = $this->prepareJsonFile([

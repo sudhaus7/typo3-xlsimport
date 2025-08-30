@@ -9,9 +9,7 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 final class ImportJobTest extends UnitTestCase
 {
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function createdDtoHasCorrectValues(): void
     {
         $expectedTable = 'test_table';
