@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<guides xmlns="https://www.phpdoc.org/guides"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="https://www.phpdoc.org/guides ../vendor/phpdocumentor/guides-cli/resources/schema/guides.xsd"
+        links-are-relative="true"
+>
+    <extension class="\T3Docs\Typo3DocsTheme\DependencyInjection\Typo3DocsThemeExtension"
+               project-home="https://github.com/sudhaus7/typo3-xlsimport"
+               project-contact="sayhello@code711.de"
+               project-repository="https://github.com/sudhaus7/typo3-xlsimport"
+               project-issues="https://github.com/sudhaus7/typo3-xlsimport/issues"
+               edit-on-github-branch="master"
+               edit-on-github="sudhaus7/typo3-xlsimport"
+               typo3-core-preferred="stable"
+    />
+    <project title="Sudhaus7 XLS Import"
+             release="master (development)"
+             version="master (development)"
+             copyright="since 2020 by Sudhaus7 &amp; Contributors"
+    />
+</guides>
