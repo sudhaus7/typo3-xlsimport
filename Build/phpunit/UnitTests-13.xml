@@ -29,6 +29,7 @@
          failOnNotice="true"
          failOnRisky="true"
          failOnWarning="true"
+         failOnPhpunitDeprecation="true"
 >
     <testsuites>
         <testsuite name="Unit tests">
