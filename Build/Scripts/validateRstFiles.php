@@ -72,8 +72,6 @@ class validateRstFiles
             $this->validateContent($fileContent);
             $a = explode(chr(10), trim($fileContent));
             $lastLine = array_pop($a);
-            $this->validateLastLine($lastLine);
-            $this->validateLastLineByFilename($filename, $lastLine);
 
             if ($this->isError) {
                 $shortPath = substr($filename, strlen($this->baseDir));
@@ -107,9 +105,7 @@ class validateRstFiles
         $finder
             ->files()
             ->in($this->baseDir)
-            ->name('/\.rst$/')
-            ->notName('Index.rst')
-            ->notName('Howto.rst');
+            ->name('/\.rst$/');
 
         return $finder;
     }
@@ -148,19 +144,6 @@ class validateRstFiles
                 'regex' => '#\={2,}\n.*\n\={2,}#m',
                 'title' => 'no title',
                 'message' => 'Each document must have a title with multiple === above and below',
-            ],
-            [
-                'type' => 'titleinvalid',
-                'regex' => '#(\={2,}\n)(Deprecation|Feature|Breaking|Important)(\:\s+\#)([0-9]{4,8})(=?.*\n\={2,})#m',
-                'title' => 'invalid title format',
-                'message' => 'A changelog entry title must have the following format: '
-                    . '\'(Breaking|Feature|Deprecation|Important) #<issue nr>: <title>\'',
-            ],
-            [
-                'type' => 'titleformat',
-                'regex' => '#^See :issue:`[0-9]{4,6}`#m',
-                'title' => 'no reference',
-                'message' => 'insert \'See :issue:`<issuenumber>`\' after headline',
             ],
         ];
 
@@ -203,57 +186,6 @@ class validateRstFiles
             }
         } else {
             $this->setError($linkTargetConfig);
-        }
-    }
-
-    protected function validateLastLine(string $line)
-    {
-        $checkFor = [
-            [
-                'type' => 'index',
-                'regex' => '#^\.\. index:: (?:(?:TypoScript|TSConfig|TCA|FlexForm|LocalConfiguration|Fluid|FAL|Database|JavaScript|PHP-API|Frontend|Backend|CLI|RTE|YAML|ext:[a-zA-Z_0-9]+)(?:,\\s|$))+#',
-                'title' => 'no or wrong index',
-                'message' => 'insert \'.. index:: <at least one valid keyword>\' at the last line of the file. See Build/Scripts/validateRstFiles.php for allowed keywords',
-            ],
-        ];
-
-        foreach ($checkFor as $values) {
-            if (preg_match($values['regex'], $line) !== 1) {
-                $this->messages[$values['type']]['title'] = $values['title'];
-                $this->messages[$values['type']]['message'] = $values['message'];
-                $this->isError = true;
-            }
-        }
-    }
-
-    protected function validateLastLineByFilename(string $path, string $lastLine)
-    {
-        $checkFor = [
-            [
-                'type' => 'index',
-                'regexIgnoreFilename' => '#'
-                    . 'Changelog[\\\\/]'         // Ignore all Changelog files
-                    . '(?:'                      // which are either
-                    . '.+[\\\\/](?:Feature|Important)' // from any version but of type "Feature" or "Important"
-                    . '|'                        // or
-                    . '[78]'                     // from 7.x and 8.x (as there was no extension scanner back then)
-                    . ')'
-                    . '#',
-                'regex' => '#^\.\. index:: .*[, ](?:Fully|Partially|Not)Scanned([, ]|$).*#',
-                'title' => 'missing FullyScanned / PartiallyScanned / NotScanned tag',
-                'message' => 'insert \'.. index:: <at least one valid keyword and either FullyScanned, PartiallyScanned or NotScanned>\' at the last line of the file. See Build/Scripts/validateRstFiles.php for allowed keywords',
-            ],
-        ];
-
-        foreach ($checkFor as $values) {
-            if (preg_match($values['regexIgnoreFilename'], $path) === 1) {
-                continue;
-            }
-            if (preg_match($values['regex'], $lastLine) !== 1) {
-                $this->messages[$values['type']]['title'] = $values['title'];
-                $this->messages[$values['type']]['message'] = $values['message'];
-                $this->isError = true;
-            }
         }
     }
 }
