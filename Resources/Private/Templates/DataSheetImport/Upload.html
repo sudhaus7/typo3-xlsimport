@@ -11,7 +11,10 @@
 
 <f:section name="Content">
     <h1><f:translate key="module_name" extensionName="xlsimport" /> - <f:translate key="prepare" extensionName="xlsimport" /></h1>
-    <f:be.infobox title="{f:translate(key:'prepareinfo', extensionName: 'xlsimport')}" state="-1">
+    <f:be.infobox
+        title="{f:translate(key:'prepareinfo', extensionName: 'xlsimport')}"
+        state="{f:constant(name: 'TYPO3∖CMS∖Fluid∖ViewHelpers∖Be∖InfoboxViewHelper::STATE_INFO')}"
+    >
         <ol>
             <li>{f:translate(key: 'prepareinfo_text', extensionName: 'xlsimport')}</li>
             <li>{f:translate(key: 'importinfo_text', extensionName: 'xlsimport')}</li>
