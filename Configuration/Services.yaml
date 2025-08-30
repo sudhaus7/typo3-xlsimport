@@ -8,8 +8,5 @@ services:
     resource: '../Classes/*'
     exclude: '../Classes/Domain/Dto/*'
 
-  SUDHAUS7\Xlsimport\Controller\DataSheetImportController:
-    tags: ['backend.controller']
-
   SUDHAUS7\Xlsimport\Service\ImportService:
     public: true
