@@ -53,7 +53,7 @@ final class DataSheetImportController
      */
     public function handleRequest(ServerRequestInterface $request): ResponseInterface
     {
-        $action = (string)($request->getQueryParams()['action'] ?? $request->getParsedBody()['action'] ?? 'index');
+        $action = $this->extractActionParamValue($request);
 
         /**
          * Define allowed actions
@@ -376,7 +376,7 @@ final class DataSheetImportController
      */
     private function checkAccessForPage(ServerRequestInterface $request): int
     {
-        $pageIdString = ($request->getQueryParams()['id'] ?? $request->getParsedBody()['id'] ?? 0);
+        $pageIdString = $this->extractIdParamValue($request);
 
         $pageId = (int)$pageIdString;
 
@@ -559,5 +559,36 @@ final class DataSheetImportController
     {
         $temporaryPath = Environment::getVarPath() . '/transient/';
         return sprintf('%s%s', $temporaryPath, $jsonFileName);
+    }
+
+    private function extractActionParamValue(ServerRequestInterface $request): string
+    {
+        if (isset($request->getQueryParams()['action'])
+            && is_string($request->getQueryParams()['action'])
+            && $request->getQueryParams()['action'] !== ''
+        ) {
+            return $request->getQueryParams()['action'];
+        }
+        if (is_array($request->getParsedBody())
+            && isset($request->getParsedBody()['action'])
+            && is_string($request->getParsedBody()['action'])
+            && $request->getParsedBody()['action'] !== ''
+        ) {
+            return $request->getParsedBody()['action'];
+        }
+        return 'index';
+    }
+
+    private function extractIdParamValue(ServerRequestInterface $request): int
+    {
+        if (isset($request->getQueryParams()['id'])) {
+            return (int)$request->getQueryParams()['id'];
+        }
+        if (is_array($request->getParsedBody())
+            && isset($request->getParsedBody()['id'])
+        ) {
+            return (int)$request->getParsedBody()['id'];
+        }
+        return 0;
     }
 }
