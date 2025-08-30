@@ -87,21 +87,6 @@ final class DataSheetImportController
 
         $moduleTemplate = $this->templateFactory->create($request);
 
-        if ($this->typo3Version->getMajorVersion() <= 11) {
-            $this->view = GeneralUtility::makeInstance(StandaloneView::class);
-            $this->view->setPartialRootPaths([
-                'EXT:xlsimport/Resources/Private/Partials/',
-            ]);
-            $this->view->setTemplateRootPaths([
-                'EXT:xlsimport/Resources/Private/Templates/Core11/',
-            ]);
-            $this->view->setLayoutRootPaths([
-                'EXT:xlsimport/Resources/Private/Layouts/',
-                ]);
-            $this->view->getRenderingContext()->setControllerAction($action);
-            $this->view->getRenderingContext()->setControllerName('DataSheetImport');
-        }
-
         $this->setDocHeader($action, $moduleTemplate, $pageId);
 
         /**
