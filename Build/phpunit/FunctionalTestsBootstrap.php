@@ -1,6 +1,6 @@
 <?php
 
-call_user_func(function () {
+call_user_func(function (): void {
     /**
      * Automatically add fixture extensions to the `typo3/testing-framework`
      * {@see \TYPO3\TestingFramework\Composer\ComposerPackageManager} to

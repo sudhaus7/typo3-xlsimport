@@ -13,7 +13,7 @@
  * The TYPO3 project - inspiring people to share!
  */
 
-call_user_func(function () {
+call_user_func(function (): void {
     $testbase = new \TYPO3\TestingFramework\Core\Testbase();
 
     // These if's are for core testing (package typo3/cms) only. cms-composer-installer does
@@ -34,7 +34,7 @@ call_user_func(function () {
 
     $composerMode = defined('TYPO3_COMPOSER_MODE') && TYPO3_COMPOSER_MODE === true;
     $requestType = \TYPO3\CMS\Core\Core\SystemEnvironmentBuilder::REQUESTTYPE_BE | \TYPO3\CMS\Core\Core\SystemEnvironmentBuilder::REQUESTTYPE_CLI;
-    \TYPO3\CMS\Core\Core\SystemEnvironmentBuilder::run(0, $requestType, $composerMode);
+    \TYPO3\CMS\Core\Core\SystemEnvironmentBuilder::run(0, $requestType);
 
     $testbase->createDirectory(\TYPO3\CMS\Core\Core\Environment::getPublicPath() . '/typo3conf/ext');
     $testbase->createDirectory(\TYPO3\CMS\Core\Core\Environment::getPublicPath() . '/typo3temp/assets');
