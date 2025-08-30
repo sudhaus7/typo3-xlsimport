@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SUDHAUS7\Xlsimport\Controller;
 
-use InvalidArgumentException;
 use JsonException;
 use PhpOffice\PhpSpreadsheet\Exception;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -40,7 +39,6 @@ use TYPO3\CMS\Core\Type\Bitmask\Permission;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\View\StandaloneView;
-use TYPO3\CMS\Recordlist\Controller\AccessDeniedException;
 
 final class DataSheetImportController
 {
@@ -218,7 +216,7 @@ final class DataSheetImportController
 
         try {
             $list = $this->loadDataFromJsonFile($jsonFile);
-        } catch ( JsonException|FileDoesNotExistException $e) {
+        } catch (JsonException|FileDoesNotExistException $e) {
             $message = GeneralUtility::makeInstance(
                 FlashMessage::class,
                 $this->languageService->sL('LLL:EXT:xlsimport/Resources/Private/Language/locallang.xlf:error.jsonFile.message'),
@@ -256,7 +254,6 @@ final class DataSheetImportController
                 ],
             ],
         ];
-
 
         /** @var PageRenderer $pageRenderer */
         $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
