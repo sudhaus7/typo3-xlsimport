@@ -4,11 +4,6 @@ declare(strict_types=1);
 
 use SUDHAUS7\Xlsimport\Controller\DataSheetImportController;
 
-/**
- * registration for v11 @see ext_tables.php
- * Core Change: @see https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/12.0/Feature-96733-NewBackendModuleRegistrationAPI.html
- * @see https://docs.typo3.org/c/typo3/cms-core/main/en-us/Changelog/12.0/Deprecation-96903-DeprecateOldModuleTemplateAPI.html
- */
 return [
     'web_xlsimport' => [
         'parent' => 'web',
