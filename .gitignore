@@ -48,8 +48,11 @@ fabric.properties
 .scannerwork
 /.php_cs.cache
 /.scannerwork/
+/composer.json.orig
+/composer.json.testing
 /composer.lock
 /.Build/
+/.cache/
 
 tests/_output/*
 /Documentation-GENERATED-temp

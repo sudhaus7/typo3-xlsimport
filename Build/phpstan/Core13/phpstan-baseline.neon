@@ -1,26 +1,20 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^PHPDoc tag @throws with type Doctrine\\\\DBAL\\\\DBALException\\|Doctrine\\\\DBAL\\\\Driver\\\\Exception\\|JsonException\\|PhpOffice\\\\PhpSpreadsheet\\\\Exception\\|TYPO3\\\\CMS\\\\Core\\\\Exception is not subtype of Throwable$#"
+			message: '#^Cannot access offset ''action'' on array\|object\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
 			path: ../../../Classes/Controller/DataSheetImportController.php
 
 		-
-			message: "#^PHPDoc tag @throws with type Doctrine\\\\DBAL\\\\DBALException\\|Doctrine\\\\DBAL\\\\Driver\\\\Exception is not subtype of Throwable$#"
+			message: '#^Cannot access offset ''id'' on array\|object\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
 			count: 1
-			path: ../../../Classes/Service/ImportService.php
+			path: ../../../Classes/Controller/DataSheetImportController.php
 
 		-
-			message: "#^Unable to resolve the template type T in call to method static method TYPO3\\\\CMS\\\\Core\\\\Utility\\\\GeneralUtility\\:\\:makeInstance\\(\\)$#"
+			message: '#^Call to an undefined static method TYPO3\\CMS\\Core\\Core\\Bootstrap\:\:initializeLanguageObject\(\)\.$#'
+			identifier: staticMethod.notFound
 			count: 1
-			path: ../../../Classes/Service/ImportService.php
+			path: ../../../Tests/Functional/Service/ImportServiceTest.php
 
-		-
-			message: "#^Parameter \\#1 \\$row of method TYPO3\\\\CMS\\\\Core\\\\Authentication\\\\BackendUserAuthentication\\:\\:doesUserHaveAccess\\(\\) expects array, array\\|null given\\.$#"
-			count: 1
-			path: ../../../Classes/Utility/AccessUtility.php
-
-		-
-			message: "#^PHPDoc tag @throws with type Doctrine\\\\DBAL\\\\DBALException\\|TYPO3\\\\CMS\\\\Backend\\\\Form\\\\Exception is not subtype of Throwable$#"
-			count: 1
-			path: ../../../Classes/ViewHelpers/Backend/TcaNodeViewHelper.php
