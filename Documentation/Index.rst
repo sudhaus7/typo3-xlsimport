@@ -22,7 +22,7 @@
       en
 
 :Description:
-      Importing Excel aand other formats in TYPO3 database
+      Importing Excel and other formats in TYPO3 database
 
 :Keywords:
       data, import, excel, csv
