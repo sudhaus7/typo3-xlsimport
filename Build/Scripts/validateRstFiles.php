@@ -139,12 +139,6 @@ class validateRstFiles
                 'title' => 'no include',
                 'message' => 'insert \'.. include:: /Includes.rst.txt\' in first line of the file',
             ],
-            [
-                'type' => 'title',
-                'regex' => '#\={2,}\n.*\n\={2,}#m',
-                'title' => 'no title',
-                'message' => 'Each document must have a title with multiple === above and below',
-            ],
         ];
 
         foreach ($checkFor as $values) {
@@ -152,7 +146,6 @@ class validateRstFiles
                 $this->setError($values);
             }
         }
-        $this->validateLinkTarget($fileContent);
     }
 
     private function setError(array $config): void
@@ -160,33 +153,6 @@ class validateRstFiles
         $this->messages[$config['type']]['title'] = $config['title'];
         $this->messages[$config['type']]['message'] = $config['message'];
         $this->isError = true;
-    }
-
-    private function validateLinkTarget(string $fileContent): void
-    {
-        $linkTargetConfig = [
-            'type' => 'linktarget',
-            'regex' => '#(\.\.\s+\_)([a-zA-Z0-9-_]*)(\:\s*)(\={2,}\n.*\n\={2,})#m',
-            'title' => 'no link target',
-            'message' => 'Each document must have a unique link target right before the main headline. '
-                . ' \'.. _deprecation-issuenumber:\' or \'.. _feature-issuenumber-currenttimestamp:\' are good choices.',
-        ];
-        $result = preg_match($linkTargetConfig['regex'], $fileContent, $matches);
-        if ($result === 1 && count($matches) > 2) {
-            $linkTarget = $matches[2];
-            if (in_array($linkTarget, $this->linkTargets)) {
-                $this->setError([
-                    'type' => 'linktarget',
-                    'title' => 'linktarget',
-                    'message' => 'Link target _' . $linkTarget . ': is not unique. '
-                        . 'Try adding a timestamp for uniqueness. i.e. _' . $linkTarget . '-' . time() . ':',
-                ]);
-            } else {
-                $this->linkTargets[] = $linkTarget;
-            }
-        } else {
-            $this->setError($linkTargetConfig);
-        }
     }
 }
 

@@ -31,9 +31,11 @@ jobs:
       - name: CGL
         run: Build/Scripts/runTests.sh -t 13 -n -p ${{ matrix.php }} -s cgl -n
 
-# @todo Disabled due to unresoveld issues. Needs to be addressed first.
-#      - name: phpstan
-#        run: Build/Scripts/runTests.sh -t 13 -p ${{ matrix.php }} -s phpstan -e "--error-format=github"
+      - name: phpstan
+        run: Build/Scripts/runTests.sh -t 13 -p ${{ matrix.php }} -s phpstan -- --error-format=github
+
+      - name: Validate rst files
+        run: Build/Scripts/runTests.sh -t 13 -n -p ${{ matrix.php }} -s checkRst
 
       - name: Unit Tests
         run: Build/Scripts/runTests.sh -t 13 -p ${{ matrix.php }} -s unit
