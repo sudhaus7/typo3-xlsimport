@@ -1,9 +1,9 @@
+.. include:: /Includes.rst.txt
+
 .. ==================================================
 .. FOR YOUR INFORMATION
 .. --------------------------------------------------
 .. -*- coding: utf-8 -*- with BOM.
-
-.. include:: /Includes.rst.txt
 
 
 .. _start:
@@ -50,4 +50,3 @@
    Introduction/Index
    Configuration/Index
    Usage/Index
-   Targets
