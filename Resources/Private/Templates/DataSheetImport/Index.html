@@ -12,7 +12,10 @@
 <f:section name="Content">
     <h1><f:translate key="module_name" extensionName="xlsimport" /></h1>
     <f:flashMessages queueIdentifier="core.template.flashMessages" />
-    <f:be.infobox title="{f:translate(key:'importinfo', extensionName: 'xlsimport')}" state="-1">
+    <f:be.infobox
+        title="{f:translate(key:'importinfo', extensionName: 'xlsimport')}"
+        state="{f:constant(name: 'TYPO3∖CMS∖Fluid∖ViewHelpers∖Be∖InfoboxViewHelper::STATE_INFO')}"
+    >
         <f:translate key="importinfo_format" extensionName="xlsimport" />
         <ul>
             <li>Excel 2007 (.xlsx)</li>

@@ -15,6 +15,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use SUDHAUS7\Xlsimport\Domain\Dto\ImportJob;
 use SUDHAUS7\Xlsimport\Service\ImportService;
 use SUDHAUS7\Xlsimport\Utility\AccessUtility;
+use TYPO3\CMS\Backend\Exception\AccessDeniedException;
 use TYPO3\CMS\Backend\Form\Exception\AccessDeniedTableModifyException;
 use TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
@@ -26,51 +27,28 @@ use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Http\HtmlResponse;
 use TYPO3\CMS\Core\Http\RedirectResponse;
-use TYPO3\CMS\Core\Imaging\IconFactory;
-use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
-use TYPO3\CMS\Core\Page\JavaScriptModuleInstruction;
-use TYPO3\CMS\Core\Page\PageRenderer;
 use TYPO3\CMS\Core\Resource\Exception\FileDoesNotExistException;
 use TYPO3\CMS\Core\Type\Bitmask\Permission;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Fluid\View\StandaloneView;
 
 final class DataSheetImportController
 {
-    protected ModuleTemplateFactory $templateFactory;
-
-    protected IconFactory $iconFactory;
-
     protected LanguageService $languageService;
 
-    /**
-     * @var StandaloneView
-     * Needed for TYPO3 v11 only
-     * @deprecated will be removed with removal of v11 support
-     */
-    protected StandaloneView $view;
-
-    protected Typo3Version $typo3Version;
-
     public function __construct(
-        ModuleTemplateFactory $templateFactory,
-        IconFactory $iconFactory,
-        Typo3Version $typo3Version,
-        LanguageServiceFactory $languageServiceFactory
+        private readonly ModuleTemplateFactory $templateFactory,
+        LanguageServiceFactory $languageServiceFactory,
     ) {
-        $this->templateFactory = $templateFactory;
-        $this->iconFactory = $iconFactory;
         $this->languageService = $languageServiceFactory->createFromUserPreferences($GLOBALS['BE_USER']);
-        $this->typo3Version = $typo3Version;
     }
 
     /**
-     * @throws \TYPO3\CMS\Backend\Exception\AccessDeniedException
+     * @throws AccessDeniedException
      */
     public function handleRequest(ServerRequestInterface $request): ResponseInterface
     {
@@ -109,9 +87,10 @@ final class DataSheetImportController
             );
         }
 
-        if ($extConfTempTables = GeneralUtility::makeInstance(
-            ExtensionConfiguration::class
-        )->get('xlsimport', 'tables')
+        if (
+            $extConfTempTables = GeneralUtility::makeInstance(
+                ExtensionConfiguration::class
+            )->get('xlsimport', 'tables')
         ) {
             $tempTables = array_merge(
                 $tempTables,
@@ -240,12 +219,6 @@ final class DataSheetImportController
             ],
         ];
 
-        /** @var PageRenderer $pageRenderer */
-        $pageRenderer = GeneralUtility::makeInstance(PageRenderer::class);
-        $javaScriptRenderer = $pageRenderer->getJavaScriptRenderer();
-        $javaScriptRenderer->addJavaScriptModuleInstruction(
-            JavaScriptModuleInstruction::create('@sudhaus7/xlsimport/import-count.js')
-        );
         $moduleTemplate->assignMultiple($assignedValues);
         return $moduleTemplate->renderResponse('DataSheetImport/Upload');
     }
@@ -398,7 +371,7 @@ final class DataSheetImportController
 
     /**
      * @return int
-     * @throws \TYPO3\CMS\Backend\Exception\AccessDeniedException
+     * @throws AccessDeniedException
      */
     private function checkAccessForPage(ServerRequestInterface $request): int
     {
@@ -407,7 +380,7 @@ final class DataSheetImportController
         $pageId = (int)$pageIdString;
 
         if (!AccessUtility::checkAccessOnPage($pageId, Permission::PAGE_EDIT)) {
-            throw new \TYPO3\CMS\Backend\Exception\AccessDeniedException(
+            throw new AccessDeniedException(
                 'You are not allowed to manipulate records on this page',
                 1705150307860
             );
