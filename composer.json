@@ -65,6 +65,9 @@
 					"autoload-dev"
 				]
 			}
+		},
+		"branch-alias": {
+			"dev-master": "6.x-dev"
 		}
 	},
 	"autoload": {
