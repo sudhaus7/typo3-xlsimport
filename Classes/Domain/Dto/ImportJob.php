@@ -13,38 +13,6 @@ namespace SUDHAUS7\Xlsimport\Domain\Dto;
  */
 final class ImportJob
 {
-    private string $table;
-
-    private string $jsonFile;
-
-    /**
-     * @var array<int, string>
-     */
-    private array $fieldMapping;
-
-    /**
-     * @var array<int, string>
-     */
-    private array $datasetMapping;
-
-    private bool $passwordOverride;
-
-    /**
-     * @var string[]
-     */
-    private array $passwordFields;
-
-    /**
-     * @var array<string, string>
-     */
-    private array $defaultValues;
-
-    private int $pid;
-
-    private int $userId;
-
-    private bool $deleteExisting;
-
     /**
      * @var array<string, array<int|string, array<string, mixed>>>
      */
@@ -59,27 +27,17 @@ final class ImportJob
      * @param array<string, string> $defaultValues
      */
     public function __construct(
-        string $table,
-        string $jsonFile,
-        array $fieldMapping,
-        array $datasetMapping,
-        bool $passwordOverride,
-        array $passwordFields,
-        array $defaultValues,
-        int $pid,
-        int $userId,
-        bool $deleteExisting
+        private readonly string $table,
+        private readonly string $jsonFile,
+        private readonly array $fieldMapping,
+        private readonly array $datasetMapping,
+        private readonly bool $passwordOverride,
+        private readonly array $passwordFields,
+        private readonly array $defaultValues,
+        private readonly int $pid,
+        private readonly int $userId,
+        private readonly bool $deleteExisting,
     ) {
-        $this->table = $table;
-        $this->jsonFile = $jsonFile;
-        $this->fieldMapping = $fieldMapping;
-        $this->datasetMapping = $datasetMapping;
-        $this->passwordOverride = $passwordOverride;
-        $this->passwordFields = $passwordFields;
-        $this->defaultValues = $defaultValues;
-        $this->pid = $pid;
-        $this->userId = $userId;
-        $this->deleteExisting = $deleteExisting;
     }
 
     public function getTable(): string

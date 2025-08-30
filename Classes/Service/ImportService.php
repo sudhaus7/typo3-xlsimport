@@ -17,17 +17,13 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\StringUtility;
 
 /**
- * @internal This class is for internal usage and no Public API
- * Code can change in future versions
+ * @internal for internal usage only and not part of public API. Can change anytime.
  */
 final class ImportService
 {
-    protected EventDispatcherInterface $eventDispatcher;
-
     public function __construct(
-        EventDispatcherInterface $eventDispatcher
+        private EventDispatcherInterface $eventDispatcher,
     ) {
-        $this->eventDispatcher = $eventDispatcher;
     }
 
     public function isImportAllowed(string $table): bool
