@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SUDHAUS7\Xlsimport\ViewHelpers\Backend;
 
-use Closure;
 use TYPO3\CMS\Backend\Form\Exception;
 use TYPO3\CMS\Backend\Form\NodeFactory;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -48,7 +47,7 @@ class TcaNodeViewHelper extends AbstractViewHelper
      */
     public static function renderStatic(
         array $arguments,
-        Closure $renderChildrenClosure,
+        \Closure $renderChildrenClosure,
         RenderingContextInterface $renderingContext
     ) {
         $nodeFactory = GeneralUtility::makeInstance(NodeFactory::class);

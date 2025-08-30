@@ -37,8 +37,7 @@ final class ImportJob
         private readonly int $pid,
         private readonly int $userId,
         private readonly bool $deleteExisting,
-    ) {
-    }
+    ) {}
 
     public function getTable(): string
     {

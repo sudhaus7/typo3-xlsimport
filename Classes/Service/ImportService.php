@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace SUDHAUS7\Xlsimport\Service;
 
 use Doctrine\DBAL\Exception;
-use JsonException;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use SUDHAUS7\Xlsimport\Domain\Dto\ImportJob;
 use SUDHAUS7\Xlsimport\Event\ManipulateRelationsEvent;
@@ -23,8 +22,7 @@ final class ImportService
 {
     public function __construct(
         private EventDispatcherInterface $eventDispatcher,
-    ) {
-    }
+    ) {}
 
     public function isImportAllowed(string $table): bool
     {
@@ -32,7 +30,7 @@ final class ImportService
     }
 
     /**
-     * @throws JsonException
+     * @throws \JsonException
      * @throws FileDoesNotExistException
      */
     public function prepareImport(ImportJob $importJob): void
@@ -129,7 +127,7 @@ final class ImportService
 
     /**
      * @throws FileDoesNotExistException
-     * @throws JsonException
+     * @throws \JsonException
      * @return array<array-key, mixed>
      */
     private function loadDataFromJsonFile(string $jsonFileName): array

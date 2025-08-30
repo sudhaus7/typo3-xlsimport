@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SUDHAUS7\Xlsimport\Controller;
 
-use JsonException;
 use PhpOffice\PhpSpreadsheet\Exception;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Reader\Csv;
@@ -119,7 +118,7 @@ final class DataSheetImportController
      * @throws Exception
      * @throws RouteNotFoundException
      * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
-     * @throws JsonException
+     * @throws \JsonException
      */
     private function uploadAction(
         int $pageId,
@@ -182,7 +181,7 @@ final class DataSheetImportController
 
         try {
             $list = $this->loadDataFromJsonFile($jsonFile);
-        } catch (JsonException|FileDoesNotExistException) {
+        } catch (\JsonException|FileDoesNotExistException) {
             $message = GeneralUtility::makeInstance(
                 FlashMessage::class,
                 $this->languageService->sL('LLL:EXT:xlsimport/Resources/Private/Language/locallang.xlf:error.jsonFile.message'),
@@ -541,7 +540,7 @@ final class DataSheetImportController
 
     /**
      * @throws FileDoesNotExistException
-     * @throws JsonException
+     * @throws \JsonException
      * @return array<array-key, mixed>
      */
     private function loadDataFromJsonFile(string $jsonFileName): array
