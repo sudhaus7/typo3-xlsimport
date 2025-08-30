@@ -15,6 +15,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use SUDHAUS7\Xlsimport\Domain\Dto\ImportJob;
 use SUDHAUS7\Xlsimport\Service\ImportService;
 use SUDHAUS7\Xlsimport\Utility\AccessUtility;
+use TYPO3\CMS\Backend\Attribute\AsController;
 use TYPO3\CMS\Backend\Exception\AccessDeniedException;
 use TYPO3\CMS\Backend\Form\Exception\AccessDeniedTableModifyException;
 use TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException;
@@ -36,6 +37,7 @@ use TYPO3\CMS\Core\Type\Bitmask\Permission;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
+#[AsController]
 final class DataSheetImportController
 {
     protected LanguageService $languageService;
