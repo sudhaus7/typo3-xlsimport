@@ -1,6 +1,6 @@
 includes:
+  - ../../../.Build/vendor/saschaegerer/phpstan-typo3/extension.neon
   - phpstan-baseline.neon
-  - ../../../.Build/vendor/friendsoftypo3/phpstan-typo3/extension.neon
 
 parameters:
   level: 8
@@ -11,6 +11,8 @@ parameters:
   paths:
     - ../../../Classes
     - ../../../Tests
+    - ../../../Configuration
+    - ../../../ext_tables.php
 
   excludePaths:
     # Checking acceptance Cest and Support files is cumbersome due to codeception dynamic mixin generation
