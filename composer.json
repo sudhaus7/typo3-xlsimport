@@ -24,34 +24,30 @@
 	"support": {
 		"issues": "https://github.com/sudhaus7/typo3-xlsimport/issues",
 		"source": "https://github.com/sudhaus7/typo3-xlsimport",
-		"docs": "https://docs.typo3.org/p/sudhaus7/xlsimport/3.0/en-us/Index.html"
+		"docs": "https://docs.typo3.org/p/sudhaus7/xlsimport/master/en-us/Index.html"
 	},
 	"require": {
 		"php": "^8.2 || ^8.3 || ^8.4",
 		"ext-json": "*",
 		"phpoffice/phpspreadsheet": "^1.30",
+		"typo3/cms-backend": "^13.4",
 		"typo3/cms-core": "^13.4"
 	},
 	"require-dev": {
 		"armin/editorconfig-cli": "^1.8 || ^2.0",
-		"codeception/codeception": "*",
-		"codeception/phpbuiltinserver": "*",
 		"friendsofphp/php-cs-fixer": "^3.46",
-		"helhum/typo3-console": "^7.1 || ^8.1",
-		"phpstan/phpstan": "*",
-		"phpstan/phpstan-phpunit": "*",
-		"phpunit/phpunit": "^9.6.7 || ^10.1",
-		"saschaegerer/phpstan-typo3": "*",
+		"phpstan/phpstan": "^2.1.22",
+		"phpstan/phpstan-phpunit": "^2.0.7",
+		"phpunit/phpunit": "^11.5.25 || ^12.3.7",
+		"saschaegerer/phpstan-typo3": "^2.1.1",
 		"sbuerk/fixture-packages": "^1.1.3",
 		"ssch/typo3-rector": "*",
-		"typo3/cms-backend": "^13.4",
-		"typo3/cms-composer-installers": "v4.0.0-RC1 || ^5.0",
 		"typo3/cms-info": "^13.4",
 		"typo3/cms-install": "^13.4",
 		"typo3/cms-lowlevel": "^13.4",
 		"typo3/cms-setup": "^13.4",
 		"typo3/cms-tstemplate": "^13.4",
-		"typo3/testing-framework": "^7.0 || ^8.0 || ^9.0"
+		"typo3/testing-framework": "^9.2"
 	},
 	"suggest": {
 		"friendsoftypo3/tt-address": "*"
