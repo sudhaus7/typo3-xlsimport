@@ -43,21 +43,20 @@ jobs:
       - name: Unit Tests (randomized)
         run: Build/Scripts/runTests.sh -t 13 -p ${{ matrix.php }} -s unitRandom
 
-# @todo Functional tests disabled for now until deprecations like TCA migration has been handled correctly.
-#      - name: Functional Tests with mariadb and mysqli
-#        run: Build/Scripts/runTests.sh -t 13 -p ${{ matrix.php }} -d mariadb -a mysqli -s functional
-#
-#      - name: Functional Tests with mariadb and pdo_mysql
-#        run: Build/Scripts/runTests.sh -t 13 -p ${{ matrix.php }} -d mariadb -a pdo_mysql -s functional
-#
-#      - name: Functional Tests with mysql and mysqli
-#        run: Build/Scripts/runTests.sh -t 13 -p ${{ matrix.php }} -d mysql -a mysqli -s functional
-#
-#      - name: Functional Tests with mysql and pdo_mysql
-#        run: Build/Scripts/runTests.sh -t 13 -p ${{ matrix.php }} -d mysql -a pdo_mysql -s functional
-#
-#      - name: Functional Tests with postgres
-#        run: Build/Scripts/runTests.sh -t 13 -p ${{ matrix.php }} -d postgres -s functional
-#
-#      - name: Functional Tests with sqlite
-#        run: Build/Scripts/runTests.sh -t 13 -p ${{ matrix.php }} -d sqlite -s functional
+      - name: Functional Tests with mariadb and mysqli
+        run: Build/Scripts/runTests.sh -t 13 -p ${{ matrix.php }} -d mariadb -a mysqli -i 10.4 -s functional
+
+      - name: Functional Tests with mariadb and pdo_mysql
+        run: Build/Scripts/runTests.sh -t 13 -p ${{ matrix.php }} -d mariadb -a pdo_mysql -i 10.6 -s functional
+
+      - name: Functional Tests with mysql and mysqli
+        run: Build/Scripts/runTests.sh -t 13 -p ${{ matrix.php }} -d mysql -a mysqli -i 8.0 -s functional
+
+      - name: Functional Tests with mysql and pdo_mysql
+        run: Build/Scripts/runTests.sh -t 13 -p ${{ matrix.php }} -d mysql -a pdo_mysql -i 8.4 -s functional
+
+      - name: Functional Tests with postgres
+        run: Build/Scripts/runTests.sh -t 13 -p ${{ matrix.php }} -d postgres -i 10 -s functional
+
+      - name: Functional Tests with sqlite
+        run: Build/Scripts/runTests.sh -t 13 -p ${{ matrix.php }} -d sqlite -s functional
