@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SUDHAUS7\Xlsimport\Utility;
 
-use function is_array;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\DataHandling\DataHandler;
@@ -82,7 +81,7 @@ final class AccessUtility
         }
         // Check non-root-level
         $page = BackendUtility::getRecord('pages', $pageId);
-        if (is_array($page) && isset($page['doktype'])) {
+        if (\is_array($page) && isset($page['doktype'])) {
             return GeneralUtility::makeInstance(PageDoktypeRegistry::class)
                 ->isRecordTypeAllowedForDoktype($tableName, (int)$page['doktype']);
         }

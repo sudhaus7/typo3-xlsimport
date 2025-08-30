@@ -34,15 +34,15 @@ final class ImportJobTest extends UnitTestCase
             $expectedUserId,
             $expectedDeleteExisting
         );
-        self::assertSame($expectedTable, $importJob->getTable());
-        self::assertSame($expectedJsonFile, $importJob->getJsonFile());
-        self::assertSame($expectedFieldMapping, $importJob->getFieldMapping());
-        self::assertSame($expectedDatasetMapping, $importJob->getDatasetMapping());
-        self::assertSame($expectedPasswordOverride, $importJob->isPasswordOverride());
-        self::assertSame($expectedPasswordFields, $importJob->getPasswordFields());
-        self::assertSame($expectedDefaultValues, $importJob->getDefaultValues());
-        self::assertSame($expectedPid, $importJob->getPid());
-        self::assertSame($expectedUserId, $importJob->getUserId());
-        self::assertSame($expectedDeleteExisting, $importJob->isDeleteExisting());
+        $this->assertSame($expectedTable, $importJob->getTable());
+        $this->assertSame($expectedJsonFile, $importJob->getJsonFile());
+        $this->assertSame($expectedFieldMapping, $importJob->getFieldMapping());
+        $this->assertSame($expectedDatasetMapping, $importJob->getDatasetMapping());
+        $this->assertSame($expectedPasswordOverride, $importJob->isPasswordOverride());
+        $this->assertSame($expectedPasswordFields, $importJob->getPasswordFields());
+        $this->assertSame($expectedDefaultValues, $importJob->getDefaultValues());
+        $this->assertSame($expectedPid, $importJob->getPid());
+        $this->assertSame($expectedUserId, $importJob->getUserId());
+        $this->assertSame($expectedDeleteExisting, $importJob->isDeleteExisting());
     }
 }

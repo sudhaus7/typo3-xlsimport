@@ -27,8 +27,7 @@ final class ManipulateRelationsEvent
          * @see https://docs.typo3.org/m/typo3/reference-coreapi/main/en-us/ApiOverview/Typo3CoreEngine/Database/Index.html#data-array
          */
         private array $insertData
-    ) {
-    }
+    ) {}
 
     public function getTable(): string
     {
