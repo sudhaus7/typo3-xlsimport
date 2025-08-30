@@ -22,7 +22,7 @@ return [
             'shortDescription' => 'LLL:EXT:xlsimport/Resources/Private/Language/locallang.xlf:shortDescription',
         ],
         'iconIdentifier' => 'mimetypes-excel',
-        'navigationComponent' => '@typo3/backend/page-tree/page-tree-element',
+        'navigationComponent' => '@typo3/backend/tree/page-tree-element',
         'routes' => [
             '_default' => [
                 'target' => DataSheetImportController::class . '::handleRequest',

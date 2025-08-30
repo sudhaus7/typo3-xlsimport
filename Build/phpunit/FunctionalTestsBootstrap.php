@@ -1,19 +1,16 @@
 <?php
 
-/*
- * This file is part of the TYPO3 CMS project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
- *
- * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
- */
-
 call_user_func(function () {
+    /**
+     * Automatically add fixture extensions to the `typo3/testing-framework`
+     * {@see \TYPO3\TestingFramework\Composer\ComposerPackageManager} to
+     * allow composer package name or extension keys of fixture extension in
+     * {@see \TYPO3\TestingFramework\Core\Functional\FunctionalTestCase::$testExtensionToLoad}.
+     */
+    if (class_exists(\SBUERK\AvailableFixturePackages::class)) {
+        (new \SBUERK\AvailableFixturePackages())->adoptFixtureExtensions();
+    }
+
     $testbase = new \TYPO3\TestingFramework\Core\Testbase();
     $testbase->defineOriginalRootPath();
     $testbase->createDirectory(ORIGINAL_ROOT . 'typo3temp/var/tests');

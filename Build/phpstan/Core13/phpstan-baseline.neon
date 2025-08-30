@@ -12,9 +12,3 @@ parameters:
 			count: 1
 			path: ../../../Classes/Controller/DataSheetImportController.php
 
-		-
-			message: '#^Call to an undefined static method TYPO3\\CMS\\Core\\Core\\Bootstrap\:\:initializeLanguageObject\(\)\.$#'
-			identifier: staticMethod.notFound
-			count: 1
-			path: ../../../Tests/Functional/Service/ImportServiceTest.php
-
