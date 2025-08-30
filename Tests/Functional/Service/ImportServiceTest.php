@@ -6,7 +6,7 @@ namespace SUDHAUS7\Xlsimport\Tests\Functional\Service;
 
 use SUDHAUS7\Xlsimport\Domain\Dto\ImportJob;
 use SUDHAUS7\Xlsimport\Service\ImportService;
-use TYPO3\CMS\Core\Core\Bootstrap;
+use TYPO3\CMS\Core\Localization\LanguageServiceFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
@@ -15,51 +15,30 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
  */
 final class ImportServiceTest extends FunctionalTestCase
 {
+    protected array $configurationToUseInTestInstance = [];
+
+    /**
+     * @var non-empty-string[]
+     */
+    protected array $coreExtensionsToLoad = [
+        'typo3/cms-install',
+    ];
+
     /**
      * @var non-empty-string[]
      */
     protected array $testExtensionsToLoad = [
-        'friendsoftypo3/tt-address',
+        'tests/test_example',
         'sudhaus7/xlsimport',
-    ];
-
-    /**
-     * @var array<array-key, array<int|string>>
-     */
-    protected array $importData = [
-        [
-            'Jane',
-            'Doe',
-            10,
-        ],
-        [
-            'Walther',
-            'White',
-            11,
-        ],
-        [
-            'Emily',
-            'Stone',
-            12,
-        ],
     ];
 
     protected function setUp(): void
     {
-        $this->configurationToUseInTestInstance = array_merge(
-            $this->configurationToUseInTestInstance,
-            require __DIR__ . '/../Fixtures/LocalConfiguration.php'
-        );
-
         parent::setUp();
 
-        // @todo actually this is needed, as the Label UserFunc is called even if record is deleted and the function doesn't check for deleted record
-        // @see https://github.com/FriendsOfTYPO3/tt_address/issues/513
-        unset($GLOBALS['TCA']['tt_address']['ctrl']['label_userFunc']);
-
         $this->importCSVDataSet(__DIR__ . '/../Fixtures/ImportTestFixture.csv');
-        $this->setUpBackendUser(1);
-        Bootstrap::initializeLanguageObject();
+        $backendUser =  $this->setUpBackendUser(1);
+        $GLOBALS['LANG'] = $this->get(LanguageServiceFactory::class)->createFromUserPreferences($backendUser);
     }
 
     /**
@@ -92,7 +71,23 @@ final class ImportServiceTest extends FunctionalTestCase
      */
     public function addEntriesWithoutDeletingPrependsEntries(): void
     {
-        $jsonFile = $this->prepareJsonFile($this->importData);
+        $jsonFile = $this->prepareJsonFile([
+            [
+                'Jane',
+                'Doe',
+                10,
+            ],
+            [
+                'Walther',
+                'White',
+                11,
+            ],
+            [
+                'Emily',
+                'Stone',
+                12,
+            ],
+        ]);
         $importJob = new ImportJob(
             'tt_address',
             $jsonFile,
@@ -124,7 +119,23 @@ final class ImportServiceTest extends FunctionalTestCase
      */
     public function updateEntriesWithUidGivenUpdates(): void
     {
-        $jsonFile = $this->prepareJsonFile($this->importData);
+        $jsonFile = $this->prepareJsonFile([
+            [
+                'Jane',
+                'Doe',
+                10,
+            ],
+            [
+                'Walther',
+                'White',
+                11,
+            ],
+            [
+                'Emily',
+                'Stone',
+                12,
+            ],
+        ]);
         $importJob = new ImportJob(
             'tt_address',
             $jsonFile,
@@ -157,7 +168,23 @@ final class ImportServiceTest extends FunctionalTestCase
      */
     public function addEntriesWithDeleteReplacesEntries(): void
     {
-        $jsonFile = $this->prepareJsonFile($this->importData);
+        $jsonFile = $this->prepareJsonFile([
+            [
+                'Jane',
+                'Doe',
+                10,
+            ],
+            [
+                'Walther',
+                'White',
+                11,
+            ],
+            [
+                'Emily',
+                'Stone',
+                12,
+            ],
+        ]);
         $importJob = new ImportJob(
             'tt_address',
             $jsonFile,

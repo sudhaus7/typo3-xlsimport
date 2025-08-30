@@ -1,88 +1,97 @@
 {
-  "name": "sudhaus7/xlsimport",
-  "description": "(Sudhaus7) XLS Importer",
-  "type": "typo3-cms-extension",
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "Frank Berger",
-      "role": "Developer",
-      "email": "fberger@sudhaus7.de",
-      "homepage": "https://code711.de/"
-    },
-    {
-      "name": "Markus Hofmann",
-      "role": "Developer",
-      "email": "typo3@calien.de"
-    },
-    {
-      "name": "Daniel Simon",
-      "role": "Developer",
-      "email": "dsimon@code711.de"
-    }
-  ],
-  "support": {
-    "issues": "https://github.com/sudhaus7/typo3-xlsimport/issues",
-    "source": "https://github.com/sudhaus7/typo3-xlsimport",
-    "docs": "https://docs.typo3.org/p/sudhaus7/xlsimport/3.0/en-us/Index.html"
-  },
-  "require": {
-    "php": "^8.2 || ^8.3 || ^8.4",
-    "ext-json": "*",
-    "phpoffice/phpspreadsheet": "^1.29",
-    "typo3/cms-core": "^13.4"
-  },
-  "require-dev": {
-    "ssch/typo3-rector": "*",
-    "saschaegerer/phpstan-typo3": "*",
-    "armin/editorconfig-cli": "^1.8 || ^2.0",
-    "codeception/codeception": "*",
-    "codeception/phpbuiltinserver": "*",
-    "friendsofphp/php-cs-fixer": "^3.46",
-    "friendsoftypo3/tt-address": "^8 || ^9",
-    "helhum/typo3-console": "^7.1 || ^8.1",
-    "phpstan/phpstan": "*",
-    "phpstan/phpstan-phpunit": "*",
-    "phpunit/phpunit": "^9.6.7 || ^10.1",
-    "typo3/cms-backend": "^13.4",
-    "typo3/cms-composer-installers": "v4.0.0-RC1 || ^5.0",
-    "typo3/cms-info": "^13.4",
-    "typo3/cms-install": "^13.4",
-    "typo3/cms-lowlevel": "^13.4",
-    "typo3/cms-setup": "^13.4",
-    "typo3/cms-tstemplate": "^13.4",
-    "typo3/testing-framework": "^7.0 || ^8.0 || ^9.0"
-  },
-  "suggest": {
-    "friendsoftypo3/tt-address": "*"
-  },
-  "extra": {
-    "typo3/cms": {
-      "extension-key": "xlsimport",
-      "cms-package-dir": "{$vendor-dir}/typo3/cms",
-      "web-dir": ".Build/public"
-    }
-  },
-  "autoload": {
-    "psr-4": {
-      "SUDHAUS7\\Xlsimport\\": "Classes/"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "SUDHAUS7\\Xlsimport\\Tests\\": "Tests/"
-    }
-  },
-  "config": {
-    "preferred-install": {
-      "*": "dist"
-    },
-    "sort-packages": true,
-    "vendor-dir": ".Build/vendor",
-    "bin-dir": ".Build/bin",
-    "allow-plugins": {
-      "typo3/cms-composer-installers": true,
-      "typo3/class-alias-loader": true
-    }
-  }
+	"name": "sudhaus7/xlsimport",
+	"description": "(Sudhaus7) XLS Importer",
+	"type": "typo3-cms-extension",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Frank Berger",
+			"role": "Developer",
+			"email": "fberger@sudhaus7.de",
+			"homepage": "https://code711.de/"
+		},
+		{
+			"name": "Markus Hofmann",
+			"role": "Developer",
+			"email": "typo3@calien.de"
+		},
+		{
+			"name": "Daniel Simon",
+			"role": "Developer",
+			"email": "dsimon@code711.de"
+		}
+	],
+	"support": {
+		"issues": "https://github.com/sudhaus7/typo3-xlsimport/issues",
+		"source": "https://github.com/sudhaus7/typo3-xlsimport",
+		"docs": "https://docs.typo3.org/p/sudhaus7/xlsimport/3.0/en-us/Index.html"
+	},
+	"require": {
+		"php": "^8.2 || ^8.3 || ^8.4",
+		"ext-json": "*",
+		"phpoffice/phpspreadsheet": "^1.29",
+		"typo3/cms-core": "^13.4"
+	},
+	"require-dev": {
+		"armin/editorconfig-cli": "^1.8 || ^2.0",
+		"codeception/codeception": "*",
+		"codeception/phpbuiltinserver": "*",
+		"friendsofphp/php-cs-fixer": "^3.46",
+		"helhum/typo3-console": "^7.1 || ^8.1",
+		"phpstan/phpstan": "*",
+		"phpstan/phpstan-phpunit": "*",
+		"phpunit/phpunit": "^9.6.7 || ^10.1",
+		"saschaegerer/phpstan-typo3": "*",
+		"sbuerk/fixture-packages": "^1.1.3",
+		"ssch/typo3-rector": "*",
+		"typo3/cms-backend": "^13.4",
+		"typo3/cms-composer-installers": "v4.0.0-RC1 || ^5.0",
+		"typo3/cms-info": "^13.4",
+		"typo3/cms-install": "^13.4",
+		"typo3/cms-lowlevel": "^13.4",
+		"typo3/cms-setup": "^13.4",
+		"typo3/cms-tstemplate": "^13.4",
+		"typo3/testing-framework": "^7.0 || ^8.0 || ^9.0"
+	},
+	"suggest": {
+		"friendsoftypo3/tt-address": "*"
+	},
+	"extra": {
+		"typo3/cms": {
+			"extension-key": "xlsimport",
+			"cms-package-dir": "{$vendor-dir}/typo3/cms",
+			"web-dir": ".Build/public"
+		},
+		"sbuerk/fixture-packages": {
+			"paths": {
+				"Tests/Functional/Fixtures/Extensions/*": [
+					"autoload",
+					"autoload-dev"
+				]
+			}
+		}
+	},
+	"autoload": {
+		"psr-4": {
+			"SUDHAUS7\\Xlsimport\\": "Classes/"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"SUDHAUS7\\Xlsimport\\Tests\\": "Tests/"
+		}
+	},
+	"config": {
+		"preferred-install": {
+			"*": "dist"
+		},
+		"sort-packages": true,
+		"vendor-dir": ".Build/vendor",
+		"bin-dir": ".Build/bin",
+		"allow-plugins": {
+			"typo3/cms-composer-installers": true,
+			"typo3/class-alias-loader": true,
+			"sbuerk/fixture-packages": true
+		}
+	}
 }

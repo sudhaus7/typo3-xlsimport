@@ -53,6 +53,7 @@ fabric.properties
 /composer.lock
 /.Build/
 /.cache/
+.phpunit.cache
 
 tests/_output/*
 /Documentation-GENERATED-temp
