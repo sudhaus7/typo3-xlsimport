@@ -15,10 +15,17 @@ use TYPO3\CMS\Core\Schema\Exception\UndefinedSchemaException;
 use TYPO3\CMS\Core\Schema\TcaSchemaFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
+/**
+ * @internal This class is only meant to be used inside EXT:xlsimport and therefore no public API.
+ * Code can change anytime.
+ */
 final class AccessUtility
 {
     protected static DataHandler $dataHandler;
 
+    /**
+     * @throws UndefinedSchemaException
+     */
     public static function isAllowedTable(string $possibleTable, int $pageId): bool
     {
         return array_key_exists($possibleTable, $GLOBALS['TCA'])
@@ -43,7 +50,7 @@ final class AccessUtility
      * Same as DataHandler::isTableAllowedForThisPage
      *
      * the signature for DataHandler::isTableAllowedForThisPage has changed
-     * from public to protected, so in order to have this functionality here
+     * from public to protected, so to have this functionality here
      * the algorithm has been copied here
      *
      * @see DataHandler::isTableAllowedForThisPage
@@ -77,7 +84,7 @@ final class AccessUtility
         $page = BackendUtility::getRecord('pages', $pageId);
         if (is_array($page) && isset($page['doktype'])) {
             return GeneralUtility::makeInstance(PageDoktypeRegistry::class)
-                                 ->isRecordTypeAllowedForDoktype($tableName, (int)$page['doktype']);
+                ->isRecordTypeAllowedForDoktype($tableName, (int)$page['doktype']);
         }
         return false;
     }
