@@ -1,10 +1,8 @@
 /.editorconfig export-ignore
 /.gitattributes export-ignore
 /.github/ export-ignore
-/.config/ export-ignore
 /.ddev/ eport-ignore
-/.run/ export-ignore
 /.gitignore export-ignore
 /Build/ export-ignore
 /Tests/ export-ignore
-docker-compose.yml export-ignore
+*.sh linguist-detectable=false
