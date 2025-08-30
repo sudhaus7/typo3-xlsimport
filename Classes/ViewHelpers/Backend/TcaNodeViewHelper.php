@@ -65,10 +65,10 @@ class TcaNodeViewHelper extends AbstractViewHelper
                     'uid'
                 )
                 ->from($table);
-            if ($tcaConfig['foreign_table_where'] && stripos($tcaConfig['foreign_table_where'], 'order by') === false) {
+            if ($tcaConfig['foreign_table_where'] && stripos((string)$tcaConfig['foreign_table_where'], 'order by') === false) {
                 $tcaConfig['foreign_table_where'] = str_replace('###CURRENT_PID###', '0', $tcaConfig['foreign_table_where']);
 
-                if (strpos(trim($tcaConfig['foreign_table_where']), 'AND') === 0) {
+                if (str_starts_with(trim($tcaConfig['foreign_table_where']), 'AND')) {
                     $tcaConfig['foreign_table_where'] = ' 1=1 ' . $tcaConfig['foreign_table_where'];
                 }
 

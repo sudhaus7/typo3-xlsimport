@@ -182,7 +182,7 @@ final class DataSheetImportController
 
         try {
             $list = $this->loadDataFromJsonFile($jsonFile);
-        } catch (JsonException|FileDoesNotExistException $e) {
+        } catch (JsonException|FileDoesNotExistException) {
             $message = GeneralUtility::makeInstance(
                 FlashMessage::class,
                 $this->languageService->sL('LLL:EXT:xlsimport/Resources/Private/Language/locallang.xlf:error.jsonFile.message'),
@@ -519,7 +519,7 @@ final class DataSheetImportController
                     $cell->setIterateOnlyExistingCells(true);
 
                     $tmpcolcount = 0;
-                    foreach ($cell as $ck => $ce) {
+                    foreach ($cell as $ce) {
                         $tmpcolcount++;
                     }
                     if ($tmpcolcount > $colcount) {

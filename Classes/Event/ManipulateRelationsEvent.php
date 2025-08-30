@@ -14,26 +14,20 @@ namespace SUDHAUS7\Xlsimport\Event;
 final class ManipulateRelationsEvent
 {
     /**
-     * The currently processed table for inserting/updating records
-     * @var string
-     */
-    private string $table;
-
-    /**
-     * The insertData array for DataHandler usage
-     * @see https://docs.typo3.org/m/typo3/reference-coreapi/main/en-us/ApiOverview/Typo3CoreEngine/Database/Index.html#data-array
-     * @var array<string, array<int|string, array<string, mixed>>>
-     */
-    private array $insertData;
-
-    /**
      * @param string $table
      * @param array<string, array<int|string, array<string, mixed>>> $insertData
      */
-    public function __construct(string $table, array $insertData)
-    {
-        $this->table = $table;
-        $this->insertData = $insertData;
+    public function __construct(
+        /**
+         * The currently processed table for inserting/updating records
+         */
+        private readonly string $table,
+        /**
+         * The insertData array for DataHandler usage
+         * @see https://docs.typo3.org/m/typo3/reference-coreapi/main/en-us/ApiOverview/Typo3CoreEngine/Database/Index.html#data-array
+         */
+        private array $insertData
+    ) {
     }
 
     public function getTable(): string
