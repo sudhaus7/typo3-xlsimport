@@ -42,6 +42,7 @@
 		"saschaegerer/phpstan-typo3": "^2.1.1",
 		"sbuerk/fixture-packages": "^1.1.3",
 		"ssch/typo3-rector": "*",
+		"tests/test-example": "1.0.0@dev",
 		"typo3/cms-info": "^13.4",
 		"typo3/cms-install": "^13.4",
 		"typo3/cms-lowlevel": "^13.4",
@@ -51,7 +52,8 @@
 		"typo3/testing-framework": "^9.2"
 	},
 	"suggest": {
-		"friendsoftypo3/tt-address": "*"
+		"friendsoftypo3/tt-address": "*",
+		"tests/test-example": "*"
 	},
 	"extra": {
 		"typo3/cms": {
@@ -93,5 +95,18 @@
 			"typo3/class-alias-loader": true,
 			"sbuerk/fixture-packages": true
 		}
-	}
+	},
+	"repositories": {
+		"fixture-ttaddress": {
+			"type": "path",
+			"url": "Tests/Functional/Fixtures/Extensions/test_example",
+			"options": {
+				"versions": {
+					"tests/test-example": "1.0.0"
+				}
+			}
+		}
+	},
+	"minimum-stability": "dev",
+	"prefer-stable": true
 }

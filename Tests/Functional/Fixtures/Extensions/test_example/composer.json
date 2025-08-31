@@ -1,5 +1,5 @@
 {
-	"name": "tests/test_example",
+	"name": "tests/test-example",
 	"description": "Functional test fixture extension",
 	"type": "typo3-cms-extension",
 	"license": "GPL-2.0-or-later",

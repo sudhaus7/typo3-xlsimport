@@ -26,7 +26,7 @@ final class ImportServiceTest extends FunctionalTestCase
      * @var non-empty-string[]
      */
     protected array $testExtensionsToLoad = [
-        'tests/test_example',
+        'tests/test-example',
         'sudhaus7/xlsimport',
     ];
 
