@@ -135,6 +135,14 @@
 				<target>Die temporär gespeicherte Datei konnte nicht geladen werden. Bitte versuchen Sie einen erneuten Upload.</target>
 			</trans-unit>
 
+			<trans-unit id="error.file.fieldvaluecannotconverted.header">
+				<source>Field Value Error</source>
+				<target>Fehler in Feldern beim Import</target>
+			</trans-unit>
+			<trans-unit id="error.file.fieldvaluecannotconverted.message">
+				<source>One or more values could not be converted during import. Please check the source file for irregular content.</source>
+				<target>Werte in einem oder mehreren Feldern konnten nicht verarbeitet werden. Bitte mit der Quell-datei vergleichen.</target>
+      </trans-unit>
 			<trans-unit id="uploadForm.no_allowed_tables_available_title">
 				<source>Incomplete configuration</source>
 				<target>Unvollständige Konfiguration</target>
