@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace SUDHAUS7\Xlsimport\Service;
 
-use Doctrine\DBAL\Exception;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use Doctrine\DBAL\Exception as DBALException;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use SUDHAUS7\Xlsimport\Domain\Dto\ImportJob;
 use SUDHAUS7\Xlsimport\Event\ManipulateRelationsEvent;
@@ -149,9 +150,9 @@ final class ImportService
     }
 
     /**
-     * @throws \Doctrine\DBAL\Driver\Exception
-     * @throws Exception
      * @return array<string, array<int|string, array<string, int>>>
+     * @throws DBALException
+     * @throws DBALDriverException
      */
     private function prepareRecordDeleteByJob(ImportJob $job): array
     {
