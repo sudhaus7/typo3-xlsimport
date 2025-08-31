@@ -72,6 +72,52 @@ hope to address this in a future update.
 - support for related data as far as it is modelled in the TCA
 - support for import-presets or templates for recurring import tasks
 
+### Local development
+
+#### Local development environment with `ddev`
+
+This extension repository includes a `ddev` instance configuration matching the development
+requirements and is setup to provide and easy and simple development experience for people,
+which wants to contribute or play around.
+
+That means, thatn on a simple `ddev start` the environment is checked and the TYPO3 instance
+configured (setup) against ddev with a generic admin user along with creating pages tree for
+the backend using `typo3/cms-styleguide` and the included generator.
+
+**Start**
+
+```shell
+ddev start
+```
+
+**Full reset (destroy)**
+
+```shell
+ddev stop -ROU \
+  && git clean -xdf -e '.idea'
+```
+
+**Recreate instance**
+
+```shell
+ddev stop -ROU \
+  && git clean -xdf -e '.idea' \
+  && ddev start
+```
+
+To simplify the setup, a generic admin user is created:
+
+| type | username | password        | email                |
+|------|----------|-----------------|----------------------|
+| BE   | john-doe | John-Doe-1701D. | john.doe@example.com |
+
+with following urls:
+
+| url                                                  | command                         | description                  |
+|------------------------------------------------------|---------------------------------|------------------------------|
+| https://typo3-xlsimport.ddev.site/typo3/             | ddev launch /typo3/             | Open the TYPO3 backend       |
+| https://typo3-xlsimport.ddev.site/styleguide-demo-1/ | ddev launch /styleguide-demo-1/ | Open the styleguide frontend |
+
 ### Changes in v5.0
 
 * removed TypoScript support, as TypoScript is frontend related
