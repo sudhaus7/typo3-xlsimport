@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace SUDHAUS7\Xlsimport\Controller;
 
-use JsonException;
 use PhpOffice\PhpSpreadsheet\Exception;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Reader\Csv;
@@ -12,7 +11,6 @@ use PhpOffice\PhpSpreadsheet\Worksheet\RowCellIterator;
 use PhpOffice\PhpSpreadsheet\Worksheet\RowIterator;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Stringable;
 use SUDHAUS7\Xlsimport\Domain\Dto\ImportJob;
 use SUDHAUS7\Xlsimport\Service\ImportService;
 use SUDHAUS7\Xlsimport\Utility\AccessUtility;
@@ -37,8 +35,6 @@ use TYPO3\CMS\Core\Resource\Exception\FileDoesNotExistException;
 use TYPO3\CMS\Core\Type\Bitmask\Permission;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use function is_object;
-use function method_exists;
 
 #[AsController]
 final class DataSheetImportController
@@ -123,7 +119,7 @@ final class DataSheetImportController
      * @throws Exception
      * @throws RouteNotFoundException
      * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
-     * @throws JsonException
+     * @throws \JsonException
      */
     private function uploadAction(
         int $pageId,
@@ -185,7 +181,7 @@ final class DataSheetImportController
 
         try {
             $list = $this->loadDataFromJsonFile($jsonFile);
-        } catch ( JsonException|FileDoesNotExistException) {
+        } catch (\JsonException|FileDoesNotExistException) {
             $message = GeneralUtility::makeInstance(
                 FlashMessage::class,
                 $this->languageService->sL('LLL:EXT:xlsimport/Resources/Private/Language/locallang.xlf:error.jsonFile.message'),
@@ -531,20 +527,20 @@ final class DataSheetImportController
                 for ($y = 1; $y < $rowcount; $y++) {
                     for ($x = 1; $x <= $colcount; $x++) {
                         $valueFromSpreadsheet = $sheet->getCellByColumnAndRow($x, $y)->getValue();
-                        if ( is_object( $valueFromSpreadsheet)) {
-                            if ($valueFromSpreadsheet instanceof Stringable || method_exists( $valueFromSpreadsheet, '__toString')) {
+                        if (\is_object($valueFromSpreadsheet)) {
+                            if ($valueFromSpreadsheet instanceof \Stringable || \method_exists($valueFromSpreadsheet, '__toString')) {
                                 $valueFromSpreadsheet = (string)$valueFromSpreadsheet;
                             } else {
                                 $valueFromSpreadsheet = 'N/A';
                                 if ($formatErrorAlreadyShown) { // check if a message has already been shown
                                     $message = GeneralUtility::makeInstance(
                                         FlashMessage::class,
-                                        $this->languageService->sL( 'LLL:EXT:xlsimport/Resources/Private/Language/locallang.xlf:error.file.fieldvaluecannotconverted.message' ),
-                                        $this->languageService->sL( 'LLL:EXT:xlsimport/Resources/Private/Language/locallang.xlf:error.file.fieldvaluecannotconverted.header' ),
+                                        $this->languageService->sL('LLL:EXT:xlsimport/Resources/Private/Language/locallang.xlf:error.file.fieldvaluecannotconverted.message'),
+                                        $this->languageService->sL('LLL:EXT:xlsimport/Resources/Private/Language/locallang.xlf:error.file.fieldvaluecannotconverted.header'),
                                         ContextualFeedbackSeverity::ERROR,
                                         true
                                     );
-                                    $this->flashMessageService->getMessageQueueByIdentifier()->enqueue( $message );
+                                    $this->flashMessageService->getMessageQueueByIdentifier()->enqueue($message);
                                     $formatErrorAlreadyShown = true;
                                 }
                             }
@@ -560,7 +556,7 @@ final class DataSheetImportController
 
     /**
      * @throws FileDoesNotExistException
-     * @throws JsonException
+     * @throws \JsonException
      * @return array<array-key, mixed>
      */
     private function loadDataFromJsonFile(string $jsonFileName): array
