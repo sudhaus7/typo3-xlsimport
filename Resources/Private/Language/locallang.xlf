@@ -116,6 +116,13 @@
 			<trans-unit id="uploadForm.no_allowed_tables_available_message">
 				<source>No allowed tables for import configured. Refer documentation for required PageTSConfig configuration.</source>
 			</trans-unit>
+
+			<trans-unit id="error.file.fieldvaluecannotconverted.header">
+				<source>Field Value Error</source>
+			</trans-unit>
+			<trans-unit id="error.file.fieldvaluecannotconverted.message">
+				<source>One or more values could not be converted during import. Please check the source file for irregular content.</source>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>

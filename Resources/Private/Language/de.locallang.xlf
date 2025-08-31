@@ -143,6 +143,13 @@
 				<source>No allowed tables for import configured. Refer documentation for required PageTSConfig configuration.</source>
 				<target>Es wurden keine Tabellen für den Import freigegeben. Bitte schaue in die Dokumentation für die notwendige PageTSConfig Konfiguration.</target>
 			</trans-unit>
+
+			<trans-unit id="error.file.fieldvaluecannotconverted.header">
+				<target>Fehler in Feldern beim Import</target>
+			</trans-unit>
+			<trans-unit id="error.file.fieldvaluecannotconverted.message">
+				<target>Werte in einem oder mehreren Feldern konnten nicht verarbeitet werden. Bitte mit der Quell-datei vergleichen.</target>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>
