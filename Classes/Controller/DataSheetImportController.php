@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace SUDHAUS7\Xlsimport\Controller;
 
-use PhpOffice\PhpSpreadsheet\Exception;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
+use Doctrine\DBAL\Exception as DBALException;
+use PhpOffice\PhpSpreadsheet\Exception as PhpSpreadsheetException;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Reader\Csv;
+use PhpOffice\PhpSpreadsheet\Reader\Exception as PhpSpreadsheetReaderException;
 use PhpOffice\PhpSpreadsheet\Worksheet\RowCellIterator;
 use PhpOffice\PhpSpreadsheet\Worksheet\RowIterator;
 use Psr\Http\Message\ResponseInterface;
@@ -25,6 +28,7 @@ use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Exception as TYPO3Exception;
 use TYPO3\CMS\Core\Http\HtmlResponse;
 use TYPO3\CMS\Core\Http\RedirectResponse;
 use TYPO3\CMS\Core\Localization\LanguageService;
@@ -112,13 +116,13 @@ final class DataSheetImportController
     }
 
     /**
-     * @throws \TYPO3\CMS\Core\Exception
-     * @throws \Doctrine\DBAL\Exception
-     * @throws \Doctrine\DBAL\Driver\Exception
+     * @throws TYPO3Exception
+     * @throws DBALException
+     * @throws DBALDriverException
      * @throws AccessDeniedTableModifyException
-     * @throws Exception
+     * @throws PhpSpreadsheetException
      * @throws RouteNotFoundException
-     * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
+     * @throws PhpSpreadsheetReaderException
      * @throws \JsonException
      */
     private function uploadAction(
@@ -478,8 +482,8 @@ final class DataSheetImportController
 
     /**
      * @return array<array-key, mixed>
-     * @throws Exception
-     * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
+     * @throws PhpSpreadsheetException
+     * @throws PhpSpreadsheetReaderException
      */
     protected function prepareFileForImport(
         string $fileName,

@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace SUDHAUS7\Xlsimport\ViewHelpers\Backend;
 
-use TYPO3\CMS\Backend\Form\Exception;
+use Doctrine\DBAL\Exception as DBALException;
+use TYPO3\CMS\Backend\Form\Exception as TYPO3FormException;
 use TYPO3\CMS\Backend\Form\NodeFactory;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -34,6 +35,7 @@ class TcaNodeViewHelper extends AbstractViewHelper
 
     /**
      * renderStatic
+     *
      * @param array{
      *     config: array<array-key, mixed>,
      *     name: non-empty-string,
@@ -41,9 +43,10 @@ class TcaNodeViewHelper extends AbstractViewHelper
      *     page: positive-int,
      *     as: non-empty-string
      * } $arguments
+     *
      * @return mixed
-     * @throws \Doctrine\DBAL\Exception
-     * @throws Exception
+     * @throws DBALException
+     * @throws TYPO3FormException
      */
     public static function renderStatic(
         array $arguments,
