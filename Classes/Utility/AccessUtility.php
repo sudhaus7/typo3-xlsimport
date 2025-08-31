@@ -20,8 +20,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 final class AccessUtility
 {
-    protected static DataHandler $dataHandler;
-
     /**
      * @throws UndefinedSchemaException
      */
@@ -63,7 +61,6 @@ final class AccessUtility
     {
         $tcaSchemeFactory = GeneralUtility::makeInstance(TcaSchemaFactory::class);
 
-        $dataHandler = self::$dataHandler ?? GeneralUtility::makeInstance(DataHandler::class);
         $schema = $tcaSchemeFactory->get($tableName);
         /** @var RootLevelCapability $rootLevelCapability */
         $rootLevelCapability = $schema->getCapability(TcaSchemaCapability::RestrictionRootLevel);
@@ -74,7 +71,7 @@ final class AccessUtility
         $allowed = false;
         // Check root-level
         if (!$pageId) {
-            if ($dataHandler->admin || $rootLevelCapability->shallIgnoreRootLevelRestriction()) {
+            if (self::getBackendUser()->isAdmin() || $rootLevelCapability->shallIgnoreRootLevelRestriction()) {
                 $allowed = true;
             }
             return $allowed;
