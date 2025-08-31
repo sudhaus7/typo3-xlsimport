@@ -17,6 +17,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * @internal This class is only meant to be used inside EXT:xlsimport and therefore no public API.
  * Code can change anytime.
+ *
+ * @TODO refactor to a stateless, injected service
  */
 final class AccessUtility
 {
