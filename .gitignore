@@ -62,7 +62,5 @@ tests/_output/*
 !/ext_*.php
 
 /var
-/vendor
 /config
-/.ddev
 /.php-cs-fixer.cache
