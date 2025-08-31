@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 #
-# web-vision/wv_file_cleanup test runner based on docker/podman.
+# sudhaus7/xlsimport test runner based on docker/podman.
 #
 if [ "${CI}" != "true" ]; then
     trap 'echo "runTests.sh SIGINT signal emitted";cleanUp;exit 2' SIGINT
@@ -153,7 +153,7 @@ restoreComposerFiles() {
 loadHelp() {
     # Load help text into $HELP
     read -r -d '' HELP <<EOF
-web-vision/wv_file_cleanup test runner. Execute acceptance, unit, functional and other test
+sudhaus7/xlsimport test runner. Execute acceptance, unit, functional and other test
 suites in a container based test environment. Handles execution of single test files, sending
 xdebug information to a local IDE and more.
 
