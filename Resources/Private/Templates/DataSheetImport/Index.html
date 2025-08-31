@@ -26,6 +26,23 @@
             <li>CSV (.csv/.txt)</li>
         </ul>
     </f:be.infobox>
+    <f:if condition="{allowedTables} && {f:count(subject: allowedTables)} > 0">
+        <f:then>
+            <f:render section="uploadForm" arguments="{_all}" />
+        </f:then>
+        <f:else>
+            <f:be.infobox
+                title="{f:translate(key:'uploadForm.no_allowed_tables_available_title', extensionName: 'xlsimport')}"
+                state="{f:constant(name: 'TYPO3\CMS\Fluid\ViewHelpers\Be\InfoboxViewHelper::STATE_ERROR')}"
+            >
+                <f:translate key="uploadForm.no_allowed_tables_available_message" extensionName="xlsimport" />
+            </f:be.infobox>
+        </f:else>
+    </f:if>
+
+</f:section>
+
+<f:section name="uploadForm">
     <form
         action="{f:be.uri(route: 'web_xlsimport', parameters: '{action: \'upload\', id: \'{page}\'}')}"
         enctype="multipart/form-data"
@@ -74,4 +91,5 @@
         </div>
     </form>
 </f:section>
+
 </html>

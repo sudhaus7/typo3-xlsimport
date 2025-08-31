@@ -134,6 +134,15 @@
 				<source>The temporarily saved file was not found. Please try again with upload your data.</source>
 				<target>Die temporär gespeicherte Datei konnte nicht geladen werden. Bitte versuchen Sie einen erneuten Upload.</target>
 			</trans-unit>
+
+			<trans-unit id="uploadForm.no_allowed_tables_available_title">
+				<source>Incomplete configuration</source>
+				<target>Unvollständige Konfiguration</target>
+			</trans-unit>
+			<trans-unit id="uploadForm.no_allowed_tables_available_message">
+				<source>No allowed tables for import configured. Refer documentation for required PageTSConfig configuration.</source>
+				<target>Es wurden keine Tabellen für den Import freigegeben. Bitte schaue in die Dokumentation für die notwendige PageTSConfig Konfiguration.</target>
+			</trans-unit>
 		</body>
 	</file>
 </xliff>
