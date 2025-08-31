@@ -532,7 +532,7 @@ final class DataSheetImportController
                                 $valueFromSpreadsheet = (string)$valueFromSpreadsheet;
                             } else {
                                 $valueFromSpreadsheet = 'N/A';
-                                if ($formatErrorAlreadyShown) { // check if a message has already been shown
+                                if (!$formatErrorAlreadyShown) { // check if a message has already been shown
                                     $message = GeneralUtility::makeInstance(
                                         FlashMessage::class,
                                         $this->languageService->sL('LLL:EXT:xlsimport/Resources/Private/Language/locallang.xlf:error.file.fieldvaluecannotconverted.message'),
