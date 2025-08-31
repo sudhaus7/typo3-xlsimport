@@ -11,6 +11,7 @@
 .idea/**/sqlDataSources.xml
 .idea/**/dynamic.xml
 .idea/**/uiDesigner.xml
+.run/
 
 # Gradle:
 .idea/**/gradle.xml
