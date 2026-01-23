@@ -530,7 +530,7 @@ final class DataSheetImportController
 
                 for ($y = 1; $y < $rowcount; $y++) {
                     for ($x = 1; $x <= $colcount; $x++) {
-                        $valueFromSpreadsheet = $sheet->getCellByColumnAndRow($x, $y)->getValue();
+                        $valueFromSpreadsheet = $sheet->getCell([$x, $y])->getValue();
                         if (\is_object($valueFromSpreadsheet)) {
                             if ($valueFromSpreadsheet instanceof \Stringable || \method_exists($valueFromSpreadsheet, '__toString')) {
                                 $valueFromSpreadsheet = (string)$valueFromSpreadsheet;
