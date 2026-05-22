@@ -141,7 +141,7 @@ final class DataSheetImportController
         $args = $request->getParsedBody();
         $encoding = (bool)($args['encoding'] ?? false);
         $deleteRecords = (bool)($args['deleteRecords'] ?? false);
-        $table = $args['table'];
+        $table = $args['table'] ?? '';
         $retry = (bool)($args['retry'] ?? false);
         $jsonFile = $args['jsonFile'] ?? '';
 
